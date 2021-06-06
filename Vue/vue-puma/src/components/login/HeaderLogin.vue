@@ -1,25 +1,29 @@
 <template>
-    <div id="HeaderLogin" class="p-1 p-md-5">
-        <div class="d-flex flex-column flex-md-row justify-content-between">
+    <div id="HeaderLogin" class="w-100 py-2 px-1 px-sm-3 px-md-4 px-lg-5">
+        <div class="d-flex flex-column">
+            <!-- LOGO & NAV -->
             <div class="d-flex ms-0 ms-md-4">
-                <div class="paralelogramo1 w-25 ms-3 mt-2 mt-md-4">
+                <!-- LOGO -->
+                <div class="paralelogramo1 ms-3 mt-2 mt-md-4">
                     <img
-                        class="logo-home w-100"
+                        class="logo-home"
                         src="../../assets/img/logo/logo-sm.png"
                         alt="Logo Puma"
                     />
                 </div>
+                <!-- NAV -->
                 <Routes></Routes>
             </div>
-            <!-- <div class="d-flex align-items-end align-self-end">
+            <!-- SEARCH BTN -->
+            <div class="d-flex align-self-end mt-3">
                 <div class="paralelogramo1">
                     <img
-                        class="ico-search p-1 p-md-2 btn"
-                        src="../assets/img/icons/search-solid.svg"
+                        class="ico-search p-1 p-md-2"
+                        src="../../assets/img/icons/search-solid.svg"
                         alt=""
                     />
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
 </template>
@@ -34,8 +38,4 @@ export default {
 };
 </script>
 
-<style scoped>
-#headerLogin {
-    height: 100vh;
-}
-</style>
+<style scoped></style>

@@ -1,16 +1,25 @@
 <template>
     <div id="nav" v-if="$route.name !== 'Home'">
-        <Header />
+        <HeaderLogin />
     </div>
-    <router-view />
+    <router-view class="bg-puma-gray" />
 </template>
 
 <script>
-import Header from "@/components/login/Header.vue";
+import { mapActions } from "vuex";
+
+import HeaderLogin from "@/components/login/HeaderLogin.vue";
 export default {
-    name: "nav",
+    // name: "nav",
     components: {
-        Header,
+        HeaderLogin,
+    },
+    methods: {
+        ...mapActions(["readToken", "getDataHome"]),
+    },
+    created() {
+        this.readToken();
+        this.getDataHome();
     },
 };
 </script>
@@ -30,16 +39,4 @@ export default {
     background-position: 100% 50%;
     background-size: 50% 75%;
 }
-/* #nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-} */
 </style>

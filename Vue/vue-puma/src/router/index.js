@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "../store";
 
 const routes = [
     {
@@ -12,6 +13,7 @@ const routes = [
         name: "Login",
         component: () =>
             import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
+        // meta: { rutaProtegida: true },
     },
     {
         path: "/login/estado-cuenta",
@@ -74,6 +76,16 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
+});
+
+router.beforeEach((to, from, next) => {
+    const exitsProtec = to.matched.some((item) => item.meta.rutaProtegida);
+
+    if (exitsProtec && store.state.token === null) {
+        next("/");
+    } else {
+        next();
+    }
 });
 
 export default router;

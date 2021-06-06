@@ -1,0 +1,25 @@
+.logo-home {
+    width: 30vw !important;
+}
+.ico-search {
+    width: 3vw !important;
+}
+
+@media screen and (max-width: 992px) {
+    .logo-home {
+        width: 40vw !important;
+    }
+    .ico-search {
+        width: 4vw !important;
+    }
+}
+@media screen and (max-width: 768px) {
+}
+@media screen and (max-width: 576px) {
+    .logo-home {
+        width: 50vw !important;
+    }
+    .ico-search {
+        width: 6vw !important;
+    }
+}

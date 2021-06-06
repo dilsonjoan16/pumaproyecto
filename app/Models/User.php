@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+//Para el uso de Spatie, en la relacion de usuarios con roles
+use Spatie\Permission\Traits\HasRoles;
+
+
 //Añadimos la clase JWTSubject 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -14,6 +18,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.

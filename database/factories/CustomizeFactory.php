@@ -26,9 +26,9 @@ class CustomizeFactory extends Factory
             'titulo'=>$this->faker->word(),
             'contenido'=>$this->faker->text(),
             'ruta-video'=>$this->faker->imageUrl(),
-            'orden'=>$this->faker->randomDigit(), //manera de ordenar las galerias
-            'estado'=>$this->faker->randomDigit(), //para el borrado logico : 1 aparece 2 oculto 3 borrado-logico
-            'tipo'=>$this->faker->randomDigit() //1 resultados 2 sorteos 3 testimonios 4 ubicanos 5 contacto
+            'orden'=>$this->faker->numberBetween($min = 1, $max = 100), //manera de ordenar las galerias
+            'estado'=>$this->faker->numberBetween($min = 1, $max = 3), //para el borrado logico : 1 aparece 2 oculto 3 borrado-logico
+            'tipo'=>$this->faker->numberBetween($min = 1, $max = 4) //1 resultados 2 sorteos 3 testimonios 4 ubicanos 5 contacto
         ];
     }
 }

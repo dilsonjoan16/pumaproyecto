@@ -32,10 +32,10 @@
                 <Ingreso v-if="toLogin" class="d-none d-lg-flex" />
             </div>
             <!-- SEARCH BTN -->
-            <div class="d-flex align-items-end align-self-end">
+            <div class="d-flex align-self-end">
                 <div class="paralelogramo1">
                     <img
-                        class="ico-search p-1 p-md-2 btn"
+                        class="ico-search p-1 p-md-2"
                         src="../../assets/img/icons/search-solid.svg"
                         alt=""
                     />
@@ -58,10 +58,12 @@
         <div>
             <Ingreso v-if="toLogin" class="d-flex d-lg-none mx-3 mt-4" />
         </div>
+        {{ dataHome }}
     </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Ingreso from "@/components/home/Ingreso.vue";
 export default {
     name: "Welcome",
@@ -93,17 +95,13 @@ export default {
             this.toLogin = boolean;
         },
     },
+    computed: {
+        ...mapState(["dataHome"]),
+    },
 };
 </script>
 
 <style scoped>
-.logo-home {
-    width: 30vw;
-}
-.ico-search {
-    width: 3vw;
-}
-
 #Welcome a {
     font-weight: 500;
     text-decoration: none;
@@ -112,24 +110,5 @@ export default {
 #Welcome a:hover,
 #Welcome a.active {
     color: var(--text-color2);
-}
-
-@media screen and (max-width: 992px) {
-    .logo-home {
-        width: 40vw;
-    }
-    .ico-search {
-        width: 4vw;
-    }
-}
-@media screen and (max-width: 768px) {
-}
-@media screen and (max-width: 576px) {
-    .logo-home {
-        width: 50vw;
-    }
-    .ico-search {
-        width: 6vw;
-    }
 }
 </style>

@@ -39,7 +39,7 @@ class CustomizeController extends Controller
         if($customize4 = Customize::where("tipo", "=", 4)->get()){
             $tipo4 = $customize4;
         }
-
+        
         $prueba = [
             "Datos tipo 1: Resultados" => $tipo1,
             "Datos tipo 2: Sorteos" => $tipo2,

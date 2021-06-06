@@ -52,7 +52,7 @@
     background-color: var(--gray);
     transform: scaleX(1.2) var(--inclinacion);
 }
-.loginRoutes::before {
+.menuRoutes::before {
     width: auto;
     height: 0.5rem;
     background-color: var(--gray);

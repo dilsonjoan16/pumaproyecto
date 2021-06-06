@@ -1,33 +1,67 @@
 <template>
-    <div id="Routes" class="d-flex flex-column">
-        <div class="d-flex">
-            <router-link class="paralelogramo" to="/login/estado-cuenta"
-                >estado-cuenta</router-link
+    <div id="Routes" class="d-flex flex-column mx-2 fs-6">
+        <div class=" d-flex flex-wrap justify-content-center">
+            <router-link
+                class="paralelogramo d-flex align-items-center h-auto mt-1 px-2 py-1"
+                to="/login"
+                >Mi perfil</router-link
             >
-            <router-link class="paralelogramo" to="/login/galerias"
-                >galerias</router-link
+            <router-link
+                v-for="(ruta, index) in rutas"
+                :key="index"
+                class="paralelogramo d-flex align-items-center mt-1 px-2 py-1"
+                :to="`/login/${ruta}`"
+                >{{ ruta }}</router-link
             >
-            <router-link class="paralelogramo" to="/login/metricas"
-                >metricas</router-link
+            <router-link
+                class="paralelogramo d-flex align-items-center h-auto mt-1 px-2 py-1"
+                to="/"
+                >Salir</router-link
             >
-            <router-link class="paralelogramo" to="/login/promotores-vendedores"
-                >promotores-vendedores</router-link
+            <a
+                to="/"
+                class="paralelogramo d-flex align-items-center h-auto mt-1 px-2 py-1"
+                @click="logout"
+                >Salir token</a
             >
-            <router-link class="paralelogramo" to="/login/reportar-gastos"
-                >reportar-gastos</router-link
-            >
-            <router-link class="paralelogramo" to="/login/resumen-ventas"
-                >resumen-ventas</router-link
-            >
-            <router-link class="paralelogramo" to="/login/solicitudes"
-                >solicitudes</router-link
-            >
-            <router-link class="paralelogramo" to="/">Salir</router-link>
         </div>
-        <div class="paralelogramo loginRoutes"></div>
+        <div class="paralelogramo menuRoutes"></div>
+        {{ dataUsers }}
     </div>
 </template>
 <script>
-export default {};
+import { mapActions, mapState } from "vuex";
+export default {
+    name: "Routes",
+    data() {
+        return {
+            rutas: [
+                "estado-cuenta",
+                "galerias",
+                "metricas",
+                "promotores-vendedores",
+                "reportar-gastos",
+                "resumen-ventas",
+                "solicitudes",
+            ],
+        };
+    },
+    methods: {
+        ...mapActions(["logout"]),
+    },
+    computed: {
+        ...mapState(["dataUsers"]),
+    },
+};
 </script>
-<style></style>
+<style scoped>
+#Routes a {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-white);
+}
+#Routes a:hover,
+#Routes a.router-link-exact-active {
+    color: var(--text-color2);
+}
+</style>

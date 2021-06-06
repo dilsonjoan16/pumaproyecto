@@ -10,21 +10,11 @@
             <div
                 v-for="(element, index) in elements"
                 :key="index"
-                class="col-12 col-sm-6 col-md-3"
+                class="col-12 col-sm-6 col-md-3 d-flex flex-column"
             >
-                {{ index }}
+                <img src="" alt="" />
+                <h1>Titulo</h1>
             </div>
-        </div>
-        <div class="row mt-auto">
-            <div class="row col-6">
-                <div class="col-12">Tu nombre</div>
-                <div class="col-12">Tu correo</div>
-            </div>
-            <div class="col-6">Tu mensaje</div>
-        </div>
-        <div class="paralelogramo1 mt-1 mb-3">ENVIAR</div>
-        <div class="paralelogramo1 mt-1 mb-3">
-            2021 Chance Puma derechos reservados
         </div>
     </div>
 </template>
