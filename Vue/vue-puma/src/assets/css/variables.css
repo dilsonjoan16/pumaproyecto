@@ -1,0 +1,15 @@
+:root {
+    --color1: #e9da00;
+    --color2: #0a6500;
+    --text-color1: #e9da00;
+    --text-color2: #0a6500;
+    --text-black: black;
+    --text-white: white;
+    --yellow: #e9da00;
+    --green: #0a6500;
+    --white: white;
+    --black: black;
+    --gray: #b5b5b5;
+    --gray-opacity: #66666642;
+    --inclinacion: skewX(-15deg);
+}
