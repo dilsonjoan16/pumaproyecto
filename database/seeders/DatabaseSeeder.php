@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Administrador;
 use App\Models\Contacto;
 use App\Models\Customize;
+use App\Models\Reporte;
+use App\Models\User;
+use App\Models\Ventas;
 use Database\Factories\ContactoFactory;
 use Database\Factories\CustomizeFactory;
 use Illuminate\Database\Seeder;
@@ -17,10 +21,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         \App\Models\User::factory(100)->create();
+        User::factory(100)->create();
         Customize::factory(20)->create();
         Contacto::factory(10)->create();
-
+        Administrador::factory(20)->create();
+        Reporte::factory(20)->create();
+        Ventas::factory(20)->create();
         //Seeder de Role
         $this->call(RoleSeeder::class);
 

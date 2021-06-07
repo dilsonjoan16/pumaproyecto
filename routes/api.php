@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdministradorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomizeController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\VendedorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,35 @@ Route::post('contactanos', [MailController::class, 'store'])->name(('contactanos
 //Rutas para el Rol de administrados
 //Ruta para el CRUD de vendedores
 Route::apiResource('admin', AdminController::class)->names('admin.vendedores');
+
+//Grupo de rutas de administrador
+Route::prefix('administrador')->group(function () {
+Route::get('resumenventas', [AdministradorController::class,'index']);
+Route::post('reportes',[AdministradorController::class,'store']);
+//Route::get();
+//Route::get();
+//Route::get();
+//Route::get();
+});
+
+//Grupo de rutas de Promotor
+Route::prefix('promotor')->group(function () {
+    //rutas del promotor
+//Route::get();
+//Route::get();
+//Route::get();
+//Route::get();
+});
+
+//Grupo de rutas del vendedor
+Route::prefix('vendedor')->group(function () {
+Route::post('reportarventa',[VendedorController::class,'store']);
+//Route::get();
+//Route::get();
+//Route::get();
+//Route::get();
+});
+
 
 //Ruta que permita traer datos del user
 Route::get('users', [UserController::class, 'GetUsers']);
