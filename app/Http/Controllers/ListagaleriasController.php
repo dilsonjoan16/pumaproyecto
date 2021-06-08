@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class ListagaleriasController extends Controller
 {
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     //FUNCION PARA ASIGNAR A QUE MENU SE MOSTRARA TIPO 1->RESULTADOS 2->SORTEOS 3->TESTIMONIOS 4->UBICANOS
     public function update(Request $request, $id)
     {

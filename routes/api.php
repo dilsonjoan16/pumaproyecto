@@ -10,6 +10,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\ModuloPromVendController;
 use App\Http\Controllers\VendedorController;
 use App\Http\Controllers\ListagaleriasController;
+use App\Http\Controllers\SolicitudesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +80,7 @@ Route::prefix('promotor')->group(function () {
 //Grupo de rutas del vendedor
 Route::prefix('vendedor')->group(function () {
 Route::post('reportarventa',[VendedorController::class,'store']);
+Route::apiResource('solicitudes', SolicitudesController::class);
 //Route::get();
 //Route::get();
 //Route::get();

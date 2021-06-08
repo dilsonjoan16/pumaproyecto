@@ -56,6 +56,7 @@ class VendedorController extends Controller
             "Puntoventas" => $request->get("Puntoventas"),
             "Nombrepromotor" => $request->get("Nombrepromotor"),
             "Puntoentregaventas" => $request->get("Puntoentregaventas"),
+            "Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
 //Revisar la logica para Obtener la sumatoria correcta!
         /*$acumulador = Ventas::where("Sumatotalventas",">","0")->get();
