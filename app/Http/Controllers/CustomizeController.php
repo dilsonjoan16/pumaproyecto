@@ -26,20 +26,21 @@ class CustomizeController extends Controller
     public function index()
     {
         //$customize = Customize::all();
-        
-        if($customize = Customize::where("tipo", "=", 1)->get()){
-            $tipo1 = $customize;
+        if ($customize = Customize::where("estado", "=", 1)->get()) {
+            if ($customize = Customize::where("tipo", "=", 1)->get()) {
+                $tipo1 = $customize;
+            }
+            if ($customize2 = Customize::where("tipo", "=", 2)->get()) {
+                $tipo2 = $customize2;
+            }
+            if ($customize3 = Customize::where("tipo", "=", 3)->get()) {
+                $tipo3 = $customize3;
+            }
+            if ($customize4 = Customize::where("tipo", "=", 4)->get()) {
+                $tipo4 = $customize4;
+            }
         }
-        if($customize2 = Customize::where("tipo", "=", 2)->get()){
-            $tipo2 = $customize2;
-        }
-        if($customize3 = Customize::where("tipo", "=", 3)->get()){
-            $tipo3 = $customize3;
-        }
-        if($customize4 = Customize::where("tipo", "=", 4)->get()){
-            $tipo4 = $customize4;
-        }
-        
+    
         $prueba = [
             "Datos tipo 1: Resultados" => $tipo1,
             "Datos tipo 2: Sorteos" => $tipo2,
@@ -47,7 +48,7 @@ class CustomizeController extends Controller
             "Datos tipo 4: Testimonios" => $tipo4
         ];
         
-        return response()->json($prueba);
+        return response()->json($prueba, 200);
     }
 
     /**
@@ -56,33 +57,46 @@ class CustomizeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contacto $contacto)
+    public function store(Request $request, Customize $customize)
     {
 
         
         $validator = Validator::make($request->all(),[
-            'nombre_contacto' => 'required|max:120',
-            'correo_contacto' => 'required|max:255|email',
-            'mensaje_contacto' => 'required|max:255|string',
+            'ruta-imagen' => 'required|file',
+            'titulo' => 'required|string',
+            'contenido' => 'required|string',
+            'ruta-video' => 'required|file',
+            'orden' => 'required|integer',
+            'tipo' => 'required|integer|max:4',
+            'link' => 'required|string'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $contacto = Contacto::create([
+        $customize = Customize::create([
+            'ruta-imagen' => $request->get('ruta-imagen'),
+            'titulo' => $request->get('titulo'),
+            'contenido' => $request->get('contenido'),
+            'ruta-video' => $request->get('ruta-video'),
+            'orden' => $request->get('orden'), //orden en el que quiera que se vean las imagenes
+            'tipo' => $request->get('tipo'), //orden de muestra tipo: 1->resultados 2->sorteos 3->testimonios 4->ubicanos
+            'link' => $request->get('link')
+        ]);
+
+        return response()->json($customize, 201);
+
+
+        /*$contacto = Contacto::create([
             'nombre_contacto' => $request->get('nombre_contacto'),
             'correo_contacto' => $request->get('correo_contacto'),
             'mensaje_contacto' => $request->get('mensaje_contacto'),
         ]);   
-
-       
         //$contacto = Contacto::where('id')->last();
         $contacto = Contacto::find(\DB::table('contacto')->max('id'));
-
-
         Mail::to($contacto['correo_contacto'])->send(new TestMail($contacto));
-        return response()->json($contacto, 201);
+        return response()->json($contacto, 201);*/
     }
 
     /**
@@ -93,7 +107,11 @@ class CustomizeController extends Controller
      */
     public function show($id)
     {
-        
+        $customize = Customize::find($id);
+        $respuesta = [
+            "Objeto encontrado con exito!" =>$customize
+        ];
+        return response()->json($respuesta, 200);
     }
 
     /**
@@ -105,7 +123,15 @@ class CustomizeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $customize = Customize::find($id);
+
+        $customize->update($request->all());
+
+        $respuesta =  [
+            "El objeto fue actualizado con exito!" => $customize
+        ];
+
+        return response()->json($respuesta, 200);
     }
 
     /**
@@ -116,6 +142,15 @@ class CustomizeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $customize = Customize::find($id);
+        $customize->estado = "0";
+        $customize->save();
+
+        $respuesta = [
+            "El objeto fue eliminado con exito!" => $customize
+        ];
+
+        return response()->json($respuesta, 200);
     }
+
 }
