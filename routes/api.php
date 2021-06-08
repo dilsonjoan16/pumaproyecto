@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomizeController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ModuloPromVendController;
 use App\Http\Controllers\VendedorController;
 
 /*
@@ -54,8 +55,9 @@ Route::apiResource('admin', AdminController::class)->names('admin.vendedores');
 
 //Grupo de rutas de administrador
 Route::prefix('administrador')->group(function () {
-Route::get('resumenventas', [AdministradorController::class,'index']);
-Route::post('reportes',[AdministradorController::class,'store']);
+    Route::get('resumenventas', [AdministradorController::class,'index']); //Resumen de ventas
+    Route::post('reportes',[AdministradorController::class,'store']); //generacion de reportes
+    Route::apiResource('modulopromotorvendedor',ModuloPromVendController::class);
 //Route::get();
 //Route::get();
 //Route::get();

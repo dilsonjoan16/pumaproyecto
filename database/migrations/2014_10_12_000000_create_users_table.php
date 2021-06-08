@@ -20,6 +20,16 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->integer('dni');
+            $table->integer('ganancia');
+            $table->integer('porcentaje');
+            $table->integer('balance')->nullable();
+            $table->string('foto');
+            $table->string('direccion');
+            $table->bigInteger('telefono');
+            $table->string('codigo')->nullable();
+            $table->integer('tipo')->default(1);
+            //RECORDATORIO!!!!!!! -> AQUI DEBE IR EL CAMPO PARA ROL
             $table->timestamps();
         });
     }

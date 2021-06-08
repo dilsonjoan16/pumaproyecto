@@ -58,18 +58,50 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(),[
             'name'=>'required|string',
-            'email'=>'required|email|max:255',
-            'password'=>'required|string|min:6|max:12'
+            'email'=>'required|email|max:255|unique:users,email',
+            'password'=>'required|string|min:6|max:12',
+            'dni' => 'required|integer',
+            'ganancia' => 'required|integer',
+            'porcentaje' => 'required|integer|max:50',
+            'foto' => 'required|file',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|integer',
+            
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(),400);
         }
 
+
+        //$balance = (($request->get('porcentaje'))*($request->get('ganancia')))/100;
+        //$balance = ($validator->ganancia * $validator->porcentaje)/100;
+
+
+        /* Logica para tratar de generar el codigo automatico
+        User::saving(function ($user) {
+            $user->codigo = ""; //Logica de calculo de codigo
+        }); 
+        */
+
+        
+        
+
         $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
+            'dni' => $request->get('dni'),
+            'ganancia' => $request->get('ganancia'),
+            'porcentaje' => $request->get('porcentaje'),
+            'balance' => (($request->get('ganancia'))*($request->get('porcentaje'))/100),
+            'foto' => $request->get('foto'),
+            'direccion' => $request->get('direccion') ,
+            'telefono' => $request->get('telefono'), 
+            //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
+            'codigo' => substr($request->get('name'), 0, 1).$request->get('dni')
+            
+                
         ]);
 
         $token = JWTAuth::fromUser($user);

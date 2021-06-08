@@ -28,7 +28,17 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'password'
+        'password',
+        'dni',
+        'ganancia',
+        'porcentaje',
+        'balance',
+        'foto',
+        'direccion',
+        'telefono',
+        'codigo',
+        'tipo',
+        //RECORDATORIO!!!!!! -> AQUI DEBE IR EL CAMPO PARA ROL
     ];
 
     /**
