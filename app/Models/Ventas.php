@@ -15,6 +15,7 @@ class Ventas extends Model
         "Valorapuesta",
         "Loteria",
         "Tipo", //Directo o Combinado
+        "Estado", //1 ESTA ACTIVO 0 ESTA ELIMINADO
 
         //Menu lateral en varias vistas {
 

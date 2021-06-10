@@ -16,11 +16,11 @@ class CreateSolicitudesTable extends Migration
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
             $table->string("Nombre");
-            $table->integer("Cantidadsolicitada")->nullable();
-            $table->integer("Cuotas")->nullable();
-            $table->string("MobiliarioSolicitado")->nullable();
-            $table->string("Ubicacion")->nullable();
-            $table->string("Solicitud")->nullable();
+            $table->integer("CantidadSolicitada");
+            $table->integer("Cuotas");
+            $table->string("MobiliarioSolicitado");
+            $table->string("Ubicacion");
+            $table->string("Solicitud");
             $table->integer("Tipo")->default(1);
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ class CreateVentasTable extends Migration
             $table->integer("Valorapuesta");
             $table->string("Loteria");
             $table->string("Tipo");
+            $table->string("Estado")->default(1);
             //Menu lateral de las vistas
             $table->integer("Sumatotalventas");
             $table->string("Puntoventas");

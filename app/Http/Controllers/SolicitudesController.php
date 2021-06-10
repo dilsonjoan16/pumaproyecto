@@ -16,7 +16,7 @@ class SolicitudesController extends Controller
     {
         $solicitudes = Solicitudes::where('tipo', '=', '1')->get();
 
-        return response()->json($solicitudes);
+        return response()->json($solicitudes, 200);
     }
 
     /**
@@ -27,6 +27,8 @@ class SolicitudesController extends Controller
      */
     public function store(Request $request, Solicitudes $solicitudes)
     {
+        /*$solicitudes = Solicitudes::create($request->all());
+        return $solicitudes;*/
         $request->validate([
             "Nombre" => "required|string",
             "CantidadSolicitada" => "required|integer",
@@ -34,7 +36,7 @@ class SolicitudesController extends Controller
             "MobiliarioSolicitado" => "required|string",
             "Ubicacion" => "required|string",
             "Solicitud" => "required|string",
-            
+
         ]);
 
         $solicitudes = Solicitudes::create([
@@ -44,14 +46,14 @@ class SolicitudesController extends Controller
             "MobiliarioSolicitado" => $request->get("MobiliarioSolicitado"),
             "Ubicacion" => $request->get("Ubicacion"),
             "Solicitud" => $request->get("Solicitud")
-            
+
         ]);
 
         $respuesta =  [
-            "La solicitud ha sido creada y enviada con exito!" =>$solicitudes
+            "La solicitud ha sido creada y enviada con exito!" => $solicitudes
         ];
 
-        return response()->json($respuesta);
+        return response()->json($respuesta, 201);
     }
 
     /**
@@ -66,7 +68,7 @@ class SolicitudesController extends Controller
         $respuesta =  [
             "Objeto encontrado con exito!" => $solicitudes
         ];
-        return response()->json($respuesta);
+        return response()->json($respuesta, 200);
     }
 
     /**
@@ -93,10 +95,15 @@ class SolicitudesController extends Controller
         $solicitudes->Tipo = "0";
         $solicitudes->save();
 
+        /*
+            Otra logica posible: 
+            MyModel::where('confirmed', '=', 0)->update(['confirmed' => 1])
+        */
+
         $respuesta =  [
             "El objeto fue eliminado con exito!" => $solicitudes
         ];
 
-        return response()->json($solicitudes, 200);
+        return response()->json($respuesta, 200);
     }
 }

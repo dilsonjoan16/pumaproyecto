@@ -29,8 +29,7 @@ use App\Http\Controllers\SolicitudesController;
 
 //Ruta api
 //Route::apiResource('puma', PumaController::class);
-Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () {
-    
+Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () {  //Grupo de rutas que habilita permisos CORS
 });
 //Ruta del JWT
 Route::post('register', [UserController::class, 'register']);
@@ -42,8 +41,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     //Debo colocar las rutas protegias por el middleware
     Route::post('logout', [UserController::class, 'logout']);
 });
-//REVISAR!!!! RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
-Route::put('listagalerias', [ListagaleriasController::class, 'update']);
+
 
 //Ruta del envio de correos
 Route::get('contactanos', [MailController::class, 'index'])->name('contactanos.index');
@@ -56,36 +54,49 @@ Route::apiResource('admin', AdminController::class)->names('admin.vendedores');
 
 //Grupo de rutas de administrador
 Route::prefix('administrador')->group(function () {
-    Route::get('resumenventas', [AdministradorController::class,'index']); //Resumen de ventas
-    Route::post('reportes',[AdministradorController::class,'store']); //generacion de reportes
-    Route::apiResource('modulopromotorvendedor',ModuloPromVendController::class);
+    Route::get('resumenventas', [AdministradorController::class, 'index']); //Resumen de ventas
+    Route::post('reportes', [AdministradorController::class, 'store']); //generacion de reportes
+    Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class);
     //Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
     Route::apiResource('customize', CustomizeController::class);
-    
-//Route::get();
-//Route::get();
-//Route::get();
-//Route::get();
+    //REVISAR!!!! RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
+    Route::put('galeriasResultados/{id}', [ListagaleriasController::class, 'updateResultados']);
+    Route::put('galeriasSorteos/{id}', [ListagaleriasController::class,'updateSorteos']);
+    Route::put('galeriasUbicanos/{id}', [ListagaleriasController::class,'updateUbicanos']);
+    Route::put('galeriasTestimonios/{id}', [ListagaleriasController::class,'updateTestimonios']);
+    //Route::get();
+    //Route::get();
+    //Route::get();
+    //Route::get();
 });
 
 //Grupo de rutas de Promotor
 Route::prefix('promotor')->group(function () {
     //rutas del promotor
-//Route::get();
-//Route::get();
-//Route::get();
-//Route::get();
+    //Route::get();
+    //Route::get();
+    //Route::get();
+    //Route::get();
 });
 
 //Grupo de rutas del vendedor
 Route::prefix('vendedor')->group(function () {
-Route::post('reportarventa',[VendedorController::class,'store']);
-Route::apiResource('solicitudes', SolicitudesController::class);
-//Route::get();
-//Route::get();
-//Route::get();
-//Route::get();
+    Route::post('reportarventa', [VendedorController::class, 'store']);
+    Route::get('mostrarventa',   [VendedorController::class,'index']);
+    Route::get('encontrarventa/{id}', [VendedorController::class,'show']);
+    Route::put('modificarventa/{id}', [VendedorController::class,'update']);
+    Route::delete('eliminarventa/{id}', [VendedorController::class,'destroy']);
+    Route::post('crearsolicitud', [SolicitudesController::class,"store"]);
+    Route::get('mostrarsolicitud', [SolicitudesController::class,'index']);
+    Route::get('encontrarsolicitud/{id}', [SolicitudesController::class,'show']);
+    Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class,'destroy']);
+    //Route::put('modificarsolicitud/{id}', [SolicitudesController::class,'update']); EN CASO DE NECESITARSE RUTA PARA MODIFICAR
+    //Route::get();
+    //Route::get();
+    //Route::get();
+    //Route::get();
 });
+
 
 
 //Ruta que permita traer datos del user
