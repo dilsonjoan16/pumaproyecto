@@ -14,6 +14,8 @@ use App\Http\Controllers\ListagaleriasController;
 use App\Http\Controllers\ModuloVendedorController;
 use App\Http\Controllers\SolicitudesController;
 use App\Http\Controllers\SorteosController;
+use App\Http\Controllers\AcumuladoController;
+use App\Http\Controllers\PremiosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +77,18 @@ Route::prefix('administrador')->group(function () {
     Route::post('crearSorteos', [SorteosController::class,'create']);
     Route::put('modificarSorteos/{id}', [SorteosController::class,'update']);
     Route::delete('eliminarSorteos/{id}', [SorteosController::class,'destroy']);
-
+    //Ruta para la creacion de Premios
+    Route::get('mostrarPremios', [PremiosController::class,'index']);
+    Route::get('encontrarPremios/{id}', [PremiosController::class,'show']);
+    Route::post('crearPremios',[PremiosController::class,'store']);
+    Route::put('modificarPremios/{id}',[PremiosController::class,'update']);
+    Route::delete('eliminarPremios/{id}',[PremiosController::class,'destroy']);
+    //Ruta para la creacion de Acumulados
+    Route::get('mostrarAcumulado',[AcumuladoController::class,'index']);
+    Route::get('encontrarAcumulado/{id}', [AcumuladoController::class,'show']);
+    Route::post('crearAcumulado',[AcumuladoController::class,'store']);
+    Route::put('modificarAcumulado/{id}',[AcumuladoController::class,'update']);
+    Route::delete('eliminarAcumulado/{id}', [AcumuladoController::class,'destroy']);
 
 });
 

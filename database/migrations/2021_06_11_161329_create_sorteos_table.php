@@ -15,6 +15,13 @@ class CreateSorteosTable extends Migration
     {
         Schema::create('sorteos', function (Blueprint $table) {
             $table->id();
+            $table->string("NombreSorteo");
+            $table->integer("Tipo"); //1->SORTEO, 2->RIFA, 3->APUESTA, ETC
+            $table->date("FechaCulminacion");
+            $table->integer("Numeros");
+            $table->integer("Estado")->default(1); //1 ACTIVO 0 INACTIVO
+            $table->string("NombreGanador")->nullable();
+            $table->string("Vendedor")->nullable();
             $table->timestamps();
         });
     }

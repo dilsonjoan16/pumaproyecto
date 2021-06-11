@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePremiosTable extends Migration
+class CreateAcumuladosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePremiosTable extends Migration
      */
     public function up()
     {
-        Schema::create('premios', function (Blueprint $table) {
+        Schema::create('acumulados', function (Blueprint $table) {
             $table->id();
             $table->string("Nombre");
             $table->integer("Estado")->default(1);
@@ -28,6 +28,6 @@ class CreatePremiosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('premios');
+        Schema::dropIfExists('acumulados');
     }
 }

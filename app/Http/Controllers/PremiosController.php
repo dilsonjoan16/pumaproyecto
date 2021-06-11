@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Sorteos;
+
+use App\Models\Premios;
 use Illuminate\Http\Request;
 
-class SorteosController extends Controller
+class PremiosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,11 +14,9 @@ class SorteosController extends Controller
      */
     public function index()
     {
-        $sorteos = Sorteos::where("Estado", '=', 1)->get();
-        $respuesta =  [
-            "Sorteos Activos" => $sorteos
-        ]; 
-        return response()->json($respuesta, 200);
+        $premios = Premios::where('Estado', '=', 1)->get();
+
+        return response()->json($premios, 200);
     }
 
     /**
@@ -26,27 +25,18 @@ class SorteosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Sorteos $sorteos)
+    public function store(Request $request, Premios $premios)
     {
         $request->validate([
-            "NombreSorteo" => "required|string|max:255",
-            "Tipo" => "required|integer|max:10",
-            "FechaCulminacion" => "required|date",
-            "Numeros" => "required|integer|max:1000",
-            //"Lugarpodio",
-            //"NombreGanador",
-            //"Vendedor"
+            "Nombre" => "required|string|max:255"
         ]);
 
-        $sorteos = Sorteos::create([
-            "NombreSorteo" => $request->get("NombreSorteo"),
-            "Tipo" => $request->get("Tipo"),
-            "FechaCulminacion" => $request->get("FechaCulminacion"),
-            "Numeros" => $request->get("Numeros")
+        $premios = Premios::create([
+            "Nombre" => $request->get("Nombre")
         ]);
 
         $respuesta =  [
-            "Sorteo Creado con exito!" => $sorteos
+            "Objeto creado con exito!" => $premios
         ];
 
         return response()->json($respuesta, 201);
@@ -60,9 +50,9 @@ class SorteosController extends Controller
      */
     public function show($id)
     {
-        $sorteos = Sorteos::find($id);
+        $premios = Premios::find($id);
         $respuesta =  [
-            "Objeto encontrado con exito!" => $sorteos
+            "Objeto encontrado con exito!" => $premios
         ];
 
         return response()->json($respuesta, 200);
@@ -77,10 +67,10 @@ class SorteosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sorteos = Sorteos::find($id);
-        $sorteos->update($request->all());
+        $premios = Premios::find($id);
+        $premios->update($request->all());
         $respuesta =  [
-            "Objeto Modificado con exito!" => $sorteos
+            "Objeto modificado con exito!" => $premios
         ];
 
         return response()->json($respuesta, 200);
@@ -94,12 +84,12 @@ class SorteosController extends Controller
      */
     public function destroy($id)
     {
-        $sorteos = Sorteos::find($id);
-        $sorteos->Estado = 0;
-        $sorteos->save();
+        $premios = Premios::find($id);
+        $premios->Estado = 0;
+        $premios->save();
 
-        $respuesta =  [
-            "Objeto eliminado con exito!" => $sorteos
+        $respuesta = [
+            "Objeto eliminado con exito!" => $premios
         ];
 
         return response()->json($respuesta, 200);

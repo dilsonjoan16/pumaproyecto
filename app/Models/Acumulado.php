@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Premios extends Model
+class Acumulado extends Model
 {
     use HasFactory;
 
     protected $fillable =  [
         "Nombre",
         "Estado",
-        //ID DE LA RELACION ENTRE PREMIOS Y SORTEOS
+        //ID ENTRE LA RELACION ENTRE ACUMULADOS Y SORTEOS
     ];
 }

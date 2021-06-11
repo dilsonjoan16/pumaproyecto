@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Sorteos extends Model
 {
     use HasFactory;
+
+    protected $fillable =  [
+        "NombreSorteo",
+        "Tipo",
+        "FechaCulminacion",
+        "Numeros",
+        "Estado",
+        //"Lugarpodio",
+        "NombreGanador",
+        "Vendedor"
+    ];
 }

@@ -9,6 +9,8 @@ use App\Models\Reporte;
 use App\Models\User;
 use App\Models\Ventas;
 use App\Models\Solicitudes;
+use App\Models\Premios;
+use App\Models\Sorteos;
 use Database\Factories\ContactoFactory;
 use Database\Factories\CustomizeFactory;
 use Illuminate\Database\Seeder;
@@ -29,6 +31,8 @@ class DatabaseSeeder extends Seeder
         Reporte::factory(20)->create();
         Ventas::factory(20)->create();
         Solicitudes::factory(30)->create();
+        Sorteos::factory(30)->create();
+        Premios::factory(30)->create();
         //Seeder de Role
         $this->call(RoleSeeder::class);
 

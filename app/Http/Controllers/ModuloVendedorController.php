@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Acumulado;
+use App\Models\Premios;
 use App\Models\User;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
@@ -135,6 +136,8 @@ class ModuloVendedorController extends Controller
         $ventasemanal = $actualweek;
         $ventamensual = Ventas::whereMonth('created_at', $month)->count('Numero');
         $ventaanual = Ventas::whereYear('created_at', $year)->count('Numero');
+        $acumulados = Acumulado::where('Estado', '=', 1)->get();
+        $premios = Premios::where('Estado', '=', 1)->get();
         //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [
@@ -145,6 +148,8 @@ class ModuloVendedorController extends Controller
             "Ventas del mes" => $ventamensual,
             "Ventas del año" => $ventaanual,
            // "Acumulado de apuestas" => $acumulado,
+            "Acumulados" => $acumulados,
+            "Premios" => $premios,
             "Datos del modelo" => $ventas
 
         ];
