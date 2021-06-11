@@ -21,8 +21,11 @@ class CreateVentasTable extends Migration
             $table->string("Loteria");
             $table->string("Tipo");
             $table->string("Estado")->default(1);
+
+            //AGREGADO REFERENCIA -> DESCRIPCION
+            $table->string("Referencia");
             //Menu lateral de las vistas
-            $table->integer("Sumatotalventas");
+            $table->integer("Sumatotalventas")->nullable();
             $table->string("Puntoventas");
             $table->string("Nombrepromotor");
             $table->string("Puntoentregaventas");

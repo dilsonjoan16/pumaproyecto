@@ -10,10 +10,10 @@ class Customize extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ruta-imagen',
+        'rutaImagen',
         'titulo',
         'contenido',
-        'ruta-video',
+        'rutaVideo',
         'orden', //manera de ordenar las galerias
         'estado', //para el borrado logico : 1 aparece 2 oculto 3 borrado-logico
         'tipo',  //1 resultados 2 sorteos 3 testimonios 4 ubicanos

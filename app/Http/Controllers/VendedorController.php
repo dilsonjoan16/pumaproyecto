@@ -52,6 +52,8 @@ class VendedorController extends Controller
          */
 
         //dd($ventas3);
+
+        //DATOS PARA METRICAS
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
         $ventas2 = Ventas::all();
         $ventas3 = Ventas::Where('Estado', '=', 0)->get();
@@ -90,8 +92,10 @@ class VendedorController extends Controller
             "Valorapuesta" => "required|integer",
             "Loteria" => "required|string",
             "Tipo" => "required|string",
+            //AGREGADO DE REFERENCIA -> DESCRIPCION
+            "Referencia" => "required|string",
             //Menu lateral en las vistas
-            "Sumatotalventas" => "required|integer",
+            //"Sumatotalventas" => "required|integer",
             "Puntoventas" => "required|string",
             "Nombrepromotor" => "required|string",
             "Puntoentregaventas" => "required|string"
@@ -111,16 +115,26 @@ class VendedorController extends Controller
             "Valorapuesta" => $request->get("Valorapuesta"),
             "Loteria" => $request->get("Loteria"),
             "Tipo" => $request->get("Tipo"),
-            "Sumatotalventas" => $request->get("Sumatotalventas"),
+            //AGREGADO DE REFERENCIA
+            "Referencia" => $request->get("Referencia"),
+            //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
+            //"Sumatotalventas" => $request->get("Sumatotalventas"),
             "Puntoventas" => $request->get("Puntoventas"),
             "Nombrepromotor" => $request->get("Nombrepromotor"),
             "Puntoentregaventas" => $request->get("Puntoentregaventas"),
-            "Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
+            //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
+       
+        $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
+        $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
+        $respuesta =  [
+            "Suma de todas las ventas que se realizaron" => $sumatotalventa,
+            "Suma total del valor de todas las ventas" => $sumatotalventa2
+        ];
 //Revisar la logica para Obtener la sumatoria correcta!
         /*$acumulador = Ventas::where("Sumatotalventas",">","0")->get();
         $ventas->Sumatotalventas + $acumulador;*/
-        return response()->json($ventas, 201); //$acumulador);
+        return response()->json([$ventas, $respuesta], 201); //$acumulador);
 
     }
 

@@ -17,6 +17,9 @@ class Ventas extends Model
         "Tipo", //Directo o Combinado
         "Estado", //1 ESTA ACTIVO 0 ESTA ELIMINADO
 
+        //Agregado REFERENCIA
+        "Referencia",
+
         //Menu lateral en varias vistas {
 
         "Sumatotalventas", //Suma total de las Ventas

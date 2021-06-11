@@ -38,6 +38,7 @@ class User extends Authenticatable implements JWTSubject
         'telefono',
         'codigo',
         'tipo',
+        'busqueda',
         //RECORDATORIO!!!!!! -> AQUI DEBE IR EL CAMPO PARA ROL
     ];
 

@@ -62,10 +62,10 @@ class CustomizeController extends Controller
 
         
         $validator = Validator::make($request->all(),[
-            'ruta-imagen' => 'required|file',
+            'rutaImagen' => 'required|file',
             'titulo' => 'required|string',
             'contenido' => 'required|string',
-            'ruta-video' => 'required|file',
+            'rutaVideo' => 'required|file',
             'orden' => 'required|integer',
             'tipo' => 'required|integer|max:4',
             'link' => 'required|string'
@@ -76,10 +76,10 @@ class CustomizeController extends Controller
         }
 
         $customize = Customize::create([
-            'ruta-imagen' => $request->get('ruta-imagen'),
+            'rutaImagen' => $request->get('rutaImagen'),
             'titulo' => $request->get('titulo'),
             'contenido' => $request->get('contenido'),
-            'ruta-video' => $request->get('ruta-video'),
+            'rutaVideo' => $request->get('rutaVideo'),
             'orden' => $request->get('orden'), //orden en el que quiera que se vean las imagenes
             'tipo' => $request->get('tipo'), //orden de muestra tipo: 1->resultados 2->sorteos 3->testimonios 4->ubicanos
             'link' => $request->get('link')

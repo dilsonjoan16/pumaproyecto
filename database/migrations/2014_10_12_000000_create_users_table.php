@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('telefono');
             $table->string('codigo')->nullable();
             $table->integer('tipo')->default(1);
+            $table->string('busqueda')->nullable();
             //RECORDATORIO!!!!!!! -> AQUI DEBE IR EL CAMPO PARA ROL
             $table->timestamps();
         });

@@ -22,10 +22,10 @@ class CustomizeFactory extends Factory
     public function definition()
     {
         return [
-            'ruta-imagen'=>$this->faker->imageUrl(),
+            'rutaImagen'=>$this->faker->imageUrl(),
             'titulo'=>$this->faker->word(),
             'contenido'=>$this->faker->text(),
-            'ruta-video'=>$this->faker->imageUrl(),
+            'rutaVideo'=>$this->faker->randomElement($array = array('https://youtu.be/bcHTl9h7TWI')),
             'orden'=>$this->faker->numberBetween($min = 1, $max = 100), //manera de ordenar las galerias
             //'estado'=>$this->faker->numberBetween($min = 1, $max = 3), //para el borrado logico : 1 aparece 2 oculto 3 borrado-logico
             'tipo'=>$this->faker->numberBetween($min = 1, $max = 4), //1 resultados 2 sorteos 3 testimonios 4 ubicanos 5 contacto
