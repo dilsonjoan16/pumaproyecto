@@ -62,7 +62,10 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
-        'cors' => \App\Http\Middleware\Cors::class,
+        'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class, //MIDDLEWARE DEL JSON_WEB_TOKEN
+        'cors' => \App\Http\Middleware\Cors::class, //MIDDLEWARE PARA PROTECCION DEL CORS
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class, //MIDDLEWARE PARA FILTRAR POR ROLE
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class, //MIDDLEWARE PARA FILTRAR POR PERMISOS
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class, //MIDDLEWARE PARA FILTRAR POR ROL O POR PERMISO
     ];
 }

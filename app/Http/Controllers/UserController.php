@@ -63,7 +63,7 @@ class UserController extends Controller
             'dni' => 'required|integer',
             'ganancia' => 'required|integer',
             'porcentaje' => 'required|integer|max:50',
-            'foto' => 'required|file',
+            'foto' => 'required',
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
             

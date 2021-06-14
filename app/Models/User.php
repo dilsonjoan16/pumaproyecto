@@ -17,8 +17,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
     use HasRoles;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
         'codigo',
         'tipo',
         'busqueda',
-        //RECORDATORIO!!!!!! -> AQUI DEBE IR EL CAMPO PARA ROL
+        //'role_id'
     ];
 
     /**
