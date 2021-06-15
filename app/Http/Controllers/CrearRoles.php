@@ -22,7 +22,8 @@ class CrearRoles extends Controller
         $prueba =  [
             "Role de Administrador asignado con exito!" =>$administrador
         ];
-        return response()->json($prueba, 201);
+        $roles = $administrador->roles;
+        return response()->json([$prueba, $roles], 201);
     }
 
     public function CrearPromotor()

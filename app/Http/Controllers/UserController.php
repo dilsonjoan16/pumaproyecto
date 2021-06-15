@@ -22,7 +22,16 @@ class UserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        return response()->json(compact('token'));
+        //Consulta que me trae el rol logueado
+        //$usuarios = User::with('rol')->whereRolId(1)->findOrFail(auth()->id());
+
+        
+        $usuario = auth()->user();
+        $usuario->roles; //ESTO ME TRAE EL USUARIO LOGUEADO CON TODA SU INFORMACION PERSONAL Y DEL ROL
+
+
+        //Fin de consulta que me trae el rol logueado
+        return response()->json(compact('token','usuario'));
     }
     public function getAuthenticatedUser()
     {
