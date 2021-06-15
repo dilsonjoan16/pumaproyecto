@@ -51,9 +51,8 @@ Route::post('login', [UserController::class, 'authenticate']);
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize',[CustomizeController::class,'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
-Route::get('CrearPromotor', [CrearRoles::class, 'CrearPromotor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
-Route::get('CrearVendedor', [CrearRoles::class, 'CrearVendedor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
+
+
 
 //Ruta del Middleware
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -66,7 +65,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
-            
+            Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
@@ -95,7 +94,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::delete('eliminarAcumulado/{id}', [AcumuladoController::class, 'destroy']); //ELIMINA UN ACUMULADO MEDIANTE ID
             //Rutas para crear Roles => Administrador -> Promotor -> Vendedor
             Route::get('CrearAdministrador', [CrearRoles::class, 'CrearAdministrador']); //CREA EL ROL AL ULTIMO ID REGISTRADO
-            
+            Route::get('CrearPromotor', [CrearRoles::class, 'CrearPromotor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
+            Route::get('CrearVendedor', [CrearRoles::class, 'CrearVendedor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
             //Rutas para eliminar Roles => Administrador -> Promotor -> Vendedor
             Route::get('EliminarAdministrador/{id}', [CrearRoles::class, 'EliminarAdministrador']); //ELIMINA EL ROL AL ID SUMINISTRADO
             Route::get('EliminarPromotor/{id}', [CrearRoles::class, 'EliminarPromotor']); //ELIMINA EL ROL AL ID SUMINISTRADO
