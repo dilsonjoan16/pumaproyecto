@@ -26,6 +26,8 @@ class ReporteFactory extends Factory
             'Salida' => $this->faker->randomElement($array = array('Acumulado', 'Caja')), // Esto es Acumulado o Caja
             'Tipo' => $this->faker->randomElement($array = array('Gasto', 'Pago', 'Premio')), //Esto es Gasto, Pago, Premio
             'Descripcion' => $this->faker->text(),
+            'Referencia' => $this->faker->randomElement($array = array('Pago de Rifa', 'Pago de Sorteo', 'Pago de Pago')),
+            'Transaccion' => $this->faker->randomElement($array = array('Exitosa', 'En espera', 'Infructuosa')),
         ];
     }
 }

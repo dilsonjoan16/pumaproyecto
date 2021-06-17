@@ -106,12 +106,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('EliminarVendedor/{id}', [CrearRoles::class, 'EliminarVendedor']); //ELIMINA EL ROL AL ID SUMINISTRADO
             //Rutas para modificar Roles => Administrador -> Promotor -> Vendedor
             Route::get('ModificarAdministrador/{id}', [CrearRoles::class, 'ModificarAdministrador']); //CREA EL ROL AL ID SUMINISTRADO
-            Route::get('ModificarPromotor/{id}', [CrearRoles::class, 'ModificarPromotor']); //CREA EL ROL AL ID SUMINISTRADO
-            Route::get('ModificarVendedor/{id}', [CrarRoles::class, 'ModificarVendedor']); //CREA EL ROL AL ID SUMINISTRADO
+            Route::get('ModificarPromotor/{id}', [CrearRoles::class, 'ModificarPromotor']); //ELIMINA EL ROL ACTUAL Y AGREGA ROL PROMOTOR
+            Route::get('ModificarVendedor/{id}', [CrearRoles::class, 'ModificarVendedor']); //ELIMINA EL ROL VENDEDOR Y AGREGA ROL PROMOTOR
 
         });
     });
-
+    
     Route::group(['middleware' => ['role:Promotor']], function () {
         //Grupo de rutas de Promotor
         Route::prefix('promotor')->group(function () {

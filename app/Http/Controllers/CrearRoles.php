@@ -115,6 +115,15 @@ class CrearRoles extends Controller
             $role3 = Role::create(['name' => 'Vendedor']);
         */
         $administrador = User::find($id);
+        if ($promotor->hasRole('Administrador')) {
+            $promotor->removeRole('Administrador');
+        }
+        if ($promotor->hasRole('Promotor')) {
+            $promotor->removeRole('Promotor');
+        }
+        if ($promotor->hasRole('Vendedor')) {
+            $promotor->removeRole('Vendedor');
+        }
         $administrador->assignRole('Administrador');
         $prueba =  [
             "Role de Administrador asignado con exito!" => $administrador
@@ -122,7 +131,7 @@ class CrearRoles extends Controller
         return response()->json($prueba, 201);
     }
 
-    public function ModificarPromotor()
+    public function ModificarPromotor($id)
     {
         /*
             Roles del sistema
@@ -131,6 +140,17 @@ class CrearRoles extends Controller
             $role3 = Role::create(['name' => 'Vendedor']);
         */
         $promotor = User::find($id);
+        if($promotor->hasRole('Administrador')){
+            $promotor->removeRole('Administrador');
+        }
+        if($promotor->hasRole('Promotor')){
+            $promotor->removeRole('Promotor');
+        }
+        if($promotor->hasRole('Vendedor')){
+            $promotor->removeRole('Vendedor');
+        }
+        //$promotor->removeRole('Promotor');
+        //$promotor = User::find($id);
         $promotor->assignRole('Promotor');
         $prueba =  [
             "Role de Promotor asignado con exito!" => $promotor
@@ -138,7 +158,7 @@ class CrearRoles extends Controller
         return response()->json($prueba, 201);
     }
 
-    public function ModificarVendedor()
+    public function ModificarVendedor($id)
     {
         /*
             Roles del sistema
@@ -147,6 +167,16 @@ class CrearRoles extends Controller
             $role3 = Role::create(['name' => 'Vendedor']);
         */
         $vendedor = User::find($id);
+        if ($promotor->hasRole('Administrador')) {
+            $promotor->removeRole('Administrador');
+        }
+        if ($promotor->hasRole('Promotor')) {
+            $promotor->removeRole('Promotor');
+        }
+        if ($promotor->hasRole('Vendedor')) {
+            $promotor->removeRole('Vendedor');
+        }
+        //$vendedor->removeRole('Vendedor');
         $vendedor->assignRole('Vendedor');
         $prueba =  [
             "Role de Vendedor asignado con exito!" => $vendedor

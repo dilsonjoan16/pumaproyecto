@@ -13,7 +13,7 @@ class AddAcumuladoIdAtSorteos extends Migration
      */
     public function up()
     {
-        Schema::table('sorteos', function(Blueprint $table){
+        Schema::table('sorteos', function (Blueprint $table){
             $table->bigInteger('acumulado_id')
             ->unsigned()
             ->nullable()
@@ -21,12 +21,12 @@ class AddAcumuladoIdAtSorteos extends Migration
 
             $table->foreign('acumulado_id')
             ->references('id')
-            ->on('acumulado')
+            ->on('acumulados')
             ->onDelete('set null')
             ->onUpdate('cascade');
 
             /* GUIA PARA EJEMPLO
-                 Schema::table('sorteos', function (Blueprint $table){
+        Schema::table('sorteos', function (Blueprint $table){
             $table->bigInteger('premio_id')
             ->unsigned()
             ->nullable()

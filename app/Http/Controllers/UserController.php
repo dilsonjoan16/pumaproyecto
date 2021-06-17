@@ -64,11 +64,12 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }*/
+        //$positivo = User::select('email')->where('tipo','=',0)->get();
 
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string',
-            'email'=>'required|email|max:255|unique:users,email',
-            'password'=>'required|string|min:6|max:12',
+            'name' => 'required|string',
+            'email' => 'required|email|max:255|unique:users,email',//.$positivo,
+            'password' => 'required|string|min:6|max:12',
             'dni' => 'required|integer',
             'ganancia' => 'required|integer',
             'porcentaje' => 'required|integer|max:50',
