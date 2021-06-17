@@ -55,7 +55,7 @@ class VendedorController extends Controller
 
         //DATOS PARA METRICAS
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
-        $ventas2 = Ventas::all();
+        $ventas2 = Ventas::Where('Estado', '=', 1)->get();
         $ventas3 = Ventas::Where('Estado', '=', 0)->get();
         $respuesta =  [
             "Numeros de loteria mas repetidos" => $ventas,
@@ -186,6 +186,19 @@ class VendedorController extends Controller
 
         $respuesta =  [
             "El objeto fue eliminado con exito!" =>$ventas
+        ];
+
+        return response()->json($respuesta, 200);
+    }
+
+    public function desbloqueo($id)
+    {
+        $ventas = Ventas::find($id);
+        $ventas->Estado = "1";
+        $ventas->save();
+
+        $respuesta =  [
+            "El objeto fue desbloqueado con exito!" =>$ventas
         ];
 
         return response()->json($respuesta, 200);

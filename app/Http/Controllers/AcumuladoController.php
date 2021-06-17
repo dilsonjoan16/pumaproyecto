@@ -27,11 +27,13 @@ class AcumuladoController extends Controller
     public function store(Request $request, Acumulado $acumulado)
     {
         $request->validate([
-            "Nombre" => "required|string|max:255"
+            "Nombre" => "required|string|max:255",
+            "MontoReferencia" => "required|integer"
         ]);
         
         $acumulado = Acumulado::create([
-            "Nombre" => $request->get("Nombre")
+            "Nombre" => $request->get("Nombre"),
+            "MontoReferencia" => "required|integer"
         ]);
 
         $respuesta =  [

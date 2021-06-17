@@ -23,6 +23,7 @@ class PremiosFactory extends Factory
     {
         return [
             "Nombre" => $this->faker->randomElement($array = array('Carro 0 Km','Moto 0 Km','Apartamento')),
+            "MontoReferencia" => $this->faker->randomNumber,
         ];
     }
 }

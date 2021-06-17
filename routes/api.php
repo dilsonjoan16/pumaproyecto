@@ -74,6 +74,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::put('galeriasUbicanos/{id}', [ListagaleriasController::class, 'updateUbicanos']); //CAMBIA EL TIPO PARA MOSTRAR EN UBICANOS
             Route::put('galeriasTestimonios/{id}', [ListagaleriasController::class, 'updateTestimonios']); //CAMBIA EL TIPO PARA MOSTRAR EN TESTIMONIOS
             Route::get('estadoDeCuenta', [EstadoVentasController::class, 'index']); //ESTADO DE CUENTA
+            Route::get('finanzas', [EstadoVentasController::class, 'finanzas']); //TABLA LATERAL DONDE SE ENCUENTRAN LOS ACUMUALDOS DEL DIA, MES, GASTOS, PREMIOS, ACUMULADOS
+            Route::get('metricas',[VendedorController::class,'index']); //VER METRICAS
+            Route::delete('bloquearNumero/{id}', [VendedorController::class, 'destroy']); //BLOQUEA UN NUMERO MEDIANTE ID
+            Route::put('desbloquearNumero/{id}', [VendedorController::class,'desbloqueo']); //DESBLOQUEA UN NUMERO MEDIANTE ID
             //Ruta para la creacion de Sorteos
             Route::get('mostrarSorteos', [SorteosController::class, 'index']); //MUESTRA TODO SOBRE SORTEOS
             Route::get('encontrarSorteos/{id}', [SorteosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE SORTEOS

@@ -12,6 +12,11 @@ class Acumulado extends Model
     protected $fillable =  [
         "Nombre",
         "Estado",
-        //ID ENTRE LA RELACION ENTRE ACUMULADOS Y SORTEOS
+        "MontoReferencia",
     ];
+
+    public function sorteo()
+    {
+        return $this->belongsTo(Sorteos::class);
+    }
 }

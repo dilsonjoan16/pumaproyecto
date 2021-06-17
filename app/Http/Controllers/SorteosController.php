@@ -33,6 +33,7 @@ class SorteosController extends Controller
             "Tipo" => "required|integer|max:10",
             "FechaCulminacion" => "required|date",
             "Numeros" => "required|integer|max:1000",
+            
             //"Lugarpodio",
             //"NombreGanador",
             //"Vendedor"
@@ -42,7 +43,8 @@ class SorteosController extends Controller
             "NombreSorteo" => $request->get("NombreSorteo"),
             "Tipo" => $request->get("Tipo"),
             "FechaCulminacion" => $request->get("FechaCulminacion"),
-            "Numeros" => $request->get("Numeros")
+            "Numeros" => $request->get("Numeros"),
+            
         ]);
 
         $respuesta =  [

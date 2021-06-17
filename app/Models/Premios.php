@@ -12,6 +12,11 @@ class Premios extends Model
     protected $fillable =  [
         "Nombre",
         "Estado",
-        //ID DE LA RELACION ENTRE PREMIOS Y SORTEOS
+        "MontoReferencia",
     ];
+
+    public function sorteo()
+    {
+        return $this->belongsTo(Sorteos::class);
+    }
 }

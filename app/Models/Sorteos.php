@@ -11,12 +11,22 @@ class Sorteos extends Model
 
     protected $fillable =  [
         "NombreSorteo",
-        "Tipo",
+        "Tipo", //Tipo del sorteo
         "FechaCulminacion",
         "Numeros",
-        "Estado",
+        "Estado", //ACTIVO 1 INACTIVO 0
         //"Lugarpodio",
         "NombreGanador",
         "Vendedor"
     ];
+
+    public function premios()
+    {
+        return $this->hasMany(Premios::class);
+    }
+
+    public function acumulado()
+    {
+        return $this->hasMany(Acumulado::class);
+    }
 }

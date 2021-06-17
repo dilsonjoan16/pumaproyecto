@@ -18,6 +18,7 @@ class AdministradorController extends Controller
     {
 
         $resumenventas = Ventas::all();
+        
         return response()->json($resumenventas, 200);
 
     }
@@ -35,6 +36,8 @@ class AdministradorController extends Controller
             "Tipo" => "required", //Esto es Gasto, Pago, Premio
             "Salida" => "required", // Esto es Acumulado o Caja
             "Descripcion" => "required|string|max:255",
+            "Referencia" => "required|string|max:255",
+            "Transaccion" => "require|string|max:255"
             
         ]);
 
@@ -43,6 +46,8 @@ class AdministradorController extends Controller
             "Tipo" => $request->get("Tipo"),
             "Salida" => $request->get("Salida"),
             "Descripcion" => $request->get("Descripcion"),
+            "Referencia" => $request->get("Referencia"),
+            "Transaccion" => $request->get("Transaccion")
             
         ]);
 

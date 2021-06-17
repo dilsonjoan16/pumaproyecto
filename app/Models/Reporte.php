@@ -14,5 +14,7 @@ class Reporte extends Model
         'Tipo', //Esto es Gasto, Pago, Premio
         'Salida', // Esto es Acumulado o Caja
         'Descripcion',
+        'Referencia',
+        'Transaccion'
     ];
 }

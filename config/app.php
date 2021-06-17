@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => '	America/Bogota',//'UTC',
+    'timezone' => 'America/Lima',//'America/Caracas',//'UTC',//'America / Bogota',
 
     /*
     |--------------------------------------------------------------------------

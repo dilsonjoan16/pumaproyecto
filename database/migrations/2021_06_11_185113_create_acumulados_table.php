@@ -17,6 +17,7 @@ class CreateAcumuladosTable extends Migration
             $table->id();
             $table->string("Nombre");
             $table->integer("Estado")->default(1);
+            $table->integer("MontoReferencia");
             $table->timestamps();
         });
     }

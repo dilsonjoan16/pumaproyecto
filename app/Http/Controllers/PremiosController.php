@@ -28,11 +28,13 @@ class PremiosController extends Controller
     public function store(Request $request, Premios $premios)
     {
         $request->validate([
-            "Nombre" => "required|string|max:255"
+            "Nombre" => "required|string|max:255",
+            "MontoReferencia" => "required|integer"
         ]);
 
         $premios = Premios::create([
-            "Nombre" => $request->get("Nombre")
+            "Nombre" => $request->get("Nombre"),
+            "MontoReferencia" => $request->get("MontoReferencia"),
         ]);
 
         $respuesta =  [

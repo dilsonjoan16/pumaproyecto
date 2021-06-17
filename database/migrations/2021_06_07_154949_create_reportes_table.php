@@ -19,6 +19,8 @@ class CreateReportesTable extends Migration
             $table->string("Salida");
             $table->string("Tipo");
             $table->string("Descripcion");
+            $table->string("Referencia")->nullable();
+            $table->string("Transaccion")->nullable();
             $table->timestamps();
         });
     }

@@ -22,7 +22,8 @@ class AcumuladosFactory extends Factory
     public function definition()
     {
         return [
-            "Nombre" => $this->faker->name,
+            "Nombre" => $this->faker->randomElement($array = array('Telefono', 'Televisor', 'Refrigerador')),
+            "MontoReferencia" => $this->faker->randomNumber,
         ];
     }
 }
