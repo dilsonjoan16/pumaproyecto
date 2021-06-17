@@ -80,7 +80,9 @@ class SolicitudesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $solicitudes = Solicitudes::find($id);
+        $solicitudes->Tipo = "1";
+        $solicitudes->save();
     }
 
     /**

@@ -66,6 +66,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
             Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
+            Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES
+            Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
+            Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
+            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show']); //ENCORAR SOLICITUD POR ID
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
@@ -123,8 +127,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('busquedavendedor', [ModuloVendedorController::class, 'busqueda']); //BARRA DE BUSQUEDA MEDIANTE EL NOMBRE
             Route::get('mostrarsolicitudes', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES 
             Route::post('crearsolicitudes', [SolicitudesController::class, 'store']); //CREAR SOlICITUDES
-            Route::get('encontrarsolicitudes',
-                [SolicitudesController::class, 'show']
+            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
             ); //MUESTRA SOLO UN REGISTRO DE SOLICITUDES MEDIANTE ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::get('estadodecuenta', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
