@@ -21,7 +21,7 @@ class CreateSolicitudesTable extends Migration
             $table->string("MobiliarioSolicitado");
             $table->string("Ubicacion");
             $table->string("Solicitud");
-            $table->integer("Tipo")->default(1);
+            $table->integer("Tipo")->default(1); //TIPO 0 RECHAZADO TIPO 1 EN ESPERA TIPO 2 ACEPTADA
             $table->timestamps();
         });
     }

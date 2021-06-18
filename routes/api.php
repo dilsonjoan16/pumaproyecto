@@ -70,6 +70,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show']); //ENCORAR SOLICITUD POR ID
+            Route::get('solicitudesAceptadas', [SolicitudesController::class,'SolicitudesAceptadas']); //MOSTRAR SOLICITUDES APROBADAS
+            Route::get('solicitudesRechazadas', [SolicitudesController::class,'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS

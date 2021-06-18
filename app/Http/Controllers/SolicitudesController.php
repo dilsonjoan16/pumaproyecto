@@ -81,7 +81,7 @@ class SolicitudesController extends Controller
     public function update(Request $request, $id)
     {
         $solicitudes = Solicitudes::find($id);
-        $solicitudes->Tipo = "1";
+        $solicitudes->Tipo = "2";
         $solicitudes->save();
     }
 
@@ -106,6 +106,24 @@ class SolicitudesController extends Controller
             "El objeto fue eliminado con exito!" => $solicitudes
         ];
 
+        return response()->json($respuesta, 200);
+    }
+
+    public function SolicitudesRechazadas()
+    {
+        $solicitudes = Solicitudes::where('Tipo','=',0)->get();
+        $respuesta =  [
+            "Solicitudes Rechazadas" => $solicitudes
+        ];
+        return response()->json($respuesta, 200);
+    }
+
+    public function SolicitudesAceptadas()
+    {
+        $solicitudes = Solicitudes::where('Tipo', '=', 2)->get();
+        $respuesta =  [
+            "Solicitudes Aceptadas" => $solicitudes
+        ];
         return response()->json($respuesta, 200);
     }
 }
