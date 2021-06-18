@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Contracts\Validation\Rule;
+
 
 class UserController extends Controller
 {
@@ -25,13 +27,13 @@ class UserController extends Controller
         //Consulta que me trae el rol logueado
         //$usuarios = User::with('rol')->whereRolId(1)->findOrFail(auth()->id());
 
-        
+
         $usuario = auth()->user();
         $usuario->roles; //ESTO ME TRAE EL USUARIO LOGUEADO CON TODA SU INFORMACION PERSONAL Y DEL ROL
 
 
         //Fin de consulta que me trae el rol logueado
-        return response()->json(compact('token','usuario'));
+        return response()->json(compact('token', 'usuario'));
     }
     public function getAuthenticatedUser()
     {
@@ -54,7 +56,7 @@ class UserController extends Controller
         //dd($request);
         //return User::all();
         //}
-        
+
         /*$validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -66,9 +68,14 @@ class UserController extends Controller
         }*/
         //$positivo = User::select('email')->where('tipo','=',0)->get();
 
-        $validator = Validator::make($request->all(),[
+       
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|email|max:255|unique:users,email',//.$positivo,
+            'email' => ['required', 'email', 'max:255','unique:users,email'], //Rule::unique('email')->where('tipo', 1)],
+            //'email' => 'required|email|max:255|unique:users,tipo, ' . 0,        //.$positivo,
+            /*'email' => Rule::unique('users')->where(function ($query) {
+                                                                                    return $query->where('account_id', 1);
+                                                                                }),*/
             'password' => 'required|string|min:6|max:12',
             'dni' => 'required|integer',
             'ganancia' => 'required|integer',
@@ -76,11 +83,11 @@ class UserController extends Controller
             'foto' => 'required',
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
-            
+
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),400);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
         }
 
 
@@ -94,8 +101,8 @@ class UserController extends Controller
         }); 
         */
 
-        
-        
+
+
 
         $user = User::create([
             'name' => $request->get('name'),
@@ -104,19 +111,21 @@ class UserController extends Controller
             'dni' => $request->get('dni'),
             'ganancia' => $request->get('ganancia'),
             'porcentaje' => $request->get('porcentaje'),
-            'balance' => (($request->get('ganancia'))*($request->get('porcentaje'))/100),
+            'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
             'foto' => $request->get('foto'),
-            'direccion' => $request->get('direccion') ,
-            'telefono' => $request->get('telefono'), 
+            'direccion' => $request->get('direccion'),
+            'telefono' => $request->get('telefono'),
             //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            'codigo' => substr($request->get('name'), 0, 1).$request->get('dni')
-            
-                
+            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+
+
+
         ]);
 
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user', 'token'), 201);
+        
     }
 
     /**

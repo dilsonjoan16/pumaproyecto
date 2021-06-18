@@ -83,6 +83,10 @@ class SolicitudesController extends Controller
         $solicitudes = Solicitudes::find($id);
         $solicitudes->Tipo = "2";
         $solicitudes->save();
+        $respuesta =  [
+            "El objeto fue validado con exito!" => $solicitudes
+        ];
+        return response()->json($respuesta, 200);
     }
 
     /**

@@ -39,7 +39,7 @@ use App\Models\User;
 //Ruta api
 //Route::apiResource('puma', PumaController::class);
 Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () {
-      //Grupo de rutas que habilita permisos CORS
+    //Grupo de rutas que habilita permisos CORS
 });
 //Ruta del JWT
 Route::post('register', [UserController::class, 'register']);
@@ -49,10 +49,10 @@ Route::post('login', [UserController::class, 'authenticate']);
 //Aqui deber la ruta
 
 //RUTA DEL HOME LIBRE
-Route::get('HomeCustomize',[CustomizeController::class,'index']);
+Route::get('HomeCustomize', [CustomizeController::class, 'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-
-
+Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
+Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
 
 //Ruta del Middleware
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -64,14 +64,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::prefix('administrador')->group(function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
-            Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
-            Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
+
+
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
-            Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
-            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show']); //ENCORAR SOLICITUD POR ID
-            Route::get('solicitudesAceptadas', [SolicitudesController::class,'SolicitudesAceptadas']); //MOSTRAR SOLICITUDES APROBADAS
-            Route::get('solicitudesRechazadas', [SolicitudesController::class,'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
+            Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ACEPTAR UNA SOLICITUD MEDIANTE ID
+            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show']); //ENCONTRAR SOLICITUD POR ID
+            Route::get('solicitudesAceptadas', [SolicitudesController::class, 'SolicitudesAceptadas']); //MOSTRAR SOLICITUDES APROBADAS
+            Route::get('solicitudesRechazadas', [SolicitudesController::class, 'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
@@ -81,9 +81,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::put('galeriasTestimonios/{id}', [ListagaleriasController::class, 'updateTestimonios']); //CAMBIA EL TIPO PARA MOSTRAR EN TESTIMONIOS
             Route::get('estadoDeCuenta', [EstadoVentasController::class, 'index']); //ESTADO DE CUENTA
             Route::get('finanzas', [EstadoVentasController::class, 'finanzas']); //TABLA LATERAL DONDE SE ENCUENTRAN LOS ACUMUALDOS DEL DIA, MES, GASTOS, PREMIOS, ACUMULADOS
-            Route::get('metricas',[VendedorController::class,'index']); //VER METRICAS
+            Route::get('metricas', [VendedorController::class, 'index']); //VER METRICAS
             Route::delete('bloquearNumero/{id}', [VendedorController::class, 'destroy']); //BLOQUEA UN NUMERO MEDIANTE ID
-            Route::put('desbloquearNumero/{id}', [VendedorController::class,'desbloqueo']); //DESBLOQUEA UN NUMERO MEDIANTE ID
+            Route::put('desbloquearNumero/{id}', [VendedorController::class, 'desbloqueo']); //DESBLOQUEA UN NUMERO MEDIANTE ID
             //Ruta para la creacion de Sorteos
             Route::get('mostrarSorteos', [SorteosController::class, 'index']); //MUESTRA TODO SOBRE SORTEOS
             Route::get('encontrarSorteos/{id}', [SorteosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE SORTEOS
@@ -117,7 +117,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
         });
     });
-    
+
     Route::group(['middleware' => ['role:Promotor']], function () {
         //Grupo de rutas de Promotor
         Route::prefix('promotor')->group(function () {
@@ -129,7 +129,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('busquedavendedor', [ModuloVendedorController::class, 'busqueda']); //BARRA DE BUSQUEDA MEDIANTE EL NOMBRE
             Route::get('mostrarsolicitudes', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES 
             Route::post('crearsolicitudes', [SolicitudesController::class, 'store']); //CREAR SOlICITUDES
-            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
+            Route::get(
+                'encontrarsolicitudes/{id}',
+                [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
             ); //MUESTRA SOLO UN REGISTRO DE SOLICITUDES MEDIANTE ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::get('estadodecuenta', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
@@ -187,11 +189,9 @@ Route::get('crearAdministrador', function () {
     //dd(User::latest('id')->first()->hasRole('Administrador'));
     //$usuarios = User::with('rol')->whereRolId(1)->findOrFail(auth()->id());
     //dd($usuarios);
-    if(User::all()->hasRole('Administrador')->findOrFail(auth()->id())){
+    if (User::all()->hasRole('Administrador')->findOrFail(auth()->id())) {
         return response()->json(["Rol" => "Administrador"], 200);
-    }
-    else{
+    } else {
         return response()->json(["No es administrador"], 200);
     }
 });
-

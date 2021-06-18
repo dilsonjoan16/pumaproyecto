@@ -74,7 +74,10 @@ class CustomizeController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-
+        $imagen = $request->get('rutaImagen'); 
+        $imagen->move('images', $imagen);
+        $video = $request->get('rutaVdeo');
+        $video->move('videos', $video);
         $customize = Customize::create([
             'rutaImagen' => $request->get('rutaImagen'),
             'titulo' => $request->get('titulo'),
