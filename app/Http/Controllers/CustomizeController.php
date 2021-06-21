@@ -62,10 +62,10 @@ class CustomizeController extends Controller
 
         
         $validator = Validator::make($request->all(),[
-            'rutaImagen' => 'required|file',
+            'rutaImagen' => 'required|image|max:2048',
             'titulo' => 'required|string',
             'contenido' => 'required|string',
-            'rutaVideo' => 'required|file',
+            'rutaVideo' => 'required|video',
             'orden' => 'required|integer',
             'tipo' => 'required|integer|max:4',
             'link' => 'required|string'
@@ -74,7 +74,29 @@ class CustomizeController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-        $imagen = $request->get('rutaImagen'); 
+
+        //////////////////////PLANTEAMIENTO SECUNDARIO/////////////////////
+        $customize = $request->all();
+
+        if($imagenes = $request->file('rutaImagen')){
+            $file = $imagenes->getClientOriginalName();
+            $imagenes->move('images', $file);
+            $customize['rutaImagen'] = $file;
+        }
+        
+        if($videos = $request->file('rutaVideo')){
+            $file2 = $videos->getClientOriginalName();
+            $videos->move('videos', $file2);
+            $customize['rutaVideo'] = $file2;
+        }
+
+        Customize::create($customize);
+
+        return response()->json($customize, 201);
+        //////////////////////FIN DE PLANTEAMIENTO SECUNDARIO//////////////
+
+        /////////////////////PLANTEAMIENTO ORIGINAL///////////////////////
+        /*$imagen = $request->get('rutaImagen'); 
         $imagen->move('images', $imagen);
         $video = $request->get('rutaVdeo');
         $video->move('videos', $video);
@@ -88,8 +110,8 @@ class CustomizeController extends Controller
             'link' => $request->get('link')
         ]);
 
-        return response()->json($customize, 201);
-
+        return response()->json($customize, 201);*/
+        ///////////////////FIN DE PLANTEAMIENTO ORIGINAL////////////////////
 
         /*$contacto = Contacto::create([
             'nombre_contacto' => $request->get('nombre_contacto'),
