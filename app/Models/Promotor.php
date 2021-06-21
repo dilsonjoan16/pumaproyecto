@@ -2,20 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-//Para el uso de Spatie, en la relacion de usuarios con roles
 use Spatie\Permission\Traits\HasRoles;
-
-
-//Añadimos la clase JWTSubject 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-
-class User extends Authenticatable implements JWTSubject
+class Promotor extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use HasRoles;
@@ -86,8 +81,13 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function promotors()
+    public function vendedors()
     {
-        return $this->hasMany(Promotor::class);
+        return $this->hasMany(Vendedor::class);
+    }
+
+    public function administrador()
+    {
+        return $this->belongsTo(User::class);
     }
 }

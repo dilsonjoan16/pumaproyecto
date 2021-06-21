@@ -51,8 +51,7 @@ Route::post('login', [UserController::class, 'authenticate']);
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-Route::post('crearpromotorvendedor', [UserController::class, 'register']); //CREACION DE PROMOTORES Y VENDEDORES
-Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
+
 
 //Ruta del Middleware
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -64,8 +63,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::prefix('administrador')->group(function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
-
-
+            Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
+            Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
+            Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
+            Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ACEPTAR UNA SOLICITUD MEDIANTE ID
@@ -121,7 +122,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::group(['middleware' => ['role:Promotor']], function () {
         //Grupo de rutas de Promotor
         Route::prefix('promotor')->group(function () {
-            Route::post('crearvendedor', [UserController::class, 'register']); //CREA UN VENDEDOR AFILIADO AL PROMOTOR
+            Route::post('crearvendedor', [UserController::class, 'registerVendedor']); //CREA UN VENDEDOR AFILIADO AL PROMOTOR
             Route::get('mostrarvendedor', [ModuloVendedorController::class, 'index']); //MUESTRA TODOS LOS VENDEDORES AFILIADOS AL PROMOTOR
             Route::get('encontrarvendedor/{id}', [ModuloVendedorController::class, 'show']); //MUESTRA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::put('modificarvendedor/{id}', [ModuloVendedorController::class, 'update']); //MODIFICA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR

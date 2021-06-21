@@ -12,7 +12,7 @@ class SolicitudesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index()//SOLICITUDES EN ESPERA
     {
         $solicitudes = Solicitudes::where('tipo', '=', '1')->get();
 

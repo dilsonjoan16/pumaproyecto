@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Promotor;
 use App\Models\User;
+use App\Models\Vendedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +51,7 @@ class UserController extends Controller
         }
         return response()->json(compact('user'));
     }
-    public function register(Request $request)
+    public function register(Request $request) //REGISTRO DE ADMINISTRADOR
     {
         //datos hechos por Jesus{
         //dd($request);
@@ -122,10 +123,124 @@ class UserController extends Controller
 
         ]);
 
+        $administrador = User::latest('id')->first();
+        $administrador->assignRole('Administrador');
+        $prueba =  [
+            "Role de Administrador asignado con exito!" => $administrador
+        ];
+
         $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user', 'token'), 201);
+        return response()->json(compact('user', 'token','prueba'), 201);
         
+    }
+
+    public function registerVendedor(Request $request, Vendedor $vendedor)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'], //Rule::unique('email')->where('tipo', 1)],
+            //'email' => 'required|email|max:255|unique:users,tipo, ' . 0,        //.$positivo,
+            /*'email' => Rule::unique('users')->where(function ($query) {
+                                                                                    return $query->where('account_id', 1);
+                                                                                }),*/
+            'password' => 'required|string|min:6|max:12',
+            'dni' => 'required|integer',
+            'ganancia' => 'required|integer',
+            'porcentaje' => 'required|integer|max:50',
+            'foto' => 'required|image|max:2048',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|integer',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $vendedorFoto = $request->all();
+        if ($imagen = $request->file('foto')) {
+            $file = $imagen->getClientOriginalName();
+            $imagen->move('images', $file);
+            $vendedorFoto['foto'] = $file;
+        }
+
+        $vendedor = Vendedor::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+            'dni' => $request->get('dni'),
+            'ganancia' => $request->get('ganancia'),
+            'porcentaje' => $request->get('porcentaje'),
+            'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
+            'foto' => $vendedorFoto,
+            'direccion' => $request->get('direccion'),
+            'telefono' => $request->get('telefono'),
+            //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
+            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+        ]);
+
+        $vendedorRol = Vendedor::latest('id')->first();
+        $vendedorRol->assignRole('Vendedor');
+        $prueba =  [
+            "Role de Vendedor asignado con exito!" => $vendedorRol
+        ];
+
+        return response()->json([$vendedor,$prueba], 201);
+    }
+
+    public function registerPromotor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'], //Rule::unique('email')->where('tipo', 1)],
+            //'email' => 'required|email|max:255|unique:users,tipo, ' . 0,        //.$positivo,
+            /*'email' => Rule::unique('users')->where(function ($query) {
+                                                                                    return $query->where('account_id', 1);
+                                                                                }),*/
+            'password' => 'required|string|min:6|max:12',
+            'dni' => 'required|integer',
+            'ganancia' => 'required|integer',
+            'porcentaje' => 'required|integer|max:50',
+            'foto' => 'required|image|max:2048',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|integer',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $promotorFoto = $request->all();
+        if ($imagen = $request->file('foto')) {
+            $file = $imagen->getClientOriginalName();
+            $imagen->move('images', $file);
+            $promotorFoto['foto'] = $file;
+        }
+
+        $promotor = Promotor::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+            'dni' => $request->get('dni'),
+            'ganancia' => $request->get('ganancia'),
+            'porcentaje' => $request->get('porcentaje'),
+            'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
+            'foto' => $promotorFoto,
+            'direccion' => $request->get('direccion'),
+            'telefono' => $request->get('telefono'),
+            //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
+            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+        ]);
+
+        $promotorRol = Promotor::latest('id')->first();
+        $promotorRol->assignRole('Promotor');
+        $prueba =  [
+            "Role de Promotor asignado con exito!" => $promotorRol
+        ];
+
+        return response()->json([$vendedor, $prueba], 201);
     }
 
     /**
