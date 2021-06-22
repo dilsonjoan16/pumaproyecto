@@ -27,7 +27,7 @@ class CreateVentasTable extends Migration
             //Menu lateral de las vistas
             $table->integer("Sumatotalventas")->nullable();
             $table->string("Puntoventas");
-            $table->string("Nombrepromotor");
+            //$table->string("Nombrepromotor");
             $table->string("Puntoentregaventas");
             $table->timestamps();
         });

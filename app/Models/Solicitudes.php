@@ -20,4 +20,14 @@ class Solicitudes extends Model
         
 
     ];
+
+    public function promotor()
+    {
+        return $this->belongsTo(Promotor::class);
+    }
+
+    public function vendedor()
+    {
+        return $this->belongsTo(Vendedor::class);
+    }
 }

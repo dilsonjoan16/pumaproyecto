@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\Acumulado;
 use App\Models\Premios;
+use App\Models\Promotor;
 use App\Models\User;
+use App\Models\Vendedor;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -17,9 +19,11 @@ class ModuloVendedorController extends Controller
      */
     public function index()
     {
-        //DEBO RELACIONAR LOS VENDEDORES CON EL PROMOTO !!!PEDIENTE!!!
-        $vendedor = User::where('tipo', '=', 1)->get();
-        return response()->json($vendedor, 200);
+        //VENDEDORES AFILIADOS AL PROMOTOR
+        $vendedorPromotor = Vendedor::all();
+        $vendedorPromotor->promotor()->where('tipo','=', 1)->get();
+        //$vendedor = User::where('tipo', '=', 1)->get();
+        return response()->json($vendedorPromotor, 200);
     }
 
     /**
@@ -92,9 +96,9 @@ class ModuloVendedorController extends Controller
 
         $busqueda = $request->get('busqueda');
 
-        $user = User::where('name', 'LIKE', '%' . $busqueda . '%')->get();
+        $vendedor = Vendedor::where('name', 'LIKE', '%' . $busqueda . '%')->get();
 
-        return response()->json($user, 200);
+        return response()->json($vendedor, 200);
 
     }
 
@@ -129,7 +133,7 @@ class ModuloVendedorController extends Controller
         
         //$fechaActual = $fechaActual->format('Y-m-d');
         //OJO RELACIONAR CON LOS VENDEDORES DE CADA PROMOTOR
-        $ventas = Ventas::all();
+        $ventas = Promotor::all();
         //SOLICITUDES APARTE
         $ventatotal = Ventas::count("Numero");
         $ventadiaria = Ventas::whereDay('created_at', $day)->count('Numero');
@@ -150,7 +154,7 @@ class ModuloVendedorController extends Controller
            // "Acumulado de apuestas" => $acumulado,
             "Acumulados" => $acumulados,
             "Premios" => $premios,
-            "Datos del modelo" => $ventas
+            "Datos del modelo" => $ventas->ventaVendedor
 
         ];
         return response()->json($respuesta, 200);
@@ -204,7 +208,7 @@ class ModuloVendedorController extends Controller
             "Ventas del mes" => $ventamensual,
             "Ventas del año" => $ventaanual,
             // "Acumulado de apuestas" => $acumulado,
-            "Datos del modelo" => $ventas
+            "Datos del modelo asociado al vendedor" => $ventas->vendedores
 
         ];
         return response()->json($respuesta, 200);

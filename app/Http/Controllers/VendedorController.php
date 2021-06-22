@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Promotor;
+use App\Models\Vendedor;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 
@@ -54,8 +56,9 @@ class VendedorController extends Controller
         //dd($ventas3);
 
         //DATOS PARA METRICAS
+        $ventas2 = Ventas::all();
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
-        $ventas2 = Ventas::Where('Estado', '=', 1)->get();
+        $ventas2->vendedores()->Where('Estado', '=', 1)->get();
         $ventas3 = Ventas::Where('Estado', '=', 0)->get();
         $respuesta =  [
             "Numeros de loteria mas repetidos" => $ventas,
@@ -78,6 +81,13 @@ class VendedorController extends Controller
         return response()->json([$respuesta,$retorno]);*/
     }
 
+    public function estadoDeCuenta()
+    {
+        $ventas2 = Ventas::all();
+        $ventas2->vendedores()->Where('Estado', '=', 1)->get();
+        return response()->json($ventas2,200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -97,7 +107,7 @@ class VendedorController extends Controller
             //Menu lateral en las vistas
             //"Sumatotalventas" => "required|integer",
             "Puntoventas" => "required|string",
-            "Nombrepromotor" => "required|string",
+            //"Nombrepromotor" => "required|string",
             "Puntoentregaventas" => "required|string"
         ]);
 
@@ -108,7 +118,8 @@ class VendedorController extends Controller
         /*
             Fin de la logica para lograr captar la sumatoria
         */
-            
+        
+
         $ventas = Ventas::create([
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),
@@ -120,17 +131,23 @@ class VendedorController extends Controller
             //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
             //"Sumatotalventas" => $request->get("Sumatotalventas"),
             "Puntoventas" => $request->get("Puntoventas"),
-            "Nombrepromotor" => $request->get("Nombrepromotor"),
+            //"Nombrepromotor" => $request->get("Nombrepromotor"),
             "Puntoentregaventas" => $request->get("Puntoentregaventas"),
             //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
-       
+
+        $vendedorPromotor = Vendedor::all();
+
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
         $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
         $respuesta =  [
             "Suma de todas las ventas que se realizaron" => $sumatotalventa,
-            "Suma total del valor de todas las ventas" => $sumatotalventa2
+            "Suma total del valor de todas las ventas" => $sumatotalventa2,
+            "Promotor afiliado al vendedor" =>$vendedorPromotor->promotor
         ];
+
+        
+
 //Revisar la logica para Obtener la sumatoria correcta!
         /*$acumulador = Ventas::where("Sumatotalventas",">","0")->get();
         $ventas->Sumatotalventas + $acumulador;*/
@@ -202,5 +219,51 @@ class VendedorController extends Controller
         ];
 
         return response()->json($respuesta, 200);
+    }
+
+    public function reportarVentaPromotor(Request $request, Ventas $ventas)
+    {
+        $request->validate([
+            "Fecha" => "required|date",
+            "Numero" => "required|integer",
+            "Valorapuesta" => "required|integer",
+            "Loteria" => "required|string",
+            "Tipo" => "required|string",
+            //AGREGADO DE REFERENCIA -> DESCRIPCION
+            "Referencia" => "required|string",
+            //Menu lateral en las vistas
+            //"Sumatotalventas" => "required|integer",
+            "Puntoventas" => "required|string",
+            //"Nombrepromotor" => "required|string",
+            "Puntoentregaventas" => "required|string"
+        ]);
+
+        $ventas = Ventas::create([
+            "Fecha" => $request->get("Fecha"),
+            "Numero" => $request->get("Numero"),
+            "Valorapuesta" => $request->get("Valorapuesta"),
+            "Loteria" => $request->get("Loteria"),
+            "Tipo" => $request->get("Tipo"),
+            //AGREGADO DE REFERENCIA
+            "Referencia" => $request->get("Referencia"),
+            //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
+            //"Sumatotalventas" => $request->get("Sumatotalventas"),
+            "Puntoventas" => $request->get("Puntoventas"),
+            //"Nombrepromotor" => $request->get("Nombrepromotor"),
+            "Puntoentregaventas" => $request->get("Puntoentregaventas"),
+            //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
+        ]);
+
+        $vendedorPromotor = Promotor::all();
+
+        $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
+        $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
+        $respuesta =  [
+            "Suma de todas las ventas que se realizaron" => $sumatotalventa,
+            "Suma total del valor de todas las ventas" => $sumatotalventa2,
+            "Administrador afiliado al promotor" => $vendedorPromotor->administrador
+        ];
+
+        return response()->json([$ventas, $respuesta], 201); 
     }
 }

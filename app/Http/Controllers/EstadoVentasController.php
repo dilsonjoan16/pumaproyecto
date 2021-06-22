@@ -13,11 +13,14 @@ class EstadoVentasController extends Controller
 {
     public function index()
     {
-        $ventas = Ventas::where("Estado", "=", 1)->get();
+        $ventas = Ventas::all();
         $estadodecuenta = Reporte::all();
+        
         $respuesta =  [
-            "Modelo Ventas" => $ventas,
-            "Modelo Reporte" => $estadodecuenta
+            //"Modelo Ventas" => $ventas,
+            "Modelo Reporte" => $estadodecuenta,
+            "Ventas de promotores" =>$ventas->promotor()->where('Estado','=', 1)->get(),
+            "Ventas de vendedores" => $ventas->vendedores()->where('Estado','=',1)->get()
         ];
         return response()->json($respuesta, 200);
     }

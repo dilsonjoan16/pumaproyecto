@@ -90,4 +90,24 @@ class Promotor extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(User::class);
     }
+
+    public function ventas()
+    {
+        return $this->hasMany(Ventas::class);
+    }
+
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitudes::class);
+    }
+
+    public function ventaVendedor()
+    {
+        return $this->hasOneThrough(Ventas::class, Vendedor::class);
+    }
+
+    public function solicitudVendedor()
+    {
+        return $this->hasOneThrough(Solicitudes::class, Vendedor::class);
+    }
 }

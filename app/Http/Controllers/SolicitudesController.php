@@ -14,7 +14,9 @@ class SolicitudesController extends Controller
      */
     public function index()//SOLICITUDES EN ESPERA
     {
-        $solicitudes = Solicitudes::where('tipo', '=', '1')->get();
+        $solicitudes = Solicitudes::all();
+        $solicitudes->vendedor()->where('tipo', '=', '1')->get();
+        
 
         return response()->json($solicitudes, 200);
     }
@@ -49,8 +51,11 @@ class SolicitudesController extends Controller
 
         ]);
 
+        //$solicitudes = Solicitudes::all();
+
         $respuesta =  [
-            "La solicitud ha sido creada y enviada con exito!" => $solicitudes
+            "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
+            "Vendedor afiliado a la solicitud" => $solicitudes->vendedor
         ];
 
         return response()->json($respuesta, 201);
@@ -129,5 +134,47 @@ class SolicitudesController extends Controller
             "Solicitudes Aceptadas" => $solicitudes
         ];
         return response()->json($respuesta, 200);
+    }
+
+    public function verSolicitudPromotor()
+    {
+        $promotorSolicitud = Promotor::all();
+        $respuesta =  [
+            "Solicitudes del promotor" =>$promotorSolicitud->solicitudes()->where('tipo','=',1)->get(),
+            "Solicitudes de los vendedores" =>$promotorSolicitud->solicitudVendedor()->where('tipo','=', 1)->get()
+        ];
+        return response()->json($respuesta, 200);
+    }
+
+    public function crearSolicitudPromotor(Request $request, Solicitudes $solicitudes)
+    {
+        $request->validate([
+            "Nombre" => "required|string",
+            "CantidadSolicitada" => "required|integer",
+            "Cuotas" => "required|integer",
+            "MobiliarioSolicitado" => "required|string",
+            "Ubicacion" => "required|string",
+            "Solicitud" => "required|string",
+
+        ]);
+
+        $solicitudes = Solicitudes::create([
+            "Nombre" => $request->get("Nombre"),
+            "CantidadSolicitada" => $request->get("CantidadSolicitada"),
+            "Cuotas" => $request->get("Cuotas"),
+            "MobiliarioSolicitado" => $request->get("MobiliarioSolicitado"),
+            "Ubicacion" => $request->get("Ubicacion"),
+            "Solicitud" => $request->get("Solicitud")
+
+        ]);
+
+        //$solicitudes = Solicitudes::all();
+
+        $respuesta =  [
+            "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
+            "Promotor afiliado a la solicitud" => $solicitudes->promotor
+        ];
+
+        return response()->json($respuesta, 201);
     }
 }

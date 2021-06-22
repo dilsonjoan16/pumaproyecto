@@ -186,7 +186,10 @@ class UserController extends Controller
             "Role de Vendedor asignado con exito!" => $vendedorRol
         ];
 
-        return response()->json([$vendedor,$prueba], 201);
+        $vendedorPromotor = Vendedor::all();
+        $vendedorPromotor->promotor;
+
+        return response()->json([$vendedor,$prueba,$vendedorPromotor], 201);
     }
 
     public function registerPromotor(Request $request)
@@ -240,7 +243,10 @@ class UserController extends Controller
             "Role de Promotor asignado con exito!" => $promotorRol
         ];
 
-        return response()->json([$vendedor, $prueba], 201);
+        $promotorAdministrador = Promotor::all();
+        $promotorAdministrador->administrador;
+
+        return response()->json([$promotor, $prueba, $promotorAdministrador], 201);
     }
 
     /**

@@ -89,4 +89,19 @@ class Vendedor extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Ventas::class)->withTimestamps();
     }
+
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitudes::class);
+    }
+
+    public function ventaVendedor()
+    {
+        return $this->hasOne(Ventas::class);
+    }
+
+    public function solicitudVendedor()
+    {
+        return $this->hasOne(Solicitudes::class);
+    }
 }

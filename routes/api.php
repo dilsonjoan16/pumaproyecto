@@ -122,20 +122,19 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::group(['middleware' => ['role:Promotor']], function () {
         //Grupo de rutas de Promotor
         Route::prefix('promotor')->group(function () {
+            Route::post('reportarVentaPromotor', [VendedorController::class, 'reportarVentaPromotor']); //REPORTE DE VENTAS DEL PROMOTOR
             Route::post('crearvendedor', [UserController::class, 'registerVendedor']); //CREA UN VENDEDOR AFILIADO AL PROMOTOR
             Route::get('mostrarvendedor', [ModuloVendedorController::class, 'index']); //MUESTRA TODOS LOS VENDEDORES AFILIADOS AL PROMOTOR
             Route::get('encontrarvendedor/{id}', [ModuloVendedorController::class, 'show']); //MUESTRA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::put('modificarvendedor/{id}', [ModuloVendedorController::class, 'update']); //MODIFICA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::delete('eliminarvendedor/{id}', [ModuloVendedorController::class, 'destroy']); //ELIMINAR UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::post('busquedavendedor', [ModuloVendedorController::class, 'busqueda']); //BARRA DE BUSQUEDA MEDIANTE EL NOMBRE
-            Route::get('mostrarsolicitudes', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES 
-            Route::post('crearsolicitudes', [SolicitudesController::class, 'store']); //CREAR SOlICITUDES
-            Route::get(
-                'encontrarsolicitudes/{id}',
-                [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
+            Route::get('mostrarsolicitudes', [SolicitudesController::class, 'verSolicitudPromotor']); //MOSTRAR TODAS LAS SOLICITUDES 
+            Route::post('crearsolicitudes', [SolicitudesController::class, 'crearSolicitudPromotor']); //CREAR SOlICITUDES
+            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
             ); //MUESTRA SOLO UN REGISTRO DE SOLICITUDES MEDIANTE ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
-            Route::get('estadodecuenta', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
+            Route::get('resumenDeVentas', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
         });
     });
 
@@ -143,7 +142,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         //Grupo de rutas del vendedor
         Route::prefix('vendedor')->group(function () {
             Route::post('reportarventa', [VendedorController::class, 'store']); //CREAR VENTA
-            Route::get('mostrarventa',   [VendedorController::class, 'index']); //MUESTRA TODAS LAS VENTAS
+            Route::get('mostrarventa',   [VendedorController::class, 'estadoDeCuenta']); //MUESTRA TODAS LAS VENTAS AFILIADAS AL VENDEDOR
             Route::get('encontrarventa/{id}', [VendedorController::class, 'show']); //MUESTRA UNA VENTA MEDIANTE ID
             Route::put('modificarventa/{id}', [VendedorController::class, 'update']); //MODIFICA UNA VENTA MEDIANTE ID
             Route::delete('eliminarventa/{id}', [VendedorController::class, 'destroy']); //ELIMINA UNA VENTA MEDIANTE ID
@@ -158,6 +157,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 });
 
+/////////////////////////RUTAS PARA DEVOLVER A LOS MIDDLEWARE DESPUES DE USARLAS////////////////////////////////////////////////////////
 
 
 //Ruta del envio de correos

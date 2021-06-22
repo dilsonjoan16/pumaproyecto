@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Ventas;
 use App\Models\Solicitudes;
 use App\Models\Premios;
+use App\Models\Promotor;
 use App\Models\Sorteos;
 use Database\Factories\ContactoFactory;
 use Database\Factories\CustomizeFactory;
@@ -24,6 +25,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $promotorId = Promotor::all()->value('id');
+
         User::factory(100)->create();
         Customize::factory(20)->create();
         Contacto::factory(10)->create();
@@ -35,6 +38,7 @@ class DatabaseSeeder extends Seeder
         Premios::factory(30)->create();
         //Seeder de Role
         $this->call(RoleSeeder::class);
+    
 
         
     }

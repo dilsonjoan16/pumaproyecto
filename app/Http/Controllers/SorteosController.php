@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Acumulado;
+use App\Models\Premios;
 use App\Models\Sorteos;
 use Illuminate\Http\Request;
 
@@ -33,6 +36,12 @@ class SorteosController extends Controller
             "Tipo" => "required|integer|max:10",
             "FechaCulminacion" => "required|date",
             "Numeros" => "required|integer|max:1000",
+            //insercion de datos del modelo Premios
+            "NombrePremio" => "required|string|max:255",
+            "MontoReferenciaPremio" => "required|integer",
+            //insercion de datos del modelo Acumulados
+            "NombreDeAcumulado" => "required|string|max:255",
+            "MontoReferenciaAcumulado" => "required|integer"
             
             //"Lugarpodio",
             //"NombreGanador",
@@ -47,8 +56,22 @@ class SorteosController extends Controller
             
         ]);
 
+        $premios = Premios::create([
+            "Nombre" => $request->get('NombrePremio'),
+            "MontoReferencia" => $request->get('MontoReferenciaPremio')
+        ]);
+
+        $acumulado = Acumulado::create([
+            "Nombre" => $request->get('NombreDeAcumulado'),
+            "MontoReferencia" => $request->get('MontoReferenciaAcumulado')
+        ]);
+
         $respuesta =  [
-            "Sorteo Creado con exito!" => $sorteos
+            "Sorteo Creado con exito!" => $sorteos,
+            "Premios creados para el sorteo" => $sorteos->premios()->where('Estado', '=', 1)->get(),
+            "Acumulados creados para el sorteo" => $sorteos->acumulado()->where('Estado', '=', 1)->get(),
+            "Premios recien creados" => $premios,
+            "Acumulado recien creados" => $acumulado
         ];
 
         return response()->json($respuesta, 201);
