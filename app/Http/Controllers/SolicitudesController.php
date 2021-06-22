@@ -177,4 +177,13 @@ class SolicitudesController extends Controller
 
         return response()->json($respuesta, 201);
     }
+
+    public function SolicitudesAdministrador()
+    {
+        $solicitudes = Solicitudes::all();
+        $vendedorSolicitudes = $solicitudes->vendedor();
+        $promotorSolicitudes = $solicitudes->promotor();
+
+        return response()->json([$vendedorSolicitudes, $promotorSolicitudes], 200);
+    }
 }

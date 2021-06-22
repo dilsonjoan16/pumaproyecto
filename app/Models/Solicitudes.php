@@ -16,7 +16,7 @@ class Solicitudes extends Model
         "MobiliarioSolicitado", // mobiliario solicitado -> MOBILIARIO
         "Ubicacion", // punto de ubicacion -> MOBILIARIO
         "Solicitud", // otros -> OTROS
-        "Tipo" //Sirve para el Borrado logico 1 ACTIVO 0 BORRADO
+        "Tipo" //Sirve para el Borrado logico 1 EN ESPERA 0 RECHAZADO 2 ACEPTADA
         
 
     ];

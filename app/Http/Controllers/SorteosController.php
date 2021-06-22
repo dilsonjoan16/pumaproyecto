@@ -87,7 +87,9 @@ class SorteosController extends Controller
     {
         $sorteos = Sorteos::find($id);
         $respuesta =  [
-            "Objeto encontrado con exito!" => $sorteos
+            "Objeto encontrado con exito!" => $sorteos,
+            "Premios ligados" => $sorteos->premios,
+            "Acumulados ligados" => $sorteos->acumulado
         ];
 
         return response()->json($respuesta, 200);
@@ -102,8 +104,16 @@ class SorteosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        /////////SUJETO A REVISION//////////////
+
         $sorteos = Sorteos::find($id);
+        $premios = $sorteos->premios;
+        $acumulados = $sorteos->acumulado;
+        $acumulados->update($request->all());
+        $premios->update($request->all());
         $sorteos->update($request->all());
+
+        /////////SUJETO A REVISION//////////////
         $respuesta =  [
             "Objeto Modificado con exito!" => $sorteos
         ];

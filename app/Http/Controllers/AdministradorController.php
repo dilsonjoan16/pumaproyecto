@@ -18,8 +18,12 @@ class AdministradorController extends Controller
     {
 
         $resumenventas = Ventas::all();
+        $ventas =  [
+            "Ventas de vendedores" => $resumenventas->vendedores(),
+            "Ventas de promotores" => $resumenventas->promotor()
+        ];
         
-        return response()->json($resumenventas, 200);
+        return response()->json($ventas, 200);
 
     }
 

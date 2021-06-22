@@ -65,7 +65,7 @@ class CustomizeController extends Controller
             'rutaImagen' => 'required|image|max:2048',
             'titulo' => 'required|string',
             'contenido' => 'required|string',
-            'rutaVideo' => 'required|video',
+            'rutaVideo' => 'video',
             'orden' => 'required|integer',
             'tipo' => 'required|integer|max:4',
             'link' => 'required|string'

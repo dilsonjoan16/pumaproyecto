@@ -67,7 +67,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
             Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
-            Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'index']); //MOSTRAR TODAS LAS SOLICITUDES
+            Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ACEPTAR UNA SOLICITUD MEDIANTE ID
             Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show']); //ENCONTRAR SOLICITUD POR ID

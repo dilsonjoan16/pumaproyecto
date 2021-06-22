@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Promotor;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,13 @@ class ModuloPromVendController extends Controller
      */
     public function index()
     {
-        $user = User::where('tipo','=','1')->get();
-        return response()->json($user, 200);
+        $administradores = User::all();
+        $administradores->promotors->where('tipo', '=', '1')->get();
+
+        $promotores = Promotor::all();
+        $promotores->vendedors()->where('tipo', '=', '1')->get();
+
+        return response()->json([$user, $promotores], 200);
     }
 
     /**
