@@ -72,16 +72,15 @@ class UserController extends Controller
        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => ['required', 'email', 'max:255','unique:users,email'], //Rule::unique('email')->where('tipo', 1)],
-            //'email' => 'required|email|max:255|unique:users,tipo, ' . 0,        //.$positivo,
-            /*'email' => Rule::unique('users')->where(function ($query) {
-                                                                                    return $query->where('account_id', 1);
-                                                                                }),*/
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore('email')->where('tipo', 0)],
+            //'email' => Rule::unique('users')->where(function ($query) {
+            //    return $query->where('tipo', 1);
+            //}),     
             'password' => 'required|string|min:6|max:12',
             'dni' => 'required|integer',
             'ganancia' => 'required|integer',
             'porcentaje' => 'required|integer|max:50',
-            'foto' => 'required',
+            'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
 
@@ -119,19 +118,15 @@ class UserController extends Controller
             //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
             'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
 
-
-
         ]);
 
-        $administrador = User::latest('id')->first();
-        $administrador->assignRole('Administrador');
-        $prueba =  [
-            "Role de Administrador asignado con exito!" => $administrador
-        ];
+        $user = User::latest('id')->first();
+
+        $user->assignRole('Administrador');
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user', 'token','prueba'), 201);
+        return response()->json(compact('user', 'token'), 201);
         
     }
 
@@ -139,7 +134,8 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'], //Rule::unique('email')->where('tipo', 1)],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+             //Rule::unique('email')->where('tipo', 1)],
             //'email' => 'required|email|max:255|unique:users,tipo, ' . 0,        //.$positivo,
             /*'email' => Rule::unique('users')->where(function ($query) {
                                                                                     return $query->where('account_id', 1);
@@ -180,16 +176,16 @@ class UserController extends Controller
             'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
         ]);
 
-        $vendedorRol = Vendedor::latest('id')->first();
-        $vendedorRol->assignRole('Vendedor');
-        $prueba =  [
-            "Role de Vendedor asignado con exito!" => $vendedorRol
-        ];
+        $vendedor = Vendedor::latest('id')->first();
+        $vendedor->assignRole('Vendedor');
+        
 
         $vendedorPromotor = Vendedor::all();
         $vendedorPromotor->promotor;
 
-        return response()->json([$vendedor,$prueba,$vendedorPromotor], 201);
+        $token = JWTAuth::fromUser($vendedor);
+
+        return response()->json([$vendedor,$vendedorPromotor, $token], 201);
     }
 
     public function registerPromotor(Request $request)
@@ -237,16 +233,14 @@ class UserController extends Controller
             'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
         ]);
 
-        $promotorRol = Promotor::latest('id')->first();
-        $promotorRol->assignRole('Promotor');
-        $prueba =  [
-            "Role de Promotor asignado con exito!" => $promotorRol
-        ];
+        $promotor = Promotor::latest('id')->first();
+        $promotor->assignRole('Promotor');
+        
 
         $promotorAdministrador = Promotor::all();
         $promotorAdministrador->administrador;
-
-        return response()->json([$promotor, $prueba, $promotorAdministrador], 201);
+        $token = JWTAuth::fromUser($promotor);
+        return response()->json([$promotor, $promotorAdministrador, $token], 201);
     }
 
     /**
@@ -264,6 +258,6 @@ class UserController extends Controller
     public function GetUsers()
     {
         $users = User::all();
-        return response()->json($users, 200);
+        return response()->json($users, 200); ////////FUNCION EN DESUSO ACTUALMENTE!!!!
     }
 }

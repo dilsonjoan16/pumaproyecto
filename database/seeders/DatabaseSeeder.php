@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $promotorId = Promotor::all()->value('id');
+        //$promotorId = Promotor::all()->value('id');
 
         User::factory(100)->create();
         Customize::factory(20)->create();

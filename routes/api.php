@@ -51,10 +51,11 @@ Route::post('login', [UserController::class, 'authenticate']);
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
+Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
 
 
 //Ruta del Middleware
-Route::group(['middleware' => ['jwt.verify']], function () {
+//Route::group(['middleware' => ['jwt.verify']], function () {
     //RUTA PARA EL LOGOUT DEL SISTEMA
     Route::post('logout', [UserController::class, 'logout']);
     //
@@ -63,10 +64,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::prefix('administrador')->group(function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
-            Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
-            Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
-            Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
-            Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
+            //Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
+            //Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
+            //Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
+    //        Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ACEPTAR UNA SOLICITUD MEDIANTE ID
@@ -155,7 +156,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
         });
     });
-});
+//});
 
 /////////////////////////RUTAS PARA DEVOLVER A LOS MIDDLEWARE DESPUES DE USARLAS////////////////////////////////////////////////////////
 
