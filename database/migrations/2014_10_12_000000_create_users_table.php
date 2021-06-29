@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('foto');
             $table->string('direccion');
             $table->bigInteger('telefono');
-            $table->string('codigo')->nullable();
+            $table->string('codigo');
             $table->integer('tipo')->default(1);
             $table->string('busqueda')->nullable();
             

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Promotor;
 use App\Models\User;
+use App\Models\Vendedor;
 use Illuminate\Http\Request;
 
 class ModuloPromVendController extends Controller
@@ -72,6 +73,17 @@ class ModuloPromVendController extends Controller
         
     }
 
+    public function updateVendedor(Request $request, $id)
+    {
+        $promotor = Promotor::all()->select('id')->orderBy('nombre', 'desc')->get();
+
+        $vendedor = Vendedor::find($id);
+        $vendedor->update($request->all());
+
+        
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -86,6 +98,7 @@ class ModuloPromVendController extends Controller
 
         $user = User::find($id);
         $user->tipo = "0";
+        $user->email = "";
         $user->save();
 
         $respuesta = [
@@ -93,5 +106,33 @@ class ModuloPromVendController extends Controller
         ];
 
         return response()->json($respuesta, 200);
+    }
+
+    public function destroyPromotor($id)
+    {
+        $promotor = Promotor::find($id);
+        $promotor->tipo = "0";
+        $promotor->email = "";
+        $promotor->save();
+
+        $respuesta =  [
+            "El objeto fue eliminado con exito" => $promotor
+        ];
+
+        return repsonse()->json($respuesta, 200);
+    }
+
+    public function destroyVendedor($id)
+    {
+        $vendedor = Vendedor::find($id);
+        $vendedor->tipo = "0";
+        $vendedor->email = "";
+        $vendedor->save();
+
+        $respuesta =  [
+            "El objeto fue eliminado con exito" => $vendedor
+        ];
+
+        return repsonse()->json($respuesta, 200);
     }
 }

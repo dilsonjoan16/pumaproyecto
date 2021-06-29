@@ -72,7 +72,8 @@ class UserController extends Controller
        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore('email')->where('tipo', 0)],
+            'email' => ['required','email','max:255','unique:users,email'], 
+            //'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore('email')->where('tipo', 0)],
             //'email' => Rule::unique('users')->where(function ($query) {
             //    return $query->where('tipo', 1);
             //}),     
@@ -83,6 +84,7 @@ class UserController extends Controller
             'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
+            'codigo' => 'required|unique:users,codigo'
 
         ]);
 
@@ -115,8 +117,9 @@ class UserController extends Controller
             'foto' => $request->get('foto'),
             'direccion' => $request->get('direccion'),
             'telefono' => $request->get('telefono'),
+            'codigo' => $request->get('codigo'),
             //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+            //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
 
         ]);
 
@@ -147,6 +150,7 @@ class UserController extends Controller
             'foto' => 'required|image|max:2048',
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
+            'codigo' => ' required|unique:users,codigo',
 
         ]);
 
@@ -172,8 +176,9 @@ class UserController extends Controller
             'foto' => $vendedorFoto,
             'direccion' => $request->get('direccion'),
             'telefono' => $request->get('telefono'),
+            'codigo' => $request->get('codigo'),
             //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+            //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
         ]);
 
         $vendedor = Vendedor::latest('id')->first();
@@ -182,7 +187,11 @@ class UserController extends Controller
 
         $vendedorPromotor = Vendedor::all();
         $vendedorPromotor->promotor;
-
+        //////////////////////////////////////////////////////////////////////////  
+        //          Posible segunda logica                                      //
+        //                                                                      //
+        //          $vendedorPromotor2 = Vendedor::with('Promotor')->get();     //
+        //////////////////////////////////////////////////////////////////////////  
         $token = JWTAuth::fromUser($vendedor);
 
         return response()->json([$vendedor,$vendedorPromotor, $token], 201);
@@ -204,6 +213,7 @@ class UserController extends Controller
             'foto' => 'required|image|max:2048',
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|integer',
+            'codigo' => 'required|unique:users,codigo'
 
         ]);
 
@@ -229,16 +239,23 @@ class UserController extends Controller
             'foto' => $promotorFoto,
             'direccion' => $request->get('direccion'),
             'telefono' => $request->get('telefono'),
+            'codigo' => $request->get('codigo'),
             //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+            //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
         ]);
 
         $promotor = Promotor::latest('id')->first();
         $promotor->assignRole('Promotor');
         
-
         $promotorAdministrador = Promotor::all();
         $promotorAdministrador->administrador;
+
+        //////////////////////////////////////////////////////////////////////////  
+        //          Posible segunda logica                                      //
+        //                                                                      //
+        //          $promotorAdministrador2 = Promotor::with(Users')->get();     //
+        //////////////////////////////////////////////////////////////////////////
+        
         $token = JWTAuth::fromUser($promotor);
         return response()->json([$promotor, $promotorAdministrador, $token], 201);
     }
