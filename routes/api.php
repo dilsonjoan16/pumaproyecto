@@ -55,7 +55,7 @@ Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); /
 
 
 //Ruta del Middleware
-//Route::group(['middleware' => ['jwt.verify']], function () {
+Route::group(['middleware' => ['jwt.verify']], function () {
     //RUTA PARA EL LOGOUT DEL SISTEMA
     Route::post('logout', [UserController::class, 'logout']);
     //
@@ -64,7 +64,7 @@ Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); /
         Route::prefix('administrador')->group(function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
-            //Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
+            Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
             //Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
             //Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
     //        Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
@@ -156,7 +156,7 @@ Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); /
 
         });
     });
-//});
+});
 
 /////////////////////////RUTAS PARA DEVOLVER A LOS MIDDLEWARE DESPUES DE USARLAS////////////////////////////////////////////////////////
 

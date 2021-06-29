@@ -77,10 +77,13 @@ class ModuloPromVendController extends Controller
     {
         $promotor = Promotor::all()->select('id')->orderBy('nombre', 'desc')->get();
 
+        $nuevoId = $request->get($promotor->id);
+
         $vendedor = Vendedor::find($id);
+        $vendedor->promotor = $nuevoId;
         $vendedor->update($request->all());
 
-        
+        dd($vendedor); 
 
     }
 
