@@ -51,7 +51,7 @@ Route::post('login', [UserController::class, 'authenticate']);
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
+//Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
 
 
 //Ruta del Middleware
@@ -67,7 +67,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
             //Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
             //Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
-    //        Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
+            Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::put('modificarsolicitud/{id}', [SolicitudesController::class, 'update']); //ACEPTAR UNA SOLICITUD MEDIANTE ID
@@ -76,6 +76,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('solicitudesRechazadas', [SolicitudesController::class, 'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
+            Route::post('customizeUpdate/{id}', [CustomizeController::class,'update']); //MODIFICACION DEL CUSTOMIZE (GALERIAS)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
             Route::put('galeriasResultados/{id}', [ListagaleriasController::class, 'updateResultados']); //CAMBIA EL TIPO PARA MOSTRAR EN RESULTADOS
             Route::put('galeriasSorteos/{id}', [ListagaleriasController::class, 'updateSorteos']); //CAMBIA EL TIPO PARA MOSTRAR EN SORTEOS
@@ -164,6 +165,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 //Ruta del envio de correos
 Route::get('contactanos', [MailController::class, 'index'])->name('contactanos.index');
 Route::post('contactanos', [MailController::class, 'store'])->name(('contactanos.store')); //ENVIO DE CORREOS
+Route::post('mailRecovery', [MailController::class, 'MailRecovery']); //Envio de emails para recovery password (recovery key)
 //Route::post('getmail',[MailController::class,'getMail']);
 
 //Rutas para el Rol de administrador

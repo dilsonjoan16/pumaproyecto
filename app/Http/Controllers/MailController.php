@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Contacto;
+use App\Models\Promotor;
+use App\Models\User;
+use App\Models\Vendedor;
+use Illuminate\Support\Facades\Hash;
 class MailController extends Controller
 {
     public function index(){
@@ -35,9 +39,63 @@ class MailController extends Controller
         return "mensaje enviado";
         
         
-        return response()->json($contacto);
+        return response()->json($contacto, 200);
     }
+    ///////////////////////////////  FUNCION DONDE DEBO GENERAR LA LOGICA DEL RECOVERY //////////////////////////////
+    public function MailRecovery(Request $request, Contacto $contacto) 
+    {
+        $request->validate([
+            "correo_contacto" => "required|email",
+        ]);
+        $hashed_random_password = Hash::make(str_random(8));
+        $recovery =  [
+            "Password" => $hashed_random_password
+        ];
+        
+        $correosAdmin = User::select('email')->where('tipo', 1)->get();
+        $correosProm = Promotor::select('email')->where('tipo', 1)->get();
+        $correosVend = Vendedor::select('email')->where('tipo', 1)->get();
+        if ($request->get("correo_contacto") === $correosAdmin) {
+            
+            $user = User::find($request->get("correo_contacto"));
+            $user->password = $hashed_random_password;
+            $correo = new TestMail($request->all());
+            Mail::to($request->get('correo_contacto'))->send($correo);
 
+        }
+        if($request->get("correo_contacto") === $correosProm){
+
+            $promotor = Promotor::find($request->get("correo_contacto"));
+            $promotor->password = $hashed_random_password;
+            $correo = new TestMail($request->all());
+            Mail::to($request->get('correo_contacto'))->send($correo);
+
+        }
+        if ($request->get("correo_contacto") === $correosVend) {
+
+            $vendedor = Vendedor::find($request->get("correo_contacto"));
+            $vendedor->password = $hashed_random_password;
+            $correo = new TestMail($request->all());
+            Mail::to($request->get('correo_contacto'))->send($correo);
+
+        }
+
+        //$PasswordAleatoria = Hash::make(str_random(8));
+        
+        
+        
+        
+        /*$contacto = Contacto::create([
+            'nombre_contacto' => $request->get('nombre_contacto'),
+            'correo_contacto' => $request->get('correo_contacto'),
+            'mensaje_contacto' => $request->get('mensaje_contacto'),
+        ]);*/
+
+        return "mensaje enviado";
+
+        return respose()->json($recovery, 200);
+    }
+    /////////////////////////////// FUNCION RECOVERY PASSWORD ///////////////////////////////////
     public function getMail(Request $request)
     {
 

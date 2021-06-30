@@ -59,9 +59,8 @@ class CustomizeController extends Controller
      */
     public function store(Request $request, Customize $customize)
     {
-
-        
-        $validator = Validator::make($request->all(),[
+        // return 'hola';
+       $validator = Validator::make($request->all(),[
             'rutaImagen' => 'required|image|max:2048',
             'titulo' => 'required|string',
             'contenido' => 'required|string',
@@ -70,20 +69,10 @@ class CustomizeController extends Controller
             'tipo' => 'required|integer|max:4',
             'link' => 'required|string'
         ]);
-
-        //if ($validator->fails()) {
-        //  return response()->json($validator->errors()->toJson(), 400);
+        // return $validator->fails();
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors()->toJson(), 400);
         // }
-
-        /*$request->validate([
-            'rutaImagen' => 'image|max:2048',
-            'titulo' => 'required|string',
-            'contenido' => 'required|string',
-            'rutaVideo' => 'video',
-            'orden' => 'required|integer',
-            'tipo' => 'required|integer|max:4',
-            'link' => 'required|string'
-        ]);*/
 
         //////////////////////PLANTEAMIENTO SECUNDARIO/////////////////////
         $customize = $request->all();
@@ -93,7 +82,7 @@ class CustomizeController extends Controller
             $imagenes->move('images', $file);
             $customize['rutaImagen'] = $file;
         }
-        
+
         if($videos = $request->file('rutaVideo')){
             $file2 = $videos->getClientOriginalName();
             $videos->move('videos', $file2);
@@ -101,10 +90,8 @@ class CustomizeController extends Controller
         }
 
         Customize::create($customize);
-        
-        $id = Customize::latest('id')->first();
 
-        return response()->json([$customize,$id], 201);
+        return response()->json($customize, 201);
         //////////////////////FIN DE PLANTEAMIENTO SECUNDARIO//////////////
 
         /////////////////////PLANTEAMIENTO ORIGINAL///////////////////////
@@ -121,7 +108,6 @@ class CustomizeController extends Controller
             'tipo' => $request->get('tipo'), //orden de muestra tipo: 1->resultados 2->sorteos 3->testimonios 4->ubicanos
             'link' => $request->get('link')
         ]);
-
         return response()->json($customize, 201);*/
         ///////////////////FIN DE PLANTEAMIENTO ORIGINAL////////////////////
 
@@ -161,27 +147,8 @@ class CustomizeController extends Controller
     public function update(Request $request, $id)
     {
         $customize = Customize::find($id);
-////////////////////////////////////////////////////////
-        
 
-        if ($imagenes = $request->file('rutaImagen')) {
-            $file = $imagenes->getClientOriginalName();
-            $imagenes->move('images', $file);
-            $customize['rutaImagen'] = $file;
-        }
-
-        if ($videos = $request->file('rutaVideo')) {
-            $file2 = $videos->getClientOriginalName();
-            $videos->move('videos', $file2);
-            $customize['rutaVideo'] = $file2;
-        }
-        ////////////////////////////////////////////////////////
         $customize->update($request->all());
-        ////////////////////////////////////////////////
-        /*$vendedor = Vendedor::find($id);
-        $vendedor->promotor = $nuevoId;
-        $vendedor->update($request->all());*/
-        ////////////////////////////////////////////////
 
         $respuesta =  [
             "El objeto fue actualizado con exito!" => $customize
