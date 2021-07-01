@@ -11,16 +11,11 @@
     <h1>
         Correo de recuperacion de password
     </h1>
-    <!--<p>
+    <p>
         <strong>
             Nombre: 
         </strong>
-        {`{$contacto['nombre_contacto']}}
-    </p>-->
-    <p>
-        <i>
-
-        </i>
+        {{$contacto['nombre_contacto']}}
     </p>
     <p>
         <strong>
@@ -32,7 +27,7 @@
         <strong>
             Password 
         </strong>
-        {{$recovery['']}}
+        {{$recovery['mensaje_contacto']}}
     </p>
 </body>
 </html>

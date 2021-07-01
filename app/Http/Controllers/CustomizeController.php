@@ -158,25 +158,32 @@ class CustomizeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Customize $customize)
     {
         $customize = Customize::find($id);
-////////////////////////////////////////////////////////
-        
+        ////////////////////////////////////////////////////////
 
         if ($imagenes = $request->file('rutaImagen')) {
             $file = $imagenes->getClientOriginalName();
             $imagenes->move('images', $file);
             $customize['rutaImagen'] = $file;
+            //$customize->rutaImagen = $file;
         }
 
         if ($videos = $request->file('rutaVideo')) {
             $file2 = $videos->getClientOriginalName();
             $videos->move('videos', $file2);
             $customize['rutaVideo'] = $file2;
+            //$customize->rutaVideo = $file2;
         }
         ////////////////////////////////////////////////////////
-        $customize->update($request->all());
+        $customize->update([
+            'rutaImagen' => $file ,
+            'titulo' => $request->get('titulo'),
+            'contenido' => $request->get('contenido'),
+            'rutaVideo' => $file2,
+            'link' => $request->get('link')
+        ]);
         ////////////////////////////////////////////////
         /*$vendedor = Vendedor::find($id);
         $vendedor->promotor = $nuevoId;
@@ -184,7 +191,7 @@ class CustomizeController extends Controller
         ////////////////////////////////////////////////
 
         $respuesta =  [
-            "El objeto fue actualizado con exito!" => $customize
+            "El objeto fue actualizado con exito!" => $customize,
         ];
 
         return response()->json($respuesta, 200);

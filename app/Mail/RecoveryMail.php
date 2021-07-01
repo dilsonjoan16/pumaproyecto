@@ -12,16 +12,16 @@ class RecoveryMail extends Mailable
     use Queueable, SerializesModels;
 
     //variable creada en el controlador
-    public $recovery;
+    public $contacto;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($recovery)
+    public function __construct($contacto)
     {
-        $this->recovery = $recovery;
+        $this->contacto = $contacto;
     }
 
     /**
@@ -37,6 +37,6 @@ class RecoveryMail extends Mailable
         return $this->from('dilsonlaravel@gmail.com', env('MAIL_FROM_NAME'))
         ->view('emails.RecoveryEmail')
         ->subject('Recuperacion de Password Cliente Puma')
-        ->with($this->recovery);
+        ->with($this->contacto);
     }
 }
