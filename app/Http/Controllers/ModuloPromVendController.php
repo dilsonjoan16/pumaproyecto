@@ -83,7 +83,7 @@ class ModuloPromVendController extends Controller
         $vendedor->promotor = $nuevoId;
         $vendedor->update($request->all());
 
-        dd($vendedor); 
+        //dd($vendedor); 
 
     }
 

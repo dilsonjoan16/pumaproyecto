@@ -77,6 +77,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
             Route::post('customizeUpdate/{id}', [CustomizeController::class,'update']); //MODIFICACION DEL CUSTOMIZE (GALERIAS)
+            Route::get('UpdateEstado/{id}', [CustomizeController::class, 'UpdateEstado']); //UPDATE DE ESTADO 0 A 1 (INACTIVO -> ACTIVO)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
             Route::put('galeriasResultados/{id}', [ListagaleriasController::class, 'updateResultados']); //CAMBIA EL TIPO PARA MOSTRAR EN RESULTADOS
             Route::put('galeriasSorteos/{id}', [ListagaleriasController::class, 'updateSorteos']); //CAMBIA EL TIPO PARA MOSTRAR EN SORTEOS

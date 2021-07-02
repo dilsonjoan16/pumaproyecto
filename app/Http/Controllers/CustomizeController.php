@@ -61,7 +61,7 @@ class CustomizeController extends Controller
     {
 
         
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'rutaImagen' => 'required|image|max:2048',
             'titulo' => 'required|string',
             'contenido' => 'required|string',
@@ -88,13 +88,13 @@ class CustomizeController extends Controller
         //////////////////////PLANTEAMIENTO SECUNDARIO/////////////////////
         $customize = $request->all();
 
-        if($imagenes = $request->file('rutaImagen')){
+        if ($imagenes = $request->file('rutaImagen')) {
             $file = $imagenes->getClientOriginalName();
             $imagenes->move('images', $file);
             $customize['rutaImagen'] = $file;
         }
         
-        if($videos = $request->file('rutaVideo')){
+        if ($videos = $request->file('rutaVideo')) {
             $file2 = $videos->getClientOriginalName();
             $videos->move('videos', $file2);
             $customize['rutaVideo'] = $file2;
@@ -104,7 +104,7 @@ class CustomizeController extends Controller
         
         $id = Customize::latest('id')->first();
 
-        return response()->json([$customize,$id], 201);
+        return response()->json([$customize, $id], 201);
         //////////////////////FIN DE PLANTEAMIENTO SECUNDARIO//////////////
 
         /////////////////////PLANTEAMIENTO ORIGINAL///////////////////////
@@ -146,7 +146,7 @@ class CustomizeController extends Controller
     {
         $customize = Customize::find($id);
         $respuesta = [
-            "Objeto encontrado con exito!" =>$customize
+            "Objeto encontrado con exito!" => $customize
         ];
         return response()->json($respuesta, 200);
     }
@@ -160,6 +160,7 @@ class CustomizeController extends Controller
      */
     public function update(Request $request, $id, Customize $customize)
     {
+        $variable;
         $customize = Customize::find($id);
         ////////////////////////////////////////////////////////
 
@@ -176,25 +177,173 @@ class CustomizeController extends Controller
             $customize['rutaVideo'] = $file2;
             //$customize->rutaVideo = $file2;
         }
-        ////////////////////////////////////////////////////////
-        $customize->update([
-            'rutaImagen' => $file ,
-            'titulo' => $request->get('titulo'),
-            'contenido' => $request->get('contenido'),
-            'rutaVideo' => $file2,
-            'link' => $request->get('link')
-        ]);
-        ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if ($imagenes === null) {
+           /* $customize->update([
+                'titulo' => $request->get('titulo'),
+                'contenido' => $request->get('contenido'),
+                'rutaVideo' => $file2,
+                'link' => $request->get('link')
+            ]);*/
+            $customize->update($request->all());
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+        if ($videos === null) {
+            $customize->update([
+                'rutaImagen' => $file,
+                'titulo' => $request->get('titulo'),
+                'contenido' => $request->get('contenido'),
+                'link' => $request->get('link')
+            ]);
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+        if ($imagenes === null && $videos === null) {
+            return $variable = 3;
+        }
+        if ($imagenes !== null && $videos !== null) {
+            $customize->update([
+                'rutaImagen' => $file,
+                'titulo' => $request->get('titulo'),
+                'contenido' => $request->get('contenido'),
+                'rutaVideo' => $file2,
+                'link' => $request->get('link')
+            ]);
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+        /////////    BLOQUE DE CODIGO QUE CAMBIA EL ESTADO DE 0 A 1  /////////
+        ////////    DESBLOQUEA UN ELEMENTO BLOQUEADO Y LO MODIFICA  /////////
+
+        /*if ($imagenes === null && $customize->estado == 0) {
+            $customize->update($request->all()+$customize->estado=1);
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+        if ($videos === null && $customize->estado==0) {
+            $customize->update([
+                'rutaImagen' => $file,
+                'titulo' => $request->get('titulo'),
+                'contenido' => $request->get('contenido'),
+                'link' => $request->get('link'),
+                $customize->estado=1
+            ]);
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+        if ($imagenes === null && $videos === null) {
+            return $variable = 3;
+        }
+        if ($imagenes !== null && $videos !== null && $customize->estado==0) {
+            $customize->update([
+                'rutaImagen' => $file,
+                'titulo' => $request->get('titulo'),
+                'contenido' => $request->get('contenido'),
+                'rutaVideo' => $file2,
+                'link' => $request->get('link'),
+                $customize->estado=1
+            ]);
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }*/
+
+        ////////  FIN DE BLOQUE DE CODIGO QUE CAMBIA EL ESTADO DE 0 A 1  ///////
+        ////////  DESBLOQUEA UN ELEMENTO BLOQUEADO Y LO MODIFICA    ///////
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        //////// BLOQUE DE CODIGO QUE PERMITE A TRAVES DE UN SWICH REALIZAR LA FUNCIONALIDAD DE LOS CONDICIONALES /////////
+
+        /*switch ($variable) {
+            case '1':
+                $customize->update([
+                    'titulo' => $request->get('titulo'),
+                    'contenido' => $request->get('contenido'),
+                    'rutaVideo' => $file2,
+                    'link' => $request->get('link')
+                ]);
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $customize,
+                ];
+
+                return response()->json($respuesta, 200);
+                break;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            case '2':
+                $customize->update([
+                    'rutaImagen' => $file,
+                    'titulo' => $request->get('titulo'),
+                    'contenido' => $request->get('contenido'),
+                    'link' => $request->get('link')
+                ]);
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $customize,
+                ];
+
+                return response()->json($respuesta, 200);
+                break;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            case '3':
+                $customize->update($request->all());
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $customize,
+                ];
+
+                return response()->json($respuesta, 200);
+                break;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            case '4':
+                $customize->update([
+                    'rutaImagen' => $file,
+                    'titulo' => $request->get('titulo'),
+                    'contenido' => $request->get('contenido'),
+                    'rutaVideo' => $file2,
+                    'link' => $request->get('link')
+                ]);
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $customize,
+                ];
+
+                return response()->json($respuesta, 200);
+                break;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            default:
+                $respuesta =  [
+                    "No existe ese caso posible"
+                ];
+                return response()->json($respuesta, 205);
+                break;
+        }*/
+        
+        /////// FIN DEL BLOQUE DE CODIGO CON LOS SWITCH ////////
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*$vendedor = Vendedor::find($id);
         $vendedor->promotor = $nuevoId;
         $vendedor->update($request->all());*/
-        ////////////////////////////////////////////////
-
-        $respuesta =  [
-            "El objeto fue actualizado con exito!" => $customize,
-        ];
-
-        return response()->json($respuesta, 200);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
     }
 
     /**
@@ -214,6 +363,14 @@ class CustomizeController extends Controller
         ];
 
         return response()->json($respuesta, 200);
+    }
+
+    public function UpdateEstado($id)
+    {
+        $customize = Customize::find($id);
+        $customize->estado = 1;
+        $customize->save();
+        return response()->json($customize->estado, 200);
     }
 
 }

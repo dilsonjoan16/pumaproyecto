@@ -33,7 +33,7 @@ class VentasFactory extends Factory
             //Menu lateral de las vistas
             //"Sumatotalventas" => $this->faker->numberBetween($min =200, $max = 400), //Suma total de las Ventas
             "Puntoventas" => $this->faker->city, //Punto de Ventas
-            "Nombrepromotor" => $this->faker->name(), //Nombre del Promotor
+            //"Nombrepromotor" => $this->faker->name(), //Nombre del Promotor
             "Puntoentregaventas" =>$this->faker->streetAddress //Punto de entregas de las ventas
         ];
     }
