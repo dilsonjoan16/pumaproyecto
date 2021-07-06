@@ -21,8 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->integer('dni');
-            $table->integer('ganancia');
-            $table->integer('porcentaje');
+            $table->integer('ganancia')->nullable();
+            $table->integer('porcentaje')->nullable();
             $table->integer('balance')->nullable();
             $table->string('foto');
             $table->string('direccion');
@@ -30,7 +30,13 @@ class CreateUsersTable extends Migration
             $table->string('codigo');
             $table->integer('tipo')->default(1);
             $table->string('busqueda')->nullable();
-            
+            $table->bigInteger('user_id')->nullable();
+            /*$table->bigInteger('rol_id')->nullable();
+            $table->foreign('rol_id')
+            ->references('id')
+            ->on('roles_users')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');*/
             
             
 

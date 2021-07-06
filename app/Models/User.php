@@ -40,6 +40,8 @@ class User extends Authenticatable implements JWTSubject
         'codigo',
         'tipo',
         'busqueda',
+        'user_id',
+        'rol_id'
         //role_id
     ];
 
@@ -90,4 +92,25 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Promotor::class);
     }
+    /////////// FUNCIONES NUEVAS //////////////
+    public function tieneUsuarios()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function perteneceUsuarios()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function tieneRoles()
+    {
+        return $this->belongsTo(RolesUser::class);
+    }
+
+    public function ventaVendedor()
+    {
+        return $this->hasMany(Ventas::class);
+    }
+    //////////// FIN FUNCIONES NUEVAS /////////
 }

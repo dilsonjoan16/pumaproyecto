@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-
-class UserSeeder extends Seeder
+use App\Models\Solicitudes;
+class SolicitudesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +13,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(100)->create();
+        Solicitudes::factory(30)->create();
     }
 }

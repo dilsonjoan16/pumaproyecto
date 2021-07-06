@@ -177,15 +177,25 @@ class CustomizeController extends Controller
             $customize['rutaVideo'] = $file2;
             //$customize->rutaVideo = $file2;
         }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         if ($imagenes === null) {
-           /* $customize->update([
+            $customize->update($request->all());
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
+
+        if ($imagenes === null && $videos !== null) {
+            $customize->update([
                 'titulo' => $request->get('titulo'),
                 'contenido' => $request->get('contenido'),
                 'rutaVideo' => $file2,
                 'link' => $request->get('link')
-            ]);*/
-            $customize->update($request->all());
+            ]);
+            //$customize->update($request->all());
             $respuesta =  [
                 "El objeto fue actualizado con exito!" => $customize,
             ];
@@ -206,7 +216,12 @@ class CustomizeController extends Controller
             return response()->json($respuesta, 200);
         }
         if ($imagenes === null && $videos === null) {
-            return $variable = 3;
+            $customize->update($request->all());
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $customize,
+            ];
+
+            return response()->json($respuesta, 200);
         }
         if ($imagenes !== null && $videos !== null) {
             $customize->update([

@@ -95,10 +95,10 @@ class Vendedor extends Authenticatable implements JWTSubject
         return $this->hasMany(Solicitudes::class);
     }
 
-    public function ventaVendedor()
+    /*public function ventaVendedor()
     {
         return $this->hasOne(Ventas::class);
-    }
+    }*/
 
     public function solicitudVendedor()
     {

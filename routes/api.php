@@ -51,7 +51,10 @@ Route::post('login', [UserController::class, 'authenticate']);
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
 //////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-//Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
+//Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
+Route::post('auxiliar', [UserController::class, 'emergencia']); //CREACION DE ADMINISTRADORES
+//Route::post('crearVendedor', [UserController::class, 'registerVendedor']); //CREACION DE VENDEDORES
+
 
 
 //Ruta del Middleware
@@ -65,8 +68,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
             Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
-            //Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
-            //Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
+    //        Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
+            Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //ReadUpdateDelete DE PROMOTORES Y VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID

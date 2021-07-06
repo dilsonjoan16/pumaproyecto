@@ -29,9 +29,9 @@ class Ventas extends Model
         //                              }
     ];
 
-    public function vendedores()
+    public function vendedor()
     {
-        return $this->belongsToMany(Vendedor::class)->withTimestamps();
+        return $this->belongsTo(User::class)->withTimestamps();
     }
 
     public function promotor()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Promotor;
 use App\Models\Vendedor;
+use App\Models\User;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 
@@ -56,14 +57,16 @@ class VendedorController extends Controller
         //dd($ventas3);
 
         //DATOS PARA METRICAS
-        $ventas2 = Ventas::all();
+        //$ventas2 = User::select('*')->ventaVendedor; //Primera logica
+        //$ventas2 = User::with('ventaVendedor')->get();
+        $ventas22 = Ventas::where('Estado', '=', 1)->get();
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
-        $ventas2->vendedores()->Where('Estado', '=', 1)->get();
         $ventas3 = Ventas::Where('Estado', '=', 0)->get();
         $respuesta =  [
             "Numeros de loteria mas repetidos" => $ventas,
             "Numeros de loteria bloqueados" => $ventas3,
-            "Data completa del Modelo" => $ventas2
+            //"Data completa del Modelo" => $ventas2
+            "Data completa del Modelo" => $ventas22
         ];
         return response()->json($respuesta);
         //SELECT cliente, SUM(precio)
@@ -198,12 +201,21 @@ class VendedorController extends Controller
     public function destroy($id)
     {
         $ventas = Ventas::find($id);
-        $ventas->Estado = "0";
-        $ventas->save();
+        $ventas->Numero;
+        if ($ventas = Ventas::select('*')->where('Numero', '=', $ventas->Numero)->get()) {
+            foreach ($ventas as $venta) {
+                $venta->Estado = "0";
+                $venta->save();
+            }
+            $respuesta =  [
+                "El objeto fue eliminado con exito!" => $ventas
+            ];
+        }
+        //dd($ventas);
+        
+        
 
-        $respuesta =  [
-            "El objeto fue eliminado con exito!" =>$ventas
-        ];
+        
 
         return response()->json($respuesta, 200);
     }
@@ -211,12 +223,17 @@ class VendedorController extends Controller
     public function desbloqueo($id)
     {
         $ventas = Ventas::find($id);
-        $ventas->Estado = "1";
-        $ventas->save();
-
-        $respuesta =  [
-            "El objeto fue desbloqueado con exito!" =>$ventas
-        ];
+        $ventas->Numero;
+        if ($ventas = Ventas::select('*')->where('Numero', '=', $ventas->Numero)->get()) {
+            foreach ($ventas as $venta) {
+                $venta->Estado = "1";
+                $venta->save();
+            }
+            $respuesta =  [
+                "El objeto fue eliminado con exito!" => $ventas
+            ];
+        }
+        //dd($ventas);
 
         return response()->json($respuesta, 200);
     }

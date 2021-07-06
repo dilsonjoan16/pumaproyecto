@@ -49,6 +49,7 @@ class MailController extends Controller
             "correo_contacto" => "required|email",
         ]);
         $hashed_random_password = Hash::make(str_random(8));
+        
         /*$recovery =  [
             "Password" => $hashed_random_password
         ];*/
