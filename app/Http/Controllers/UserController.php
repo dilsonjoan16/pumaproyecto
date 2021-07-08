@@ -245,7 +245,7 @@ class UserController extends Controller
                 'dni' => 'required|integer',
                 'ganancia' => 'required|integer',
                 'porcentaje' => 'required|integer|max:50',
-                'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
+                'foto' => 'required', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                 'direccion' => 'required|string|max:255',
                 'telefono' => 'required|integer',
                 'codigo' => 'required|unique:users,codigo',

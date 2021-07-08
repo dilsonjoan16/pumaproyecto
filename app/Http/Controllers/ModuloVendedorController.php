@@ -162,7 +162,8 @@ class ModuloVendedorController extends Controller
 
     public function analisisVendedor()
     {
-
+        $usuario = auth()->user();
+        $usuario->id;
 
         $fechaActual = Carbon::now();
         //$week = Carbon::now()->week(); SEMANA ACTUAL CON CARBON
@@ -190,25 +191,25 @@ class ModuloVendedorController extends Controller
 
 
         //$fechaActual = $fechaActual->format('Y-m-d');
-        //OJO RELACIONAR CON LOS POMOTORES DE CADA VENDEDOR!!!!
-        $ventas = Ventas::all();
+       //DEBO REALIZAR WITH ANIDADO PARA PODER ACCEDER A LOS DATOS INTERNOS DE LA CONSULTA
+        $ventas = User::with('Ventas')->find($usuario->id);
         //SOLICITUDES APARTE
-        $ventatotal = Ventas::count("Numero");
-        $ventadiaria = Ventas::whereDay('created_at', $day)->count('Numero');
+        $ventatotal = User::with('Ventas')->find($usuario->id)->count("id");
+        $ventadiaria = User::with('Ventas')->find($usuario->id)->whereDay('created_at', $day)->count('id');
         $ventasemanal = $actualweek;
-        $ventamensual = Ventas::whereMonth('created_at', $month)->count('Numero');
-        $ventaanual = Ventas::whereYear('created_at', $year)->count('Numero');
+        $ventamensual = User::with('Ventas')->find($usuario->id)->whereMonth('created_at', $month)->count('id');
+        $ventaanual = User::with('Ventas')->find($usuario->id)->whereYear('created_at', $year)->count('id');
         //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [
 
-            "Ventas totales" => $ventatotal,
-            "Ventas del dia" => $ventadiaria,
-            "Ventas de la semana" => $ventasemanal,
-            "Ventas del mes" => $ventamensual,
-            "Ventas del año" => $ventaanual,
+            "Ventas totales del usuario" => $ventatotal,
+            "Ventas del dia del usuario" => $ventadiaria,
+            "Ventas de la semana del usuario" => $ventasemanal,
+            "Ventas del mes del usuario" => $ventamensual,
+            "Ventas del año del usuario" => $ventaanual,
             // "Acumulado de apuestas" => $acumulado,
-            "Datos del modelo asociado al vendedor" => $ventas->vendedores
+            "Datos del modelo asociado al vendedor" => $ventas
 
         ];
         return response()->json($respuesta, 200);

@@ -25,18 +25,14 @@ class Ventas extends Model
         "Sumatotalventas", //Suma total de las Ventas
         "Puntoventas", //Punto de Ventas
         //"Nombrepromotor", //Nombre del Promotor -> AFILIADO ESTE CAMPO SE DEBE ELIMINAR
-        "Puntoentregaventas" //Punto de entregas de las ventas
-        //                              }
+        "Puntoentregaventas", //Punto de entregas de las ventas
+        "user_id"
+        
     ];
 
-    public function vendedor()
+    public function user()
     {
-        return $this->belongsTo(User::class)->withTimestamps();
-    }
-
-    public function promotor()
-    {
-        return $this->belongsTo(Promotor::class);
+        return $this->belongsTo(User::class);
     }
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Solicitudes;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SolicitudesController extends Controller
@@ -29,6 +30,9 @@ class SolicitudesController extends Controller
      */
     public function store(Request $request, Solicitudes $solicitudes)
     {
+        $usuario = auth()->user();
+        $usuario->id;
+
         /*$solicitudes = Solicitudes::create($request->all());
         return $solicitudes;*/
         $request->validate([
@@ -51,11 +55,19 @@ class SolicitudesController extends Controller
 
         ]);
 
+        $solicitudes->user_id = $usuario->id;
+        $solicitudes->save();
+
+        $usuario->solicitud_id = $solicitudes->id;
+        $usuario->save();
+
+        $vendedorSolicitud = User::where('id','=',$solicitudes->user_id)->first();
+
         //$solicitudes = Solicitudes::all();
 
         $respuesta =  [
             "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-            "Vendedor afiliado a la solicitud" => $solicitudes->vendedor
+            "Vendedor afiliado a la solicitud" => $vendedorSolicitud
         ];
 
         return response()->json($respuesta, 201);
@@ -134,6 +146,13 @@ class SolicitudesController extends Controller
             "Solicitudes Aceptadas" => $solicitudes
         ];
         return response()->json($respuesta, 200);
+    }
+
+    public function solicitudVendedor()
+    {
+        $usuario = auth()->user();
+        $solicitudes = User::with('solicitudes')->find($usuario->id);
+        return response()->json($solicitudes, 200);
     }
 
     public function verSolicitudPromotor()

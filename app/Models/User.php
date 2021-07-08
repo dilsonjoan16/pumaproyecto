@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
         'tipo',
         'busqueda',
         'user_id',
-        'rol_id'
+        'rol_id',
         //role_id
     ];
 
@@ -108,9 +108,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(RolesUser::class);
     }
 
-    public function ventaVendedor()
+    public function Ventas()
     {
         return $this->hasMany(Ventas::class);
+    }
+
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitudes::class);
     }
     //////////// FIN FUNCIONES NUEVAS /////////
 }

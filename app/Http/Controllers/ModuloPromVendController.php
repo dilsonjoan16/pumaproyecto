@@ -16,13 +16,12 @@ class ModuloPromVendController extends Controller
      */
     public function index()
     {
-        $administradores = User::all();
-        $administradores->promotors->where('tipo', '=', '1')->get();
+        $administradores = User::where('rol_id','=',1)->get();
+        $promotores = User::where('rol_id','=',2)->get();
+        $vendedores = User::where('rol_id','=',3)->get();
+        
 
-        $promotores = Promotor::all();
-        $promotores->vendedors()->where('tipo', '=', '1')->get();
-
-        return response()->json([$user, $promotores], 200);
+        return response()->json([$vendedores, $promotores, $administradores], 200);
     }
 
     /**
@@ -45,8 +44,10 @@ class ModuloPromVendController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+        $nuevoId = User::where('rol_id', '=', 2)->get();
         $respuesta = [
-            "Objeto encontrado con exito!" => $user
+            "Objeto encontrado con exito!" => $user,
+            "Promotores disponibles" => $nuevoId
         ];
         return response()->json($respuesta, 200);
     }
@@ -61,17 +62,287 @@ class ModuloPromVendController extends Controller
     public function update(Request $request, $id)
     {
         //Debo permitir hacer los cambios necesarios
-        $user = User::find($id);
+        $usuario = auth()->user();
+        $usuario->rol_id;
+        $rolSelector = $request->get('rol');
+        //dd($rolSelector); 
+        //dd($usuario->rol_id);
+        if($usuario->rol_id == 1)
+        {
+//////////////////////////////////////////////////////////////////////////////////////////////
+            if($rolSelector == 1)
+            {
+                $user = User::find($id);
+                if ($imagenes = $request->file('foto')) {
+                    $file = $imagenes->getClientOriginalName();
+                    $imagenes->move('images', $file);
+                    $user['foto'] = $file;
+                }
+                if ($imagenes === null) {
+                    $user->update($request->all());
+                    $user->rol_id = 1;
+                    $user->save();
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    if ($user->hasRole('Vendedor')) {
+                        $user->removeRole('Vendedor');
+                    }
+                    $user->assignRole('Administrador');
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
+                    return response()->json($respuesta, 200);
+                }
+                if ($imagenes !== null) {
+                    $user->update([
+                        'name' => $request->get('name'),
+                        'email' => $request->get('email'),
+                        'dni' => $request->get('dni'),
+                        'ganancia' => $request->get('ganancia'),
+                        'porcentaje' => $request->get('porcentaje'),
+                        'foto' => $file,
+                        'direccion' => $request->get('direccion'),
+                        'telefono' => $request->get('telefono'),
+                        'codigo' => $request->get('codigo'),
+                        'rol_id' => 1
+                    ]);
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    if ($user->hasRole('Vendedor')) {
+                        $user->removeRole('Vendedor');
+                    }
+                    $user->assignRole('Administrador');
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
 
-        $user->update($request->all());
+                    return response()->json($respuesta, 200);
+                }
+                
+            }
+//////////////////////////////////////////////////////////////////////////////////////////////
+            if($rolSelector == 2)
+            {
+                $user = User::find($id);
+                if ($imagenes = $request->file('foto')) {
+                    $file = $imagenes->getClientOriginalName();
+                    $imagenes->move('images', $file);
+                    $user['foto'] = $file;
+                }
+                if ($imagenes === null) {
+                    $user->update($request->all());
+                    $user->rol_id = 2;
+                    $user->save();
+                    if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Vendedor')) {
+                        $user->removeRole('Vendedor');
+                    }
+                    $user->assignRole('Promotor');
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
+                    return response()->json($respuesta, 200);
+                }
+                if ($imagenes !== null) {
+                    $user->update([
+                        'name' => $request->get('name'),
+                        'email' => $request->get('email'),
+                        'dni' => $request->get('dni'),
+                        'ganancia' => $request->get('ganancia'),
+                        'porcentaje' => $request->get('porcentaje'),
+                        'foto' => $file,
+                        'direccion' => $request->get('direccion'),
+                        'telefono' => $request->get('telefono'),
+                        'codigo' => $request->get('codigo'),
+                        'rol_id' => 2
+                    ]);
+                    if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Vendedor')) {
+                        $user->removeRole('Vendedor');
+                    }
+                    $user->assignRole('Promotor');
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
 
-        $respuesta = [
-            "El objeto fue actualizado con exito" => $user
-        ];
+                    return response()->json($respuesta, 200);
+            }
+        }
+//////////////////////////////////////////////////////////////////////////////////////////////
+        if($rolSelector == 3)
+        {
+            $nuevo_id = $request->get('nuevo_id');
+                $user = User::find($id);
+                if ($imagenes = $request->file('foto')) {
+                    $file = $imagenes->getClientOriginalName();
+                    $imagenes->move('images', $file);
+                    $user['foto'] = $file;
+                }
+                if ($imagenes === null) {
+                    $user->update($request->all());
+                    $user->rol_id = 3;
+                    $user->user_id = $nuevo_id;
+                    $user->save();
+                    if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    $user->assignRole('Vendedor');
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
+                    return response()->json($respuesta, 200);
+                }
+                if ($imagenes !== null) {
+                    $user->update([
+                        'name' => $request->get('name'),
+                        'email' => $request->get('email'),
+                        'dni' => $request->get('dni'),
+                        'ganancia' => $request->get('ganancia'),
+                        'porcentaje' => $request->get('porcentaje'),
+                        'foto' => $file,
+                        'direccion' => $request->get('direccion'),
+                        'telefono' => $request->get('telefono'),
+                        'codigo' => $request->get('codigo'),
+                        'rol_id' => 3
+                    ]);
+                    if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    $user->assignRole('Vendedor');
+                    $user->user_id = $nuevo_id;
+                    $user->save();
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
 
-        return response()->json($respuesta);
-        
+                    return response()->json($respuesta, 200);
+                }
+        }
+//////////////////////////////////////////////////////////////////////////////////////////////
+        if($rolSelector == null)
+        {
+            $user = User::find($id);
+                if ($imagenes = $request->file('foto')) {
+                    $file = $imagenes->getClientOriginalName();
+                    $imagenes->move('images', $file);
+                    $user['foto'] = $file;
+                }
+                if ($imagenes === null) {
+                    $user->update($request->all());
+                    //$user->rol_id = 3;
+                    //$user->user_id = $nuevo_id;
+                    $user->save();
+                    /*if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    $user->assignRole('Vendedor');*/
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
+                    return response()->json($respuesta, 200);
+                }
+                if ($imagenes !== null) {
+                    $user->update([
+                        'name' => $request->get('name'),
+                        'email' => $request->get('email'),
+                        'dni' => $request->get('dni'),
+                        'ganancia' => $request->get('ganancia'),
+                        'porcentaje' => $request->get('porcentaje'),
+                        'foto' => $file,
+                        'direccion' => $request->get('direccion'),
+                        'telefono' => $request->get('telefono'),
+                        'codigo' => $request->get('codigo'),
+                        //'rol_id' => 3
+                    ]);
+                    /*if ($user->hasRole('Administrador')) {
+                        $user->removeRole('Administrador');
+                    }
+                    if ($user->hasRole('Promotor')) {
+                        $user->removeRole('Promotor');
+                    }
+                    $user->assignRole('Vendedor');*/
+                    //$user->user_id = $nuevo_id;
+                    //$user->save();
+                    $respuesta =  [
+                        "El objeto fue actualizado con exito!" => $user,
+                    ];
+
+                    return response()->json($respuesta, 200);
+        }
     }
+//////////////////////////////////////////////////////////////////////////////////////////////
+    if ($usuario->rol_id == 2)
+    {
+            //$nuevo_id = $request->get('nuevo_id');
+            $user = User::find($id);
+            if ($imagenes = $request->file('foto')) {
+                $file = $imagenes->getClientOriginalName();
+                $imagenes->move('images', $file);
+                $user['foto'] = $file;
+            }
+            if ($imagenes === null) {
+                $user->update($request->all());
+                $user->rol_id = 3;
+                //$user->user_id = $nuevo_id;
+                $user->save();
+                if ($user->hasRole('Administrador')) {
+                    $user->removeRole('Administrador');
+                }
+                if ($user->hasRole('Promotor')) {
+                    $user->removeRole('Promotor');
+                }
+                $user->assignRole('Vendedor');
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $user,
+                ];
+                return response()->json($respuesta, 200);
+            }
+            if ($imagenes !== null) {
+                $user->update([
+                    'name' => $request->get('name'),
+                    'email' => $request->get('email'),
+                    'dni' => $request->get('dni'),
+                    'ganancia' => $request->get('ganancia'),
+                    'porcentaje' => $request->get('porcentaje'),
+                    'foto' => $file,
+                    'direccion' => $request->get('direccion'),
+                    'telefono' => $request->get('telefono'),
+                    'codigo' => $request->get('codigo'),
+                    'rol_id' => 3
+                ]);
+                if ($user->hasRole('Administrador')) {
+                    $user->removeRole('Administrador');
+                }
+                if ($user->hasRole('Promotor')) {
+                    $user->removeRole('Promotor');
+                }
+                $user->assignRole('Vendedor');
+                //$user->user_id = $nuevo_id;
+                //$user->save();
+                $respuesta =  [
+                    "El objeto fue actualizado con exito!" => $user,
+                ];
+
+                return response()->json($respuesta, 200);
+            }
+        }
+    }
+}
 
     public function updateVendedor(Request $request, $id)
     {
@@ -111,31 +382,4 @@ class ModuloPromVendController extends Controller
         return response()->json($respuesta, 200);
     }
 
-    public function destroyPromotor($id)
-    {
-        $promotor = Promotor::find($id);
-        $promotor->tipo = "0";
-        $promotor->email = "";
-        $promotor->save();
-
-        $respuesta =  [
-            "El objeto fue eliminado con exito" => $promotor
-        ];
-
-        return repsonse()->json($respuesta, 200);
-    }
-
-    public function destroyVendedor($id)
-    {
-        $vendedor = Vendedor::find($id);
-        $vendedor->tipo = "0";
-        $vendedor->email = "";
-        $vendedor->save();
-
-        $respuesta =  [
-            "El objeto fue eliminado con exito" => $vendedor
-        ];
-
-        return repsonse()->json($respuesta, 200);
-    }
 }

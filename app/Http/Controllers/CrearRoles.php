@@ -149,8 +149,7 @@ class CrearRoles extends Controller
         if($promotor->hasRole('Vendedor')){
             $promotor->removeRole('Vendedor');
         }
-        //$promotor->removeRole('Promotor');
-        //$promotor = User::find($id);
+        
         $promotor->assignRole('Promotor');
         $prueba =  [
             "Role de Promotor asignado con exito!" => $promotor

@@ -160,7 +160,7 @@ class CustomizeController extends Controller
      */
     public function update(Request $request, $id, Customize $customize)
     {
-        $variable;
+        //$variable;
         $customize = Customize::find($id);
         ////////////////////////////////////////////////////////
 

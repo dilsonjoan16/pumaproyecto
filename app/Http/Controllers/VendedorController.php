@@ -59,14 +59,19 @@ class VendedorController extends Controller
         //DATOS PARA METRICAS
         //$ventas2 = User::select('*')->ventaVendedor; //Primera logica
         //$ventas2 = User::with('ventaVendedor')->get();
-        $ventas22 = Ventas::where('Estado', '=', 1)->get();
+
+
+    
+        $ventas2 = Ventas::with('user')->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
+        //$ventas2 = User::with('Ventas')->get(); //OBTENGO LOS USUARIOS
+        //dd($ventas2);
+
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
         $ventas3 = Ventas::Where('Estado', '=', 0)->get();
         $respuesta =  [
             "Numeros de loteria mas repetidos" => $ventas,
             "Numeros de loteria bloqueados" => $ventas3,
-            //"Data completa del Modelo" => $ventas2
-            "Data completa del Modelo" => $ventas22
+            "Data completa del Modelo" => $ventas2
         ];
         return response()->json($respuesta);
         //SELECT cliente, SUM(precio)
@@ -86,8 +91,8 @@ class VendedorController extends Controller
 
     public function estadoDeCuenta()
     {
-        $ventas2 = Ventas::all();
-        $ventas2->vendedores()->Where('Estado', '=', 1)->get();
+        $usuario = auth()->user();
+        $ventas2 = User::with('Ventas')->find($usuario->id);
         return response()->json($ventas2,200);
     }
 
@@ -97,8 +102,14 @@ class VendedorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Ventas $ventas)
+    /*public function store(Request $request, Ventas $ventas)
     {
+
+        $usuario = auth()->user();
+        $usuario->id;
+        //dd($usuario->rol_id);
+        //dd($usuario->id);
+
         $request->validate([
             "Fecha" => "required|date",
             "Numero" => "required|integer",
@@ -123,7 +134,7 @@ class VendedorController extends Controller
         */
         
 
-        $ventas = Ventas::create([
+        /*$ventas = Ventas::create([
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),
             "Valorapuesta" => $request->get("Valorapuesta"),
@@ -139,24 +150,22 @@ class VendedorController extends Controller
             //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
 
-        $vendedorPromotor = Vendedor::all();
-
+       
+        $ventas->user_id = $usuario->id;
+        $ventas->save();
+        $usuario->venta_id = $ventas->id;
+        $usuario->save();
+        $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
         $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
         $respuesta =  [
             "Suma de todas las ventas que se realizaron" => $sumatotalventa,
             "Suma total del valor de todas las ventas" => $sumatotalventa2,
-            "Promotor afiliado al vendedor" =>$vendedorPromotor->promotor
+            "Vendedor/Promotor afiliado a la venta" =>$Vendedor,
         ];
+        return response()->json([$ventas, $respuesta], 201);
 
-        
-
-//Revisar la logica para Obtener la sumatoria correcta!
-        /*$acumulador = Ventas::where("Sumatotalventas",">","0")->get();
-        $ventas->Sumatotalventas + $acumulador;*/
-        return response()->json([$ventas, $respuesta], 201); //$acumulador);
-
-    }
+    }*/
 
     /**
      * Display the specified resource.
@@ -238,8 +247,13 @@ class VendedorController extends Controller
         return response()->json($respuesta, 200);
     }
 
-    public function reportarVentaPromotor(Request $request, Ventas $ventas)
+    public function guardarVenta(Request $request)
     {
+        $usuario = auth()->user();
+        $usuario->id;
+        //dd($usuario->rol_id);
+        //dd($usuario->id);
+
         $request->validate([
             "Fecha" => "required|date",
             "Numero" => "required|integer",
@@ -254,6 +268,15 @@ class VendedorController extends Controller
             //"Nombrepromotor" => "required|string",
             "Puntoentregaventas" => "required|string"
         ]);
+
+        /* 
+            Logica para lograr captar la sumatoria
+        */
+        //$valor = $valor + $request->get("Sumatotalventas");
+        /*
+            Fin de la logica para lograr captar la sumatoria
+        */
+
 
         $ventas = Ventas::create([
             "Fecha" => $request->get("Fecha"),
@@ -271,16 +294,21 @@ class VendedorController extends Controller
             //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
 
-        $vendedorPromotor = Promotor::all();
 
+        $ventas->user_id = $usuario->id;
+        $ventas->save();
+        $usuario->venta_id = $ventas->id;
+        $usuario->save();
+        $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
         $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
         $respuesta =  [
             "Suma de todas las ventas que se realizaron" => $sumatotalventa,
             "Suma total del valor de todas las ventas" => $sumatotalventa2,
-            "Administrador afiliado al promotor" => $vendedorPromotor->administrador
+            "Vendedor/Promotor afiliado a la venta" => $Vendedor,
         ];
-
-        return response()->json([$ventas, $respuesta], 201); 
+        return response()->json([$ventas, $respuesta], 201);
     }
+
+    
 }

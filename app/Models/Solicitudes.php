@@ -16,18 +16,13 @@ class Solicitudes extends Model
         "MobiliarioSolicitado", // mobiliario solicitado -> MOBILIARIO
         "Ubicacion", // punto de ubicacion -> MOBILIARIO
         "Solicitud", // otros -> OTROS
-        "Tipo" //Sirve para el Borrado logico 1 EN ESPERA 0 RECHAZADO 2 ACEPTADA
+        "Tipo",//Sirve para el Borrado logico 1 EN ESPERA 0 RECHAZADO 2 ACEPTADA
+        "user_id"
         
-
     ];
 
-    public function promotor()
+    public function user()
     {
-        return $this->belongsTo(Promotor::class);
-    }
-
-    public function vendedor()
-    {
-        return $this->belongsTo(Vendedor::class);
+        return $this->belongsTo(User::class);
     }
 }
