@@ -15,13 +15,13 @@ class CreateSolicitudesTable extends Migration
     {
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
-            $table->string("Nombre");
             $table->integer("CantidadSolicitada")->nullable();
             $table->integer("Cuotas")->nullable();
             $table->string("MobiliarioSolicitado")->nullable();
             $table->string("Ubicacion")->nullable();
-            $table->string("Solicitud");
+            $table->string("Solicitud")->nullable();
             $table->integer("Tipo")->default(1); //TIPO 0 RECHAZADO TIPO 1 EN ESPERA TIPO 2 ACEPTADA
+            $table->string("Categoria")->nullable();
             $table->timestamps();
         });
     }

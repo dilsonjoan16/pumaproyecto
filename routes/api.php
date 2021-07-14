@@ -19,6 +19,7 @@ use App\Http\Controllers\CrearRoles;
 use App\Http\Controllers\PremiosController;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Models\User;
 
 /*
@@ -46,7 +47,19 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'authenticate']);
 ////////////////////////////////////////////////////////////////
 //Ruta para el Recovery (Recuperacion de Clave)
-//Aqui deber la ruta
+Route::group([
+    'namespace' => 'Auth',
+    //'middleware' => 'api',
+    'prefix' => 'password'
+], function () {
+//    Route::post('create', 'PasswordResetController@create');
+  //  Route::get('find/{token}', 'PasswordResetController@find');
+    //Route::post('reset', 'PasswordResetController@reset');
+
+    Route::post('create', [PasswordResetController::class, 'create']);
+    Route::get('find/{token}', [PasswordResetController::class, 'find']);
+    Route::post('reset', [PasswordResetController::class, 'reset']);
+});
 
 //RUTA DEL HOME LIBRE
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
@@ -67,6 +80,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::prefix('administrador')->group(function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
+            Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
     //        Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
     //        Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
     //        Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
@@ -93,13 +107,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::delete('bloquearNumero/{id}', [VendedorController::class, 'destroy']); //BLOQUEA UN NUMERO MEDIANTE ID
             Route::put('desbloquearNumero/{id}', [VendedorController::class, 'desbloqueo']); //DESBLOQUEA UN NUMERO MEDIANTE ID
             //Ruta para la creacion de Sorteos
-            Route::get('mostrarSorteos', [SorteosController::class, 'index']); //MUESTRA TODO SOBRE SORTEOS
-            Route::get('encontrarSorteos/{id}', [SorteosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE SORTEOS
-            Route::post('crearSorteos', [SorteosController::class, 'create']); //CREA UN SORTEO 
-            Route::put('modificarSorteos/{id}', [SorteosController::class, 'update']); //MODIFICA UN SORTEO MEDIANTE ID
-            Route::delete('eliminarSorteos/{id}', [SorteosController::class, 'destroy']); //ELIMINA UN SORTEO MEDIANTE ID
+            Route::get('mostrarSorteo', [SorteosController::class, 'index']); //MUESTRA TODO SOBRE SORTEOS
+            Route::get('mostrarSorteo/{id}', [SorteosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE SORTEOS
+           // RUTA DEFECTUOSA // Route::post('crearSorteos', [SorteosController::class, 'store']); //CREA UN SORTEO 
+            Route::post('generarSorteo', [SorteosController::class, 'generar']);
+            Route::put('modificarSorteo/{id}', [SorteosController::class, 'update']); //MODIFICA UN SORTEO MEDIANTE ID
+            Route::delete('eliminarSorteo/{id}', [SorteosController::class, 'destroy']); //ELIMINA UN SORTEO MEDIANTE ID
+            Route::put('habilitarSorteo/{id}', [SorteosController::class, 'habilitar']);
             //Ruta para la creacion de Premios
-            Route::get('mostrarPremios', [PremiosController::class, 'index']); //MUESTRA TODO SOBRE PREMIOS
+            /*Route::get('mostrarPremios', [PremiosController::class, 'index']); //MUESTRA TODO SOBRE PREMIOS
             Route::get('encontrarPremios/{id}', [PremiosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE PREMIOS
             Route::post('crearPremios', [PremiosController::class, 'store']); //CREA UN PREMIO
             Route::put('modificarPremios/{id}', [PremiosController::class, 'update']); //MODIFICA UN PREMIO MEDIANTE ID
@@ -121,7 +137,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             //Rutas para modificar Roles => Administrador -> Promotor -> Vendedor
             Route::get('ModificarAdministrador/{id}', [CrearRoles::class, 'ModificarAdministrador']); //CREA EL ROL AL ID SUMINISTRADO
             Route::get('ModificarPromotor/{id}', [CrearRoles::class, 'ModificarPromotor']); //ELIMINA EL ROL ACTUAL Y AGREGA ROL PROMOTOR
-            Route::get('ModificarVendedor/{id}', [CrearRoles::class, 'ModificarVendedor']); //ELIMINA EL ROL VENDEDOR Y AGREGA ROL PROMOTOR
+            Route::get('ModificarVendedor/{id}', [CrearRoles::class, 'ModificarVendedor']); //ELIMINA EL ROL VENDEDOR Y AGREGA ROL PROMOTOR*/
 
         });
     });
@@ -133,22 +149,23 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('crearvendedor', [UserController::class, 'register']); //CREA UN VENDEDOR AFILIADO AL PROMOTOR
             Route::get('mostrarvendedor', [ModuloVendedorController::class, 'index']); //MUESTRA TODOS LOS VENDEDORES AFILIADOS AL PROMOTOR
             Route::get('encontrarvendedor/{id}', [ModuloVendedorController::class, 'show']); //MUESTRA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
-            Route::put('modificarvendedor/{id}', [ModuloVendedorController::class, 'update']); //MODIFICA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
+            Route::post('modificarvendedor/{id}', [ModuloVendedorController::class, 'update']); //MODIFICA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::delete('eliminarvendedor/{id}', [ModuloVendedorController::class, 'destroy']); //ELIMINAR UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::post('busquedavendedor', [ModuloVendedorController::class, 'busqueda']); //BARRA DE BUSQUEDA MEDIANTE EL NOMBRE
-            Route::get('mostrarsolicitudes', [SolicitudesController::class, 'verSolicitudPromotor']); //MOSTRAR TODAS LAS SOLICITUDES 
-            Route::post('crearsolicitudes', [SolicitudesController::class, 'crearSolicitudPromotor']); //CREAR SOlICITUDES
-            Route::get('encontrarsolicitudes/{id}', [SolicitudesController::class, 'show'] //ENCONTRAR SOLICITUD POR ID
-            ); //MUESTRA SOLO UN REGISTRO DE SOLICITUDES MEDIANTE ID
+            Route::get('mostrarsolicitud', [SolicitudesController::class, 'verSolicitudPromotor']); //MOSTRAR TODAS LAS SOLICITUDES 
+            Route::post('crearsolicitud', [SolicitudesController::class, 'store']); //CREAR SOlICITUDES
+            Route::get('encontrarsolicitud/{id}', [SolicitudesController::class, 'show']); //ENCONTRAR SOLICITUD POR ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
             Route::get('resumenDeVentas', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
+            Route::get('adicionalesVendedor', [VendedorController::class, 'adicionales']); //DATOS ADICIONALES QUE APARECEN EN REPORTE DE VENTAS -> PROMOTOR, ETC
+            Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
         });
     });
 
     Route::group(['middleware' => ['role:Vendedor']], function () {
         //Grupo de rutas del vendedor
         Route::prefix('vendedor')->group(function () {
-            // RUTA INFRUCTUOSA //Route::post('reportarventa', [VendedorController::class, 'store']); //CREAR VENTA
+            // RUTA INFRUCTUOSA //Route::post('reportarventa', [VendedorController::class, 'store']); //CREAR VENTA //RUTA INFRUCTUOSA
             Route::post('venta', [VendedorController::class, 'guardarVenta']);//RUTA PARA CREAR VENTA-VENDEDOR
             Route::get('mostrarventa',   [VendedorController::class, 'estadoDeCuenta']); //MUESTRA TODAS LAS VENTAS AFILIADAS AL VENDEDOR
             Route::get('encontrarventa/{id}', [VendedorController::class, 'show']); //MUESTRA UNA VENTA MEDIANTE ID
@@ -159,6 +176,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('encontrarsolicitud/{id}', [SolicitudesController::class, 'show']); //MOSTRAR UN REGISTRO DE SOLICITUDES MEDIANTE ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR SOLICITUD MEDIANTE ID
             Route::get('estadodecuenta', [ModuloVendedorController::class, 'analisisVendedor']); //VENTAS TOTALES DEL DIA,SEMANA,MES PREMIOS, ETC
+            Route::get('solicitudesPropias', [SolicitudesController::class, 'index']); //TODOS LOS DATOS AFILIADOS AL USUARIO
+            Route::get('adicionalesVendedor', [VendedorController::class,'adicionales']); //DATOS ADICIONALES QUE APARECEN EN REPORTE DE VENTAS -> PROMOTOR, ETC
+            Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
             //Route::put('modificarsolicitud/{id}', [SolicitudesController::class,'update']); EN CASO DE NECESITARSE RUTA PARA MODIFICAR
 
         });

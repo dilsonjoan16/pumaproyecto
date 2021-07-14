@@ -10,14 +10,11 @@ class Sorteos extends Model
     use HasFactory;
 
     protected $fillable =  [
-        "NombreSorteo",
-        "Tipo", //Tipo del sorteo
-        "FechaCulminacion",
-        "Numeros",
+        "Fecha",
+        "Loteria",
+        "Codigo",
         "Estado", //ACTIVO 1 INACTIVO 0
-        //"Lugarpodio",
-        "NombreGanador",
-        "Vendedor"
+        "user_id"
     ];
 
     public function premios()
@@ -28,5 +25,10 @@ class Sorteos extends Model
     public function acumulado()
     {
         return $this->hasMany(Acumulado::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

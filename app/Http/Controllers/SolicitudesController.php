@@ -15,10 +15,10 @@ class SolicitudesController extends Controller
      */
     public function index()//SOLICITUDES EN ESPERA
     {
-        $solicitudes = Solicitudes::all();
-        $solicitudes->vendedor()->where('tipo', '=', '1')->get();
+        $usuario = auth()->user();
+        $usuario->id;
+        $solicitudes = Solicitudes::with('user')->where('user_id','=', $usuario->id)->get();
         
-
         return response()->json($solicitudes, 200);
     }
 
@@ -33,20 +33,83 @@ class SolicitudesController extends Controller
         $usuario = auth()->user();
         $usuario->id;
 
+
         /*$solicitudes = Solicitudes::create($request->all());
         return $solicitudes;*/
         $request->validate([
-            "Nombre" => "required|string",
-            "CantidadSolicitada" => "required|integer",
-            "Cuotas" => "required|integer",
-            "MobiliarioSolicitado" => "required|string",
-            "Ubicacion" => "required|string",
-            "Solicitud" => "required|string",
+            "CantidadSolicitada" => "integer",
+            "Cuotas" => "integer",
+            "MobiliarioSolicitado" => "string",
+            "Ubicacion" => "string",
+            "Solicitud" => "string",
 
         ]);
 
-        $solicitudes = Solicitudes::create([
-            "Nombre" => $request->get("Nombre"),
+        if($request->get("CantidadSolicitada") !== null && $request->get("Cuotas") !== null)
+        {
+            $solicitudes = new Solicitudes;
+            $solicitudes->CantidadSolicitada = $request->get("CantidadSolicitada");
+            $solicitudes->Cuotas = $request->get("Cuotas");
+            $solicitudes->Categoria = "Prestamo/Credito";
+            $solicitudes->user_id = $usuario->id;
+            $solicitudes->save();
+
+            $usuario->solicitud_id = $solicitudes->id;
+            $usuario->save();
+
+            $Solicitante = User::where('id', '=', $solicitudes->user_id)->first();
+
+            $respuesta =  [
+                "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
+                "Usuario afiliado a la solicitud" => $Solicitante
+            ];
+
+            return response()->json($respuesta, 201);
+        }
+        if($request->get("MobiliarioSolicitado") !== null && $request->get("Ubicacion") !== null)
+        {
+            $solicitudes = new Solicitudes;
+            $solicitudes->MobiliarioSolicitado = $request->get("MobiliarioSolicitado");
+            $solicitudes->Ubicacion = $request->get("Ubicacion");
+            $solicitudes->Categoria = "Mobiliario";
+            $solicitudes->user_id = $usuario->id;
+            $solicitudes->save();
+
+            $usuario->solicitud_id = $solicitudes->id;
+            $usuario->save();
+
+            $Solicitante = User::where('id', '=', $solicitudes->user_id)->first();
+
+            $respuesta =  [
+                "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
+                "Usuario afiliado a la solicitud" => $Solicitante
+            ];
+
+            return response()->json($respuesta, 201);
+        }
+        if($request->get("Solicitud") !== null)
+        {
+            $solicitudes = new Solicitudes;
+            $solicitudes->Solicitud = $request->get("Solicitud");
+            $solicitudes->Categoria = "Solicitud/Otro";
+            $solicitudes->user_id = $usuario->id;
+            $solicitudes->save();
+
+            $usuario->solicitud_id = $solicitudes->id;
+            $usuario->save();
+
+            $Solicitante = User::where('id', '=', $solicitudes->user_id)->first();
+
+            $respuesta =  [
+                "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
+                "Usuario afiliado a la solicitud" => $Solicitante
+            ];
+
+            return response()->json($respuesta, 201);
+        }
+
+        /*$solicitudes = Solicitudes::create([
+            
             "CantidadSolicitada" => $request->get("CantidadSolicitada"),
             "Cuotas" => $request->get("Cuotas"),
             "MobiliarioSolicitado" => $request->get("MobiliarioSolicitado"),
@@ -70,7 +133,7 @@ class SolicitudesController extends Controller
             "Vendedor afiliado a la solicitud" => $vendedorSolicitud
         ];
 
-        return response()->json($respuesta, 201);
+        return response()->json($respuesta, 201);*/
     }
 
     /**
@@ -157,15 +220,20 @@ class SolicitudesController extends Controller
 
     public function verSolicitudPromotor()
     {
-        $promotorSolicitud = Promotor::all();
+        $usuario = auth()->user();
+        $usuario->id;
+
+        $promotorSolicitud = Solicitudes::with('user')->where('user_id','=', $usuario->id)->get();
+        $userPromotor = User::with('tieneUsuarios')->where('user_id','=', $usuario->id)->with('solicitudes')->get();
         $respuesta =  [
-            "Solicitudes del promotor" =>$promotorSolicitud->solicitudes()->where('tipo','=',1)->get(),
-            "Solicitudes de los vendedores" =>$promotorSolicitud->solicitudVendedor()->where('tipo','=', 1)->get()
+            "Solicitudes del promotor" => $promotorSolicitud,
+            "Usuarios afiliados" => $userPromotor
         ];
+        
         return response()->json($respuesta, 200);
     }
 
-    public function crearSolicitudPromotor(Request $request, Solicitudes $solicitudes)
+    /*public function crearSolicitudPromotor(Request $request, Solicitudes $solicitudes)
     {
         $request->validate([
             "Nombre" => "required|string",
@@ -195,14 +263,17 @@ class SolicitudesController extends Controller
         ];
 
         return response()->json($respuesta, 201);
-    }
+    }*/
 
     public function SolicitudesAdministrador()
     {
-        $solicitudes = Solicitudes::all();
-        $vendedorSolicitudes = $solicitudes->vendedor();
-        $promotorSolicitudes = $solicitudes->promotor();
+        $SolicitudesProm = User::with('solicitudes')->where('rol_id', '=', 2)->get();
+        $SolicitudesVend = User::with('solicitudes')->where('rol_id', '=', 3)->get();
+        $solicitudes =  [
+            "Solicitudes de vendedores" => $SolicitudesVend,
+            "Solicitudes de promotores" => $SolicitudesProm
+        ];
 
-        return response()->json([$vendedorSolicitudes, $promotorSolicitudes], 200);
+        return response()->json($solicitudes, 200);
     }
 }

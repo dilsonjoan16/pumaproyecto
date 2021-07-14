@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Acumulado;
 use App\Models\Premios;
 use App\Models\Promotor;
@@ -19,11 +20,21 @@ class ModuloVendedorController extends Controller
      */
     public function index()
     {
+        $usuario = auth()->user();
+        $usuario->id;
+
         //VENDEDORES AFILIADOS AL PROMOTOR
-        $vendedorPromotor = Vendedor::all();
-        $vendedorPromotor->promotor()->where('tipo','=', 1)->get();
-        //$vendedor = User::where('tipo', '=', 1)->get();
-        return response()->json($vendedorPromotor, 200);
+        $vendedores = User::with('tieneUsuarios')->find($usuario->id);
+
+        /*$categorias = Categoria::where("categoria_id", $id)->orWhere("id", $id)->with(array("tiendas" => function ($q) {
+            $q->with(array(
+                "horario" => function ($qh) {
+                    $qh->where("horarios.dia", date("N"));
+                }
+            ));
+        }))->get();*/
+
+        return response()->json($vendedores, 200);
     }
 
     /**
@@ -61,12 +72,58 @@ class ModuloVendedorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $vendedor = User::find($id);
-        $vendedor->update($request->all());
-        $respuesta =  [
-            "Objeto modificado con exito!" =>$vendedor
-        ];
-        return response()->json($respuesta, 200);
+        //$nuevo_id = $request->get('nuevo_id');
+        $user = User::find($id);
+        if ($imagenes = $request->file('foto')) {
+            $file = $imagenes->getClientOriginalName();
+            $imagenes->move('images', $file);
+            $user['foto'] = $file;
+        }
+        if ($imagenes === null) {
+            $user->update($request->all());
+            //$user->rol_id = 3;
+            //$user->user_id = $nuevo_id;
+            $user->save();
+            /*if ($user->hasRole('Administrador')) {
+                    $user->removeRole('Administrador');
+                }
+                if ($user->hasRole('Promotor')) {
+                    $user->removeRole('Promotor');
+                }
+                $user->assignRole('Vendedor');*/
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $user,
+            ];
+            return response()->json($respuesta, 200);
+        }
+        if ($imagenes !== null) {
+            $user->update([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'dni' => $request->get('dni'),
+                'ganancia' => $request->get('ganancia'),
+                'porcentaje' => $request->get('porcentaje'),
+                'foto' => $file,
+                'direccion' => $request->get('direccion'),
+                'telefono' => $request->get('telefono'),
+                'codigo' => $request->get('codigo'),
+                //'rol_id' => 3
+            ]);
+            /*if ($user->hasRole('Administrador')) {
+                    $user->removeRole('Administrador');
+                }
+                if ($user->hasRole('Promotor')) {
+                    $user->removeRole('Promotor');
+                }
+                $user->assignRole('Vendedor');*/
+            //$user->user_id = $nuevo_id;
+            //$user->save();
+            $respuesta =  [
+                "El objeto fue actualizado con exito!" => $user,
+            ];
+
+            return response()->json($respuesta, 200);
+        }
     }
 
     /**
@@ -82,7 +139,7 @@ class ModuloVendedorController extends Controller
         $vendedor->save();
 
         $respuesta =  [
-            "Objeto eliminado con exito!" =>$vendedor
+            "Objeto eliminado con exito!" => $vendedor
         ];
 
         return response()->json($respuesta, 200);
@@ -96,71 +153,12 @@ class ModuloVendedorController extends Controller
 
         $busqueda = $request->get('busqueda');
 
-        $vendedor = Vendedor::where('name', 'LIKE', '%' . $busqueda . '%')->get();
+        $vendedor = User::where('name', 'LIKE', '%' . $busqueda . '%')->orWhere('email', 'LIKE', '%' . $busqueda . '%')->get();
 
         return response()->json($vendedor, 200);
-
     }
 
     public function analisisPromotor()
-    {
-
-        
-        $fechaActual = Carbon::now();
-        //$week = Carbon::now()->week(); SEMANA ACTUAL CON CARBON
-
-
-        $month = $fechaActual->format('m');
-        $day = $fechaActual->format('d');
-        $year = $fechaActual->format('Y');
-        $fechaActual = $fechaActual->format('d-m-Y');
-        $lastWeek = Carbon::now()->subWeek();
-        $afterWeek = Carbon::now()->addWeek();
-        $actualweek = Ventas::where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count("Numero");
-
-       /*
-        $today = Carbon::now();
-         = //whatever carbon or something else has to retrieve today's day
-        $ventasemanal = Ventas::where
-       ->where('startdate', '<', $today->format('Y-m-d'))
-       ->where('endate', '>', $today->format('Y-m-d'))
-       //or where ('weekday') = $weekday?
-       ->get();
-        
-        
-         */
-        
-        
-        //$fechaActual = $fechaActual->format('Y-m-d');
-        //OJO RELACIONAR CON LOS VENDEDORES DE CADA PROMOTOR
-        $ventas = Promotor::all();
-        //SOLICITUDES APARTE
-        $ventatotal = Ventas::count("Numero");
-        $ventadiaria = Ventas::whereDay('created_at', $day)->count('Numero');
-        $ventasemanal = $actualweek;
-        $ventamensual = Ventas::whereMonth('created_at', $month)->count('Numero');
-        $ventaanual = Ventas::whereYear('created_at', $year)->count('Numero');
-        $acumulados = Acumulado::where('Estado', '=', 1)->get();
-        $premios = Premios::where('Estado', '=', 1)->get();
-        //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
-        //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
-        $respuesta =  [
-            
-            "Ventas totales" => $ventatotal,
-            "Ventas del dia" => $ventadiaria,
-            "Ventas de la semana" => $ventasemanal,
-            "Ventas del mes" => $ventamensual,
-            "Ventas del año" => $ventaanual,
-           // "Acumulado de apuestas" => $acumulado,
-            "Acumulados" => $acumulados,
-            "Premios" => $premios,
-            "Datos del modelo" => $ventas->ventaVendedor
-
-        ];
-        return response()->json($respuesta, 200);
-    }
-
-    public function analisisVendedor()
     {
         $usuario = auth()->user();
         $usuario->id;
@@ -188,17 +186,77 @@ class ModuloVendedorController extends Controller
         
         
          */
+        //$fechaActual = $fechaActual->format('Y-m-d');
+
+        $ventas = User::with('Ventas')->find($usuario->id); //VENTAS DEL PROMOTOR
+        $ventasVendedor = User::with('tieneUsuarios')->where('user_id', '=', $usuario->id)->with('Ventas')->get();
+        //RESUMEN DE VENTAS DEL PROMOTOR
+        $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
+        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('created_at', $day)->count();
+        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count();
+        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('created_at', $month)->count();
+        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('created_at', $year)->count();
+        $acumulados = Acumulado::where('Estado', '=', 1)->get();
+        $premios = Premios::where('Estado', '=', 1)->get();
+        //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
+        //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
+        $respuesta =  [
+
+            "Ventas totales" => $ventatotal,
+            "Ventas del dia" => $ventadiaria,
+            "Ventas de la semana" => $ventasemanal,
+            "Ventas del mes" => $ventamensual,
+            "Ventas del año" => $ventaanual,
+            // "Acumulado de apuestas" => $acumulado,
+            //"Acumulados" => $acumulados,
+            //"Premios" => $premios,
+            "Datos y ventas del promotor" => $ventas,
+            "Datos de los vendedores" => $ventasVendedor
+        ];
+        return response()->json($respuesta, 200);
+    }
+
+    public function analisisVendedor()
+    {
+        $usuario = auth()->user();
+        $usuario->id;
+
+        $fechaActual = Carbon::now();
+        //$week = Carbon::now()->week(); SEMANA ACTUAL CON CARBON
+
+
+        $month = $fechaActual->format('m');
+        $day = $fechaActual->format('d');
+        $year = $fechaActual->format('Y');
+        $fechaActual = $fechaActual->format('d-m-Y');
+        $lastWeek = Carbon::now()->subWeek();
+        $afterWeek = Carbon::now()->addWeek();
+        //dd($day);
+        //EJEMPLO BASE -> $actualweek = Ventas::where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count("Numero"); 
+
+        /*
+        $today = Carbon::now();
+         = //whatever carbon or something else has to retrieve today's day
+        $ventasemanal = Ventas::where
+       ->where('startdate', '<', $today->format('Y-m-d'))
+       ->where('endate', '>', $today->format('Y-m-d'))
+       //or where ('weekday') = $weekday?
+       ->get();
+        
+        
+         */
 
 
         //$fechaActual = $fechaActual->format('Y-m-d');
-       //DEBO REALIZAR WITH ANIDADO PARA PODER ACCEDER A LOS DATOS INTERNOS DE LA CONSULTA
+
         $ventas = User::with('Ventas')->find($usuario->id);
+        //$ventas = Ventas::with('user')->where('user_id', '=', $usuario->id)->get();
         //SOLICITUDES APARTE
-        $ventatotal = User::with('Ventas')->find($usuario->id)->count("id");
-        $ventadiaria = User::with('Ventas')->find($usuario->id)->whereDay('created_at', $day)->count('id');
-        $ventasemanal = $actualweek;
-        $ventamensual = User::with('Ventas')->find($usuario->id)->whereMonth('created_at', $month)->count('id');
-        $ventaanual = User::with('Ventas')->find($usuario->id)->whereYear('created_at', $year)->count('id');
+        $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
+        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('Fecha', $day)->count('id');
+        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("Fecha", "<", $afterWeek)->where("Fecha", ">", $lastWeek)->count();
+        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('Fecha', $month)->count();
+        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('Fecha', $year)->count();
         //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [

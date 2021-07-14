@@ -6,6 +6,7 @@ use App\Models\Administrador;
 use App\Models\Reporte;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdministradorController extends Controller
 {
@@ -17,10 +18,11 @@ class AdministradorController extends Controller
     public function index()
     {
 
-        $resumenventas = Ventas::all();
+        $resumenventasProm = User::with('Ventas')->where('rol_id', '=', 2)->get();
+        $resumenventasVend = User::with('Ventas')->where('rol_id', '=', 3)->get();
         $ventas =  [
-            "Ventas de vendedores" => $resumenventas->vendedores(),
-            "Ventas de promotores" => $resumenventas->promotor()
+            "Ventas de vendedores" => $resumenventasVend,
+            "Ventas de promotores" => $resumenventasProm
         ];
         
         return response()->json($ventas, 200);

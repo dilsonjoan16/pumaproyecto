@@ -23,7 +23,6 @@ class SolicitudesFactory extends Factory
     {
         return [
             
-            "Nombre" => $this->faker->name,
             "CantidadSolicitada" => $this->faker->numberBetween($min = 1000, $max = 9000),
             "Cuotas" => $this->faker->randomDigit,
             "MobiliarioSolicitado" => $this->faker->randomElement($array = array('Vitrinas', 'Mostradores', 'Telefonos', 'Verificadores', 'Computadores', 'Impresoras')),

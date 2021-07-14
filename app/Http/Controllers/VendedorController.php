@@ -6,6 +6,7 @@ use App\Models\Promotor;
 use App\Models\Vendedor;
 use App\Models\User;
 use App\Models\Ventas;
+use App\Models\Solicitudes;
 use Illuminate\Http\Request;
 
 class VendedorController extends Controller
@@ -253,7 +254,7 @@ class VendedorController extends Controller
         $usuario->id;
         //dd($usuario->rol_id);
         //dd($usuario->id);
-
+        
         $request->validate([
             "Fecha" => "required|date",
             "Numero" => "required|integer",
@@ -307,8 +308,50 @@ class VendedorController extends Controller
             "Suma total del valor de todas las ventas" => $sumatotalventa2,
             "Vendedor/Promotor afiliado a la venta" => $Vendedor,
         ];
-        return response()->json([$ventas, $respuesta], 201);
+        return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor'), 201);
     }
 
-    
+    public function adicionales()
+    {
+        $usuario = auth()->user();
+        $usuario->id;
+        $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
+        $sumatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->sum('Valorapuesta');
+        $promotor = User::where('id', '=', $usuario->user_id)->get();
+
+        /*$respuesta =  [
+            "Numero de ventas" => $ventatotal,
+            "Suma del valor de las ventas" => $sumatotal,
+             
+        ];*/
+
+        return response()->json(compact('ventatotal','sumatotal','promotor'), 200);
+    }
+
+    public function perfil()
+    {
+        $usuario = auth()->user();
+        $usuario->id;
+
+        $ventas = User::with('Ventas')->where('venta_id', '=', $usuario->venta_id)->get();
+        $solicitudes = User::with('solicitudes')->where('solicitud_id', '=', $usuario->solicitud_id)->get();
+        $pertenece = User::where('id', '=', $usuario->user_id)->get();
+        $tiene = User::where('user_id', '=', $usuario->id)->get();
+        $sorteos = User::with('sorteos')->where('sorteo_id', '=', $usuario->sorteo_id)->get();
+        $credito = Solicitudes::where('Categoria', 'Prestamo/Credito')->where('user_id', '=', $usuario->id)->sum('CantidadSolicitada');
+
+        $respuesta =  [
+            "Datos del usuario" => $usuario,
+            //"Rol aparte" => $usuario->roles,
+            "Ventas del usuario" => $ventas,
+            "Solicitudes del usuario" => $solicitudes,
+            "Pertenece a este usuario" => $pertenece,
+            "Tiene a estos usuarios" => $tiene,
+            "Sorteos creados" => $sorteos,
+            "Credito" => $credito
+        ];
+
+        return response()->json($respuesta,200);
+
+    }
 }
