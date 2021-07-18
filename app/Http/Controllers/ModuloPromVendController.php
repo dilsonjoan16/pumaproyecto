@@ -366,7 +366,6 @@ class ModuloPromVendController extends Controller
      */
     public function destroy($id)
     {
-        //Debo permitir que se haga un SET al estado y cambie el estado a 0 solamente, NO DESTRUIR de BD
 
         //$user = User::where('id', $id)->set('tipo',0);
 

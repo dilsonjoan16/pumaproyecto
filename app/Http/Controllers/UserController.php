@@ -27,12 +27,9 @@ class UserController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         //Consulta que me trae el rol logueado
-        //$usuarios = User::with('rol')->whereRolId(1)->findOrFail(auth()->id());
-
 
         $usuario = auth()->user();
         $usuario->roles; //ESTO ME TRAE EL USUARIO LOGUEADO CON TODA SU INFORMACION PERSONAL Y DEL ROL
-
 
         //Fin de consulta que me trae el rol logueado
         return response()->json(compact('token', 'usuario'));
@@ -68,8 +65,8 @@ class UserController extends Controller
                     'email' => ['required', 'email', 'max:255', 'unique:users,email'],
                     'password' => 'required|string|min:6|max:12',
                     'dni' => 'required|integer',
-                    //'ganancia' => 'required|integer',
-                    //'porcentaje' => 'required|integer|max:50',
+                    //'ganancia' => 'required|integer', || EL ADMINISTRADOR NO POSEE GANANCIA
+                    //'porcentaje' => 'required|integer|max:50', || EL ADMINISTRADOR NO POSEE PORCENTAJE
                     'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image|max:2048" para poder validar existencia de imagen
                     'direccion' => 'required|string|max:255',
                     'telefono' => 'required|integer',
@@ -88,18 +85,15 @@ class UserController extends Controller
                     $userFoto['foto'] = $file;
                 }
                 //dd($userFoto);
-
-                //$rol = RolesUser::select('id')->where('nombre','=','Administrador')->get();
-                //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
-                //dd($rol);
+                //php artisan db:seed --class=BookSeeder CODIGO PARA CORRER UN SEEDER INDIVIDUAL        
 
                 $user = User::create([
                         'name' => $request->get('name'),
                         'email' => $request->get('email'),
                         'password' => Hash::make($request->get('password')),
                         'dni' => $request->get('dni'),
-                        //'ganancia' => $request->get('ganancia'),
-                        //'porcentaje' => $request->get('porcentaje'),
+                        //'ganancia' => $request->get('ganancia'), || EL ADMINISTRADOR NO POSEE GANANCIA
+                        //'porcentaje' => $request->get('porcentaje'), || EL ADMINISTRADOR NO POSEE PORCENTAJE
                         //'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
                         'foto' => $userFoto['foto'],
                         'direccion' => $request->get('direccion'),
@@ -107,7 +101,7 @@ class UserController extends Controller
                         'codigo' => $request->get('codigo'),
                         'rol_id' => 1,
                         //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-                        //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
+                        //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'), GENERACION DE CODIGO AUTOMATICA
 
                     ]);
                 $user = User::latest('id')->first();
@@ -127,7 +121,7 @@ class UserController extends Controller
                     'dni' => 'required|integer',
                     'ganancia' => 'required|integer',
                     'porcentaje' => 'required|integer|max:50',
-                    'foto' => 'required', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
+                    'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                     'direccion' => 'required|string|max:255',
                     'telefono' => 'required|integer',
                     'codigo' => 'required|unique:users,codigo',
@@ -145,9 +139,7 @@ class UserController extends Controller
                     $userFoto['foto'] = $file;
                 }
 
-                //$rol = RolesUser::select('id')->where('nombre','=','Administrador')->get();
                 //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
-                //dd($rol);
 
                 $user = User::create([
                     'name' => $request->get('name'),
@@ -245,7 +237,7 @@ class UserController extends Controller
                 'dni' => 'required|integer',
                 'ganancia' => 'required|integer',
                 'porcentaje' => 'required|integer|max:50',
-                'foto' => 'required', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
+                'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                 'direccion' => 'required|string|max:255',
                 'telefono' => 'required|integer',
                 'codigo' => 'required|unique:users,codigo',
@@ -300,164 +292,6 @@ class UserController extends Controller
 
 }
 
-    /*public function registerVendedor(Request $request)
-    {
-
-        $usuario = auth()->user();
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            
-            'password' => 'required|string|min:6|max:12',
-            'dni' => 'required|integer',
-            'ganancia' => 'required|integer',
-            'porcentaje' => 'required|integer|max:50',
-            'foto' => 'required|image|max:2048',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|integer',
-            'codigo' => ' required|unique:users,codigo',
-
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $vendedorFoto = $request->all();
-        if ($imagen = $request->file('foto')) {
-            $file = $imagen->getClientOriginalName();
-            $imagen->move('images', $file);
-            $vendedorFoto['foto'] = $file;
-        }
-
-        //$rol = RolesUser::where('nombre', 'Vendedor');
-
-        $vendedor = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'dni' => $request->get('dni'),
-            'ganancia' => $request->get('ganancia'),
-            'porcentaje' => $request->get('porcentaje'),
-            'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
-            'foto' => $vendedorFoto,
-            'direccion' => $request->get('direccion'),
-            'telefono' => $request->get('telefono'),
-            'codigo' => $request->get('codigo'),
-            'user_id' => $usuario->id,
-            'rol_id' => 2,
-            //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
-        ]);
-
-        $vendedor = User::latest('id')->first();
-        $vendedor->assignRole('Vendedor');
-
-        $padreVendedor = User::latest('id')->first();
-        $padreVendedor->user_id();
-        $datoPadreVendedor = User::where('user_id', $padreVendedor)->get();
-        //$vendedorPromotor = Vendedor::all();
-        //$vendedorPromotor->promotor;
-        //////////////////////////////////////////////////////////////////////////  
-        //          Posible segunda logica                                      //
-        //                                                                      //
-        //          $vendedorPromotor2 = Vendedor::with('Promotor')->get();     //
-        //////////////////////////////////////////////////////////////////////////  
-        $token = JWTAuth::fromUser($vendedor);
-
-        return response()->json([$vendedor, $padreVendedor, $datoPadreVendedor, $token], 201);
-    }
-
-    public function registerPromotor(Request $request)
-    {
-
-        $usuario = auth()->user();
-        $usuario->id;
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'], 
-            'password' => 'required|string|min:6|max:12',
-            'dni' => 'required|integer',
-            'ganancia' => 'required|integer',
-            'porcentaje' => 'required|integer|max:50',
-            'foto' => 'required',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|integer',
-            'codigo' => 'required|unique:users,codigo'
-
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $promotorFoto = $request->all();
-
-        if ($imagen = $request->file('foto')) {
-            $file = $imagen->getClientOriginalName();
-            $imagen->move('images', $file);
-            $promotorFoto['foto'] = $file;
-        }
-
-        //$rol = RolesUser::where('nombre', 'Promotor')->first();
-
-        $promotor = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'dni' => $request->get('dni'),
-            'ganancia' => $request->get('ganancia'),
-            'porcentaje' => $request->get('porcentaje'),
-            'balance' => (($request->get('ganancia')) * ($request->get('porcentaje')) / 100),
-            'foto' => $promotorFoto,
-            'direccion' => $request->get('direccion'),
-            'telefono' => $request->get('telefono'),
-            'codigo' => $request->get('codigo'),
-            'user_id' => $usuario->user,
-            'rol_id' => 2,
-            //con esto se genera un codigo con la PRIMERA LETRA DEL NOMBRE Y SU DNI
-            //'codigo' => substr($request->get('name'), 0, 1) . $request->get('dni'),
-        ]);*/
-
-        /*$promotor = new User;
-        $promotor->name = $request->get('name');
-        $promotor->email = $request->get('email');
-        $promotor->password = Hash::make($request->get('password'));
-        $promotor->dni = $request->get('dni');
-        $promotor->ganancia = $request->get('ganancia');
-        $promotor->porcentaje = $request->get('porcentaje');
-        $promotor->balance = (($request->get('ganancia')) * ($request->get('porcentaje')) / 100);
-        $promotor->foto = $promotorFoto;
-        $promotor->direccion = $request->get('direccion');
-        $promotor->telefono = $request->get('telefono');
-        $promotor->codigo = $request->get('codigo');
-        $promotor->user_id = $usuario;
-        $promotor->rol_id = 2;
-        $promotor->save();
-        
-        
-        //$padrePromotor = User::latest('id')->first();
-        //$padrePromotor->user_id;
-        //$datoPadrePromotor = User::where('user_id', $padrePromotor)->get();
-        $datoPadre = User::with("perteneceUsuarios")->get();
-
-        $promotor = User::latest('id')->first();
-        $promotor->assignRole('Promotor');
-
-        //$promotorAdministrador = Promotor::all();
-        //$promotorAdministrador->administrador;
-
-        //////////////////////////////////////////////////////////////////////////  
-        //          Posible segunda logica                                      //
-        //                                                                      //
-        //          $promotorAdministrador2 = Promotor::with(Users')->get();     //
-        //////////////////////////////////////////////////////////////////////////
-
-        $token = JWTAuth::fromUser($promotor);
-        return response()->json(compact('promotor', 'datoPadre', 'token'), 201);
-    }*/
-
     public function emergencia(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -486,9 +320,7 @@ class UserController extends Controller
         }
         //dd($userFoto);
 
-        //$rol = RolesUser::select('id')->where('nombre','=','Administrador')->get();
         //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
-        //dd($rol);
 
         $user = User::create([
                     'name' => $request->get('name'),

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddVendedorIdAtPromotors extends Migration
+class AddUserIdReportes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class AddVendedorIdAtPromotors extends Migration
      */
     public function up()
     {
-        Schema::table('promotors', function(Blueprint $table){
+        Schema::table('reportes', function (Blueprint $table) {
+            $table->bigInteger('user_id')
+                ->unsigned()->nullable()->after('id');
 
-            $table->bigInteger('vendedor_id')->unsigned()->nullable()->after('id');
-
-            $table->foreign('vendedor_id')->references('id')->on('vendedors')
-            ->onDelete('set null')
-            ->onUpdate('cascade');
-
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

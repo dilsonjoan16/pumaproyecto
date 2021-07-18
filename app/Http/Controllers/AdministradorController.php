@@ -20,12 +20,8 @@ class AdministradorController extends Controller
 
         $resumenventasProm = User::with('Ventas')->where('rol_id', '=', 2)->get();
         $resumenventasVend = User::with('Ventas')->where('rol_id', '=', 3)->get();
-        $ventas =  [
-            "Ventas de vendedores" => $resumenventasVend,
-            "Ventas de promotores" => $resumenventasProm
-        ];
         
-        return response()->json($ventas, 200);
+        return response()->json(compact('resumenventasProm','resumenventasVend'), 200);
 
     }
 
@@ -35,29 +31,81 @@ class AdministradorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Reporte $reporte)
+    public function store(Request $request)
     {
+
+        $usuario = auth()->user();
+        $tipo = $request->get('Tipo');
+        //dd($tipo);
+
         $request->validate([
             "Monto" => "required|integer",
-            "Tipo" => "required", //Esto es Gasto, Pago, Premio
+            "user_pago" => "integer",
+            //"Tipo" => "required", //Esto es Gasto, Pago, Premio
+            "Descripcion" => "string|max:255",
             "Salida" => "required", // Esto es Acumulado o Caja
-            "Descripcion" => "required|string|max:255",
-            "Referencia" => "required|string|max:255",
-            "Transaccion" => "require|string|max:255"
+            
+            
+            //"Referencia" => "required|string|max:255",
+            //"Transaccion" => "require|string|max:255"
             
         ]);
 
-        $reporte = Reporte::create([
-            "Monto" => $request->get("Monto"),
-            "Tipo" => $request->get("Tipo"),
-            "Salida" => $request->get("Salida"),
-            "Descripcion" => $request->get("Descripcion"),
-            "Referencia" => $request->get("Referencia"),
-            "Transaccion" => $request->get("Transaccion")
-            
-        ]);
+        
 
-        return response()->json($reporte, 201);
+        if($tipo == 1)
+        {
+            $reporte = new Reporte;
+            $reporte->Tipo = "Gasto";
+            $reporte->Monto = $request->get("Monto");
+            $reporte->Descripcion = $request->get("Descripcion");
+            $reporte->Salida = $request->get("Salida");
+            $reporte->user_id = $usuario->id;
+            $reporte->save();
+            $usuario->reporte_id = $reporte->id;
+            $usuario->save();
+
+            $creador = User::with('reportes')->where('reporte_id', $reporte->id)->get();
+
+            return response()->json(compact('reporte','creador'), 201);
+
+        }
+        if($tipo == 2)
+        {
+            $reporte = new Reporte;
+            $reporte->Tipo = "Pago";
+            $reporte->user_pago = $request->get("user_pago");
+            $reporte->Monto = $request->get("Monto");
+            $reporte->Salida = $request->get("Salida");
+            $reporte->user_id = $usuario->id;
+            $reporte->save();
+            $usuario->reporte_id = $reporte->id;
+            $usuario->save();
+
+            $creador = User::with('reportes')->where('reporte_id', $reporte->id)->get();
+            $pagado = User::where('id',$reporte->user_pago)->get();
+            
+            return response()->json(compact('reporte','creador','pagado'), 201);
+
+        }
+        if($tipo == 3)
+        {
+            $reporte = new Reporte;
+            $reporte->Tipo = "Premio";
+            $reporte->Monto = $request->get("Monto");
+            $reporte->Descripcion = $request->get("Descripcion");
+            $reporte->Salida = $request->get("Salida");
+            $reporte->user_id = $usuario->id;
+            $reporte->save();
+            $usuario->reporte_id = $reporte->id;
+            $usuario->save();
+
+            $creador = User::with('reportes')->where('reporte_id', $reporte->id)->get();
+
+            return response()->json(compact('reporte','creador'), 201);
+
+        }
+
     }
 
     /**

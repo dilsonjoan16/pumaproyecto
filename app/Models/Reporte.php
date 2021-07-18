@@ -15,6 +15,13 @@ class Reporte extends Model
         'Salida', // Esto es Acumulado o Caja
         'Descripcion',
         'Referencia',
-        'Transaccion'
+        'Transaccion',
+        'user_id',
+        'user_pago'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

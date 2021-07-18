@@ -18,9 +18,10 @@ class CreateReportesTable extends Migration
             $table->integer("Monto");
             $table->string("Salida");
             $table->string("Tipo");
-            $table->string("Descripcion");
+            $table->string("Descripcion")->nullable();
             $table->string("Referencia")->nullable();
             $table->string("Transaccion")->nullable();
+            $table->integer("user_pago")->nullable();
             $table->timestamps();
         });
     }

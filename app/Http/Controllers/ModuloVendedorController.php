@@ -26,14 +26,6 @@ class ModuloVendedorController extends Controller
         //VENDEDORES AFILIADOS AL PROMOTOR
         $vendedores = User::with('tieneUsuarios')->find($usuario->id);
 
-        /*$categorias = Categoria::where("categoria_id", $id)->orWhere("id", $id)->with(array("tiendas" => function ($q) {
-            $q->with(array(
-                "horario" => function ($qh) {
-                    $qh->where("horarios.dia", date("N"));
-                }
-            ));
-        }))->get();*/
-
         return response()->json($vendedores, 200);
     }
 

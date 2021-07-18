@@ -45,8 +45,9 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () {
 //Ruta del JWT
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'authenticate']);
-////////////////////////////////////////////////////////////////
-//Ruta para el Recovery (Recuperacion de Clave)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Ruta para el Recovery (Recuperacion de Clave) -> ACTUALMENTE NO FUNCIONA (ESTA ERA LA OPCION 2) FUNCIONA CON
+//NOTIFICATION -> FALTA CONFIGURARA QUE AL DARLE CLICK AL BOTON EN EL MAIL REDIRIJA AL FRONT CON LA URL DEL SERVIDOR
 Route::group([
     'namespace' => 'Auth',
     //'middleware' => 'api',
@@ -60,15 +61,13 @@ Route::group([
     Route::get('find/{token}', [PasswordResetController::class, 'find']);
     Route::post('reset', [PasswordResetController::class, 'reset']);
 });
+// FIN DE LA RUTA DE RECOVERY #2
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//RUTA DEL HOME LIBRE
+//RUTA DEL HOME LIBRE -> Donde se encuentran las imagenes del home y pagina principal
 Route::get('HomeCustomize', [CustomizeController::class, 'index']);
-//////////////////////////////////////////DEVOLVER A LOS MIDDLEWARE POSTERIORMENTE
-//Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
-Route::post('auxiliar', [UserController::class, 'emergencia']); //CREACION DE ADMINISTRADORES
-//Route::post('crearVendedor', [UserController::class, 'registerVendedor']); //CREACION DE VENDEDORES
-
-
+//AUXILIAR PARA CREAR EL PRIMER USUARIO SIN NECECIDAD DE CREDENCIALES (sin necesidad de loguearse
+Route::post('auxiliar', [UserController::class, 'emergencia']); //CREACION DE ADMINISTRADORES -> USUARIO 0
 
 //Ruta del Middleware
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -81,9 +80,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('resumenventas', [AdministradorController::class, 'index']); //RESUMEN DE VENTAS
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
-    //        Route::post('crearPromotor', [UserController::class, 'registerPromotor']); //CREACION DE PROMOTORES 
-    //        Route::post('crearAdministrador', [UserController::class,'register']); //CREACION DE ADMINISTRADORES
-    //        Route::post('crearVendedor', [UserController::class,'registerVendedor']); //CREACION DE VENDEDORES
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //Read-Delete DE PROMOTORES Y VENDEDORES
             Route::post('moduloPromotorVendedorUpdate/{id}', [ModuloPromVendController::class, 'update']);//UPDATE DE ADMINISTRADORES-PROMOTORES-VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
@@ -126,18 +122,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('crearAcumulado', [AcumuladoController::class, 'store']); //CREA UN ACUMULADO
             Route::put('modificarAcumulado/{id}', [AcumuladoController::class, 'update']); //MODIFICA UN ACUMULADO MEDIANTE ID
             Route::delete('eliminarAcumulado/{id}', [AcumuladoController::class, 'destroy']); //ELIMINA UN ACUMULADO MEDIANTE ID
-            //Rutas para crear Roles => Administrador -> Promotor -> Vendedor
-            Route::get('CrearAdministrador', [CrearRoles::class, 'CrearAdministrador']); //CREA EL ROL AL ULTIMO ID REGISTRADO
-            Route::get('CrearPromotor', [CrearRoles::class, 'CrearPromotor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
-            Route::get('CrearVendedor', [CrearRoles::class, 'CrearVendedor']); //CREA EL ROL AL ULTIMO ID REGISTRADO
-            //Rutas para eliminar Roles => Administrador -> Promotor -> Vendedor
-            Route::get('EliminarAdministrador/{id}', [CrearRoles::class, 'EliminarAdministrador']); //ELIMINA EL ROL AL ID SUMINISTRADO
-            Route::get('EliminarPromotor/{id}', [CrearRoles::class, 'EliminarPromotor']); //ELIMINA EL ROL AL ID SUMINISTRADO
-            Route::get('EliminarVendedor/{id}', [CrearRoles::class, 'EliminarVendedor']); //ELIMINA EL ROL AL ID SUMINISTRADO
-            //Rutas para modificar Roles => Administrador -> Promotor -> Vendedor
-            Route::get('ModificarAdministrador/{id}', [CrearRoles::class, 'ModificarAdministrador']); //CREA EL ROL AL ID SUMINISTRADO
-            Route::get('ModificarPromotor/{id}', [CrearRoles::class, 'ModificarPromotor']); //ELIMINA EL ROL ACTUAL Y AGREGA ROL PROMOTOR
-            Route::get('ModificarVendedor/{id}', [CrearRoles::class, 'ModificarVendedor']); //ELIMINA EL ROL VENDEDOR Y AGREGA ROL PROMOTOR*/
+            */
 
         });
     });
@@ -185,43 +170,22 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 });
 
-/////////////////////////RUTAS PARA DEVOLVER A LOS MIDDLEWARE DESPUES DE USARLAS////////////////////////////////////////////////////////
-
-
 //Ruta del envio de correos
 Route::get('contactanos', [MailController::class, 'index'])->name('contactanos.index');
 Route::post('contactanos', [MailController::class, 'store'])->name(('contactanos.store')); //ENVIO DE CORREOS
 Route::post('mailRecovery', [MailController::class, 'MailRecovery']); //Envio de emails para recovery password (recovery key)
 //Route::post('getmail',[MailController::class,'getMail']);
 
-//Rutas para el Rol de administrador
 
 
 
 
-/////////////////// RUTAS DE PUERBAS ////////////////////
 
-//Ruta para el CRUD de vendedores
-Route::apiResource('admin', AdminController::class)->names('admin.vendedores');
 
-//Ruta que permita traer datos del user
-Route::get('users', [UserController::class, 'GetUsers']);
 
-//Rutas para crear Roles
-Route::get('verAdministrador', function () {
-    //dd(Role::all(), Permission::all());
-    User::first()->assignRole('General');
-    dd(User::first()->can('crearVendedor'));
-});
-Route::get('crearAdministrador', function () {
-    //Role::create(['name' => 'General']);
-    //Permission::create(['name' => 'crearVendedor']);
-    //dd(User::latest('id')->first()->hasRole('Administrador'));
-    //$usuarios = User::with('rol')->whereRolId(1)->findOrFail(auth()->id());
-    //dd($usuarios);
-    if (User::all()->hasRole('Administrador')->findOrFail(auth()->id())) {
-        return response()->json(["Rol" => "Administrador"], 200);
-    } else {
-        return response()->json(["No es administrador"], 200);
-    }
-});
+
+
+
+
+
+

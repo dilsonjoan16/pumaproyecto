@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Contacto;
 use App\Models\Promotor;
 use App\Models\User;
+use App\Models\RecoveryPassword;
 use App\Models\Vendedor;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 class MailController extends Controller
 {
     public function index(){
@@ -45,81 +47,37 @@ class MailController extends Controller
     ///////////////////////////////  FUNCION DONDE DEBO GENERAR LA LOGICA DEL RECOVERY //////////////////////////////
     public function MailRecovery(Request $request, Contacto $contacto) 
     {
+        $newpassword = Str::random(8);
+        $hashed_random_password = Hash::make($newpassword);
+        //dd($hashed_random_password);
+        $correo = $request->get('correo_contacto');
+        
         $request->validate([
-            "correo_contacto" => "required|email",
+            'correo_contacto' => 'required|string|email',
         ]);
-        $hashed_random_password = Hash::make(str_random(8));
-        
-        $correos = User::select('email')->where('tipo', '=', 1)->get();
 
-        if($request->get('correo_contacto'))
-        {
-            $user = User::find($request->get("correo_contacto"));
+        //dd($request->get('correo_contacto'));
+        
+        $user = User::where('email', $correo)->first();
+        if (!$user)
+            return response()->json('No se encontro algun usuario con el correo ingresado', 404);
+        //dd($user);
             $user->password = $hashed_random_password;
-            $correo = new RecoveryMail($request->all());
-            Mail::to($request->get('correo_contacto'))->send($correo);
-            $contacto = Contacto::create([
-                'nombre_contacto' => $user->name,
-                'correo_contacto' => $request->get('correo_contacto'),
-                'mensaje_contacto' => $hashed_random_password,
-            ]);
-            return "mensaje enviado";
-            return response()->json($contacto, 200);
-        }
-        else
-        {
-            $error = ["Email no encontrado en base de datos"];
-            return response()->json($error, 404);
-        }
+            $user->update();
 
-        //$PasswordAleatoria = Hash::make(str_random(8));
+            $contacto = new RecoveryMail([$newpassword,$user->name,]);
+            //dd($contacto);
+            
+            $recovery = new RecoveryPassword;
+            $recovery->email = $correo;
+            $recovery->name = $user->name;
+            $recovery->dni = $user->dni;
+            $recovery->save();
 
-        
+            Mail::to($correo)->send($contacto);
+            
+        return response()->json("Mensaje enviado con exito", 200);
 
-        
     }
-    /////////////////////////////// FUNCION RECOVERY PASSWORD ///////////////////////////////////
-    public function getMail(Request $request)
-    {
-
-        /*$validator = Validator::make($request->all(), [
-            'nombre_contacto' => 'required|max:120',
-            'correo_contacto' => 'required|max:255|email',
-            'mensaje_contacto' => 'required|max:255|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }*/
-
-        /*$contacto = $request->validate([
-            'nombre_contacto' => 'required|max:120',
-            'correo_contacto' => 'required|max:255|email',
-            'mensaje_contacto' => 'required|max:255|string',
-        ]);
-        
-        $contacto = new TestMail($request->all());
-        Mail::to($validator['correo_contacto'])->send($contacto);
-        return redirect()->route('contactanos.index');*/
-        
-        /*$details = $request->validate([
-            "nombre_contacto" => "required",
-            "correo_contacto" => "required",
-            "mensaje_contacto" => "required"
-        ]);
-
-        $details=[
-            "nombre_contacto" => $request->get("nombre_contacto"),
-            "correo_contacto" => $request->get("correo_contacto"),
-            "mensaje_contacto" => $request->get("mensaje_contacto")
-        ];*/
-        /*$details=[
-            'title'=>'Correo de prueba 3',
-            'body'=>'este es un ejemplo para enviar correos desde laravel a gmail',
-            'correo' => 'dilsonjoan16@gmail.com'
-        ];*/
-
-        /*Mail::to($details['correo'])->send(new TestMail($details));
-        return "correo electronico enviado 3";*/
-    }
+    
 }

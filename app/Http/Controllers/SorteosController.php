@@ -25,70 +25,6 @@ class SorteosController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    /*public function crear(Request $request)
-    {
-        $usuario = auth()->user();
-
-        $request->validate([
-            
-            "Fecha" => "required|date",
-            "Loteria" => "required|string",
-            "Codigo" => "required|string|unique:sorteos,Codigo",
-            //insercion de datos del modelo Premios
-            //"NombrePremio" => "required|string|max:255",
-            //"MontoReferenciaPremio" => "required|integer",
-            //insercion de datos del modelo Acumulados
-            //"NombreDeAcumulado" => "required|string|max:255",
-            //"MontoReferenciaAcumulado" => "required|integer"
-            
-            //"Lugarpodio",
-            //"NombreGanador",
-            //"Vendedor"
-        ]);
-
-        $sorteos = Sorteos::create([
-            
-            "Fecha" => $request->get("Fecha"),
-            "Loteria" => $request->get("Loteria"),
-            "Codigo" => $request->get("Codigo")
-            
-        ]);
-
-        $sorteos->user_id = $usuario->id;
-        $sorteos->save();
-
-        $usuario->sorteo_id = $sorteos->id;
-        $usuario->save();
-
-        $creador = User::where('id', '=', $sorteo->user_id)->first();
-        /*$premios = Premios::create([
-            "Nombre" => $request->get('NombrePremio'),
-            "MontoReferencia" => $request->get('MontoReferenciaPremio')
-        ]);
-
-        $acumulado = Acumulado::create([
-            "Nombre" => $request->get('NombreDeAcumulado'),
-            "MontoReferencia" => $request->get('MontoReferenciaAcumulado')
-        ]);*/
-        /*
-        $respuesta =  [
-            "Sorteo Creado con exito!" => $sorteos,
-            "Creador del sorteo" => $creador
-            /*"Premios creados para el sorteo" => $sorteos->premios()->where('Estado', '=', 1)->get(),
-            "Acumulados creados para el sorteo" => $sorteos->acumulado()->where('Estado', '=', 1)->get(),
-            "Premios recien creados" => $premios,
-            "Acumulado recien creados" => $acumulado*/
-        /*];
-
-        return response()->json($respuesta, 201);
-    }*/
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -115,16 +51,10 @@ class SorteosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /////////SUJETO A REVISION//////////////
 
         $sorteos = Sorteos::find($id);
-        //$premios = $sorteos->premios;
-        //$acumulados = $sorteos->acumulado;
-        //$acumulados->update($request->all());
-        //$premios->update($request->all());
         $sorteos->update($request->all());
 
-        /////////SUJETO A REVISION//////////////
         $respuesta =  [
             "Objeto Modificado con exito!" => $sorteos
         ];
@@ -168,9 +98,9 @@ class SorteosController extends Controller
         $sorteos->user_id = $usuario->id;
         $sorteos->save();
         $usuario->sorteo_id = $sorteos->id;
-        $usuario->save();
+        $usuario->update();
 
-        $creador = User::where('id', '=', $sorteos->user_id)->first();
+        $creador = User::where('id', $sorteos->user_id)->first();
 
         return response()->json(compact('sorteos','creador'), 201);
     }

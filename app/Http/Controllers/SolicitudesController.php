@@ -108,32 +108,6 @@ class SolicitudesController extends Controller
             return response()->json($respuesta, 201);
         }
 
-        /*$solicitudes = Solicitudes::create([
-            
-            "CantidadSolicitada" => $request->get("CantidadSolicitada"),
-            "Cuotas" => $request->get("Cuotas"),
-            "MobiliarioSolicitado" => $request->get("MobiliarioSolicitado"),
-            "Ubicacion" => $request->get("Ubicacion"),
-            "Solicitud" => $request->get("Solicitud")
-
-        ]);
-
-        $solicitudes->user_id = $usuario->id;
-        $solicitudes->save();
-
-        $usuario->solicitud_id = $solicitudes->id;
-        $usuario->save();
-
-        $vendedorSolicitud = User::where('id','=',$solicitudes->user_id)->first();
-
-        //$solicitudes = Solicitudes::all();
-
-        $respuesta =  [
-            "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-            "Vendedor afiliado a la solicitud" => $vendedorSolicitud
-        ];
-
-        return response()->json($respuesta, 201);*/
     }
 
     /**
@@ -232,38 +206,6 @@ class SolicitudesController extends Controller
         
         return response()->json($respuesta, 200);
     }
-
-    /*public function crearSolicitudPromotor(Request $request, Solicitudes $solicitudes)
-    {
-        $request->validate([
-            "Nombre" => "required|string",
-            "CantidadSolicitada" => "required|integer",
-            "Cuotas" => "required|integer",
-            "MobiliarioSolicitado" => "required|string",
-            "Ubicacion" => "required|string",
-            "Solicitud" => "required|string",
-
-        ]);
-
-        $solicitudes = Solicitudes::create([
-            "Nombre" => $request->get("Nombre"),
-            "CantidadSolicitada" => $request->get("CantidadSolicitada"),
-            "Cuotas" => $request->get("Cuotas"),
-            "MobiliarioSolicitado" => $request->get("MobiliarioSolicitado"),
-            "Ubicacion" => $request->get("Ubicacion"),
-            "Solicitud" => $request->get("Solicitud")
-
-        ]);
-
-        //$solicitudes = Solicitudes::all();
-
-        $respuesta =  [
-            "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-            "Promotor afiliado a la solicitud" => $solicitudes->promotor
-        ];
-
-        return response()->json($respuesta, 201);
-    }*/
 
     public function SolicitudesAdministrador()
     {

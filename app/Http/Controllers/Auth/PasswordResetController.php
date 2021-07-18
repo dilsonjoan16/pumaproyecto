@@ -69,6 +69,7 @@ class PasswordResetController extends Controller
                 'message' => 'Este token de restablecimiento de contraseña no es válido.'
             ], 404);
         }
+        
         return response()->json($passwordReset);
     }
     /**

@@ -18,53 +18,8 @@ class VendedorController extends Controller
      */
     public function index()
     {
-
-        /*
-        SELECT id,id_usuarios,Count(id_usuarios) 
-        FROM tbl_statsingreso 
-        GROUP BY id_usuarios 
-        HAVING Count(id_usuarios) 
-        ORDER BY Count(id_usuarios) 
-        DESC
-         */
-        //$ventas = Ventas::select("Numero")->get()->toArray();
-        //$ventas2 = Ventas::count("Numero");
-
-        /*$nombre2 = array_unique($ventas);
-        $v_comunes1 = array_diff_assoc($ventas, $nombre2);
-        $v_comunes2 = array_unique($v_comunes1);   // Eliminamos los elementos repetidos
-        sort($v_comunes2);    // Orden ascendente en array 
-        $repetidos = implode(', ', $v_comunes2);    // Creamos cadena a partir del array
-    */
-
-        /*$ventas3 = SELECT("Numero",SUM("contador"))
-        ->FROM("Ventas")
-        ->groupBy("Numero");
-        return $ventas3;*/
-
-        /*$ventas3 = [];
-        foreach($ventas as $ventas2){
-            $ventas3 [] = $ventas2->repeticion;
-            
-        }/*
-        /*
-            Consulta SQL propia, regresa cual es el mas repetido en orden
-
-        $ventas4 = Ventas::raw(' SELECT `Numero`, 
-        COUNT(`Numero`) FROM `Ventas` GROUP BY `Numero`
-         ORDER BY COUNT(`Numero`) DESC');
-         */
-
-        //dd($ventas3);
-
-        //DATOS PARA METRICAS
-        //$ventas2 = User::select('*')->ventaVendedor; //Primera logica
-        //$ventas2 = User::with('ventaVendedor')->get();
-
-
     
         $ventas2 = Ventas::with('user')->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
-        //$ventas2 = User::with('Ventas')->get(); //OBTENGO LOS USUARIOS
         //dd($ventas2);
 
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
@@ -75,19 +30,7 @@ class VendedorController extends Controller
             "Data completa del Modelo" => $ventas2
         ];
         return response()->json($respuesta);
-        //SELECT cliente, SUM(precio)
-        //FROM pedidos
-        //GROUP BY cliente
-
-        
-        
-        //$masvendido = Ventas::where("Numero",">","$conteo")->get();
-        /*$respuesta =  [
-            
-            "Los numeros mas vendidos son" =>$repetidos
-        ];
-        $retorno = Ventas::all();
-        return response()->json([$respuesta,$retorno]);*/
+    
     }
 
     public function estadoDeCuenta()
@@ -96,77 +39,6 @@ class VendedorController extends Controller
         $ventas2 = User::with('Ventas')->find($usuario->id);
         return response()->json($ventas2,200);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    /*public function store(Request $request, Ventas $ventas)
-    {
-
-        $usuario = auth()->user();
-        $usuario->id;
-        //dd($usuario->rol_id);
-        //dd($usuario->id);
-
-        $request->validate([
-            "Fecha" => "required|date",
-            "Numero" => "required|integer",
-            "Valorapuesta" => "required|integer",
-            "Loteria" => "required|string",
-            "Tipo" => "required|string",
-            //AGREGADO DE REFERENCIA -> DESCRIPCION
-            "Referencia" => "required|string",
-            //Menu lateral en las vistas
-            //"Sumatotalventas" => "required|integer",
-            "Puntoventas" => "required|string",
-            //"Nombrepromotor" => "required|string",
-            "Puntoentregaventas" => "required|string"
-        ]);
-
-        /* 
-            Logica para lograr captar la sumatoria
-        */
-            //$valor = $valor + $request->get("Sumatotalventas");
-        /*
-            Fin de la logica para lograr captar la sumatoria
-        */
-        
-
-        /*$ventas = Ventas::create([
-            "Fecha" => $request->get("Fecha"),
-            "Numero" => $request->get("Numero"),
-            "Valorapuesta" => $request->get("Valorapuesta"),
-            "Loteria" => $request->get("Loteria"),
-            "Tipo" => $request->get("Tipo"),
-            //AGREGADO DE REFERENCIA
-            "Referencia" => $request->get("Referencia"),
-            //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
-            //"Sumatotalventas" => $request->get("Sumatotalventas"),
-            "Puntoventas" => $request->get("Puntoventas"),
-            //"Nombrepromotor" => $request->get("Nombrepromotor"),
-            "Puntoentregaventas" => $request->get("Puntoentregaventas"),
-            //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
-        ]);
-
-       
-        $ventas->user_id = $usuario->id;
-        $ventas->save();
-        $usuario->venta_id = $ventas->id;
-        $usuario->save();
-        $Vendedor = User::where('id', '=', $ventas->user_id)->first();
-        $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
-        $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
-        $respuesta =  [
-            "Suma de todas las ventas que se realizaron" => $sumatotalventa,
-            "Suma total del valor de todas las ventas" => $sumatotalventa2,
-            "Vendedor/Promotor afiliado a la venta" =>$Vendedor,
-        ];
-        return response()->json([$ventas, $respuesta], 201);
-
-    }*/
 
     /**
      * Display the specified resource.
@@ -270,15 +142,6 @@ class VendedorController extends Controller
             "Puntoentregaventas" => "required|string"
         ]);
 
-        /* 
-            Logica para lograr captar la sumatoria
-        */
-        //$valor = $valor + $request->get("Sumatotalventas");
-        /*
-            Fin de la logica para lograr captar la sumatoria
-        */
-
-
         $ventas = Ventas::create([
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),
@@ -338,7 +201,7 @@ class VendedorController extends Controller
         $pertenece = User::where('id', '=', $usuario->user_id)->get();
         $tiene = User::where('user_id', '=', $usuario->id)->get();
         $sorteos = User::with('sorteos')->where('sorteo_id', '=', $usuario->sorteo_id)->get();
-        $credito = Solicitudes::where('Categoria', 'Prestamo/Credito')->where('user_id', '=', $usuario->id)->sum('CantidadSolicitada');
+        $credito = Solicitudes::where('Categoria', 'Prestamo/Credito')->where('user_id', '=', $usuario->id)->where('Tipo', '=', 2)->sum('CantidadSolicitada');
 
         $respuesta =  [
             "Datos del usuario" => $usuario,

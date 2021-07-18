@@ -42,6 +42,7 @@ class User extends Authenticatable implements JWTSubject
         'busqueda',
         'user_id',
         'rol_id',
+        'reporte_id', //QUE ADMINISTRADOR HACE UN REPORTE
         //role_id
     ];
 
@@ -121,6 +122,11 @@ class User extends Authenticatable implements JWTSubject
     public function sorteos()
     {
         return $this->hasMany(Sorteos::class);
+    }
+
+    public function reportes()
+    {
+        return $this->hasMany(Reporte::class);
     }
     //////////// FIN FUNCIONES NUEVAS /////////
 }
