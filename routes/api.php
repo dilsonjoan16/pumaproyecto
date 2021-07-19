@@ -38,10 +38,7 @@ use App\Models\User;
 });*/
 
 //Ruta api
-//Route::apiResource('puma', PumaController::class);
-Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () {
-    //Grupo de rutas que habilita permisos CORS
-});
+
 //Ruta del JWT
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'authenticate']);
@@ -64,8 +61,14 @@ Route::group([
 // FIN DE LA RUTA DE RECOVERY #2
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//RUTA DEL HOME LIBRE -> Donde se encuentran las imagenes del home y pagina principal
-Route::get('HomeCustomize', [CustomizeController::class, 'index']);
+//RUTA PARA HABILITAR EL CORS
+Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () { //RUTA PARA HABILITAR EL CORS EN EL SERVIDOR
+
+
+    //RUTA DEL HOME LIBRE -> Donde se encuentran las imagenes del home y pagina principal
+    Route::get('HomeCustomize', [CustomizeController::class, 'index']);
+
+
 //AUXILIAR PARA CREAR EL PRIMER USUARIO SIN NECECIDAD DE CREDENCIALES (sin necesidad de loguearse
 Route::post('auxiliar', [UserController::class, 'emergencia']); //CREACION DE ADMINISTRADORES -> USUARIO 0
 
@@ -174,8 +177,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 Route::get('contactanos', [MailController::class, 'index'])->name('contactanos.index');
 Route::post('contactanos', [MailController::class, 'store'])->name(('contactanos.store')); //ENVIO DE CORREOS
 Route::post('mailRecovery', [MailController::class, 'MailRecovery']); //Envio de emails para recovery password (recovery key)
-//Route::post('getmail',[MailController::class,'getMail']);
-
+    //Route::post('getmail',[MailController::class,'getMail']);
+});
 
 
 
