@@ -34,9 +34,9 @@ class TestMail extends Mailable
         //return $this->view("emails.TestEmail");
         //return response()->json($this->subject('Prueba de correo'));
 
-        return $this->from('dilsonlaravel@gmail.com', env('MAIL_FROM_NAME'))
+        return $this->from('pumawebagencia@gmail.com', env('MAIL_FROM_NAME'))
         ->view('emails.TestEmail')
-        ->subject('Correo contacto de cliente Puma')
+        ->subject('CONTACTO DE CLIENTE PUMA')
         ->with($this->contacto);
     }
 }

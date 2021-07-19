@@ -34,9 +34,9 @@ class RecoveryMail extends Mailable
         //return $this->view("emails.TestEmail");
         //return response()->json($this->subject('Prueba de correo'));
 
-        return $this->from('dilsonlaravel@gmail.com', env('MAIL_FROM_NAME'))
+        return $this->from('pumawebagencia@gmail.com', env('MAIL_FROM_NAME'))
         ->view('emails.RecoveryEmail')
-        ->subject('Recuperacion de Password Cliente Puma')
+        ->subject('RECUPERACION DE PASSWORD CLIENTE PUMA')
         ->with($this->contacto);
     }
 }

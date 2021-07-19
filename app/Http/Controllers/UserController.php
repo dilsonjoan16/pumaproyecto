@@ -169,6 +169,9 @@ class UserController extends Controller
                 return response()->json(compact('user', 'token'), 201);
         }
         if($rolSelector == 3){ /////CREACION DE VENDEDOR
+
+                $nuevo_id = $request->get('nuevo_id');
+
                 $validator = Validator::make($request->all(), [
                     'name' => 'required|string',
                     'email' => ['required', 'email', 'max:255', 'unique:users,email'],
@@ -217,7 +220,7 @@ class UserController extends Controller
                 ]);
 
                 $user = User::latest('id')->first();
-                $user->user_id = $usuario->id;
+                $user->user_id = $nuevo_id;
                 $user->save();
                 $user->assignRole('Vendedor');
 

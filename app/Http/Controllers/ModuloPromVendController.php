@@ -43,11 +43,15 @@ class ModuloPromVendController extends Controller
      */
     public function show($id)
     {
+        
         $user = User::find($id);
+        $user->with('tieneUsuarios')->where('user_id', $user->id)->with('perteneceUsuarios')->where('id', $user->user_id)->get();
+        
         $nuevoId = User::where('rol_id', '=', 2)->get();
         $respuesta = [
             "Objeto encontrado con exito!" => $user,
-            "Promotores disponibles" => $nuevoId
+            "Promotores disponibles" => $nuevoId,
+            
         ];
         return response()->json($respuesta, 200);
     }

@@ -31,7 +31,7 @@ class MailController extends Controller
         ]);
 
         $correo = new TestMail($request->all());
-        Mail::to('dilsonjoan16@gmail.com')->send($correo);
+        Mail::to('agenciapumaweb@gmail.com')->send($correo);
 
         $contacto = Contacto::create([
             'nombre_contacto' => $request->get('nombre_contacto'),
