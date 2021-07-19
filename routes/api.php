@@ -39,9 +39,7 @@ use App\Models\User;
 
 //Ruta api
 
-//Ruta del JWT
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'authenticate']);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Ruta para el Recovery (Recuperacion de Clave) -> ACTUALMENTE NO FUNCIONA (ESTA ERA LA OPCION 2) FUNCIONA CON
 //NOTIFICATION -> FALTA CONFIGURARA QUE AL DARLE CLICK AL BOTON EN EL MAIL REDIRIJA AL FRONT CON LA URL DEL SERVIDOR
@@ -63,7 +61,10 @@ Route::group([
 
 //RUTA PARA HABILITAR EL CORS
 Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () { //RUTA PARA HABILITAR EL CORS EN EL SERVIDOR
-
+    
+    //Ruta del JWT
+    Route::post('register', [UserController::class, 'register']);
+    Route::post('login', [UserController::class, 'authenticate']);
 
     //RUTA DEL HOME LIBRE -> Donde se encuentran las imagenes del home y pagina principal
     Route::get('HomeCustomize', [CustomizeController::class, 'index']);
