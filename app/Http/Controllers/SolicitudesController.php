@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Solicitudes;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\SolicitudMail;
+use Mail;
 
 class SolicitudesController extends Controller
 {
@@ -18,7 +20,7 @@ class SolicitudesController extends Controller
         $usuario = auth()->user();
         $usuario->id;
         $solicitudes = Solicitudes::with('user')->where('user_id','=', $usuario->id)->get();
-        
+
         return response()->json($solicitudes, 200);
     }
 
@@ -47,11 +49,41 @@ class SolicitudesController extends Controller
 
         if($request->get("CantidadSolicitada") !== null && $request->get("Cuotas") !== null)
         {
+
+
+
+            //$users = User::where('rol_id', 1)->get();
+
+
+            //$subset = $users->map->only(['email']);
+
+            //dd($subset);
             $solicitudes = new Solicitudes;
             $solicitudes->CantidadSolicitada = $request->get("CantidadSolicitada");
             $solicitudes->Cuotas = $request->get("Cuotas");
             $solicitudes->Categoria = "Prestamo/Credito";
             $solicitudes->user_id = $usuario->id;
+            //dd($solicitudes);
+
+            $userEmail = User::where('rol_id', 1)->get();
+            //dd($userEmail);
+            foreach ($userEmail as $um) {
+                $contacto = new SolicitudMail([$solicitudes->Categoria, $solicitudes->CantidadSolicitada, $solicitudes->Cuotas, $usuario->name]);
+                Mail::to($um->email)->send($contacto);
+            };
+
+            //envio de correo
+            $contacto = new SolicitudMail([$solicitudes->Categoria, $solicitudes->CantidadSolicitada, $solicitudes->Cuotas, $usuario->name]);
+            //dd($contacto);
+
+            $correo = [
+                //$usuario->email,
+                "agenciapumaweb@gmail.com"
+            ];
+            //dd($correo);
+            Mail::to($correo)->send($contacto);
+            //fin de envio de correo
+
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;
@@ -61,7 +93,8 @@ class SolicitudesController extends Controller
 
             $respuesta =  [
                 "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-                "Usuario afiliado a la solicitud" => $Solicitante
+                "Usuario afiliado a la solicitud" => $Solicitante,
+                "Mensaje enviado con exito al correo"
             ];
 
             return response()->json($respuesta, 201);
@@ -73,6 +106,26 @@ class SolicitudesController extends Controller
             $solicitudes->Ubicacion = $request->get("Ubicacion");
             $solicitudes->Categoria = "Mobiliario";
             $solicitudes->user_id = $usuario->id;
+
+            $userEmail = User::where('rol_id', 1)->get();
+            //dd($userEmail);
+            foreach ($userEmail as $um) {
+                $contacto = new SolicitudMail([$solicitudes->Categoria, $solicitudes->MobiliarioSolicitado, $solicitudes->Ubicacion, $usuario->name]);
+                Mail::to($um->email)->send($contacto);
+            };
+
+            //envio de correo
+            $contacto = new SolicitudMail([$solicitudes->Categoria, $solicitudes->MobiliarioSolicitado, $solicitudes->Ubicacion, $usuario->name]);
+            //dd($contacto);
+
+            $correo = [
+                //$usuario->email,
+                "agenciapumaweb@gmail.com"
+            ];
+            //dd($correo);
+            Mail::to($correo)->send($contacto);
+            //fin de envio de correo
+
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;
@@ -82,7 +135,8 @@ class SolicitudesController extends Controller
 
             $respuesta =  [
                 "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-                "Usuario afiliado a la solicitud" => $Solicitante
+                "Usuario afiliado a la solicitud" => $Solicitante,
+                "Mensaje enviado con exito al correo"
             ];
 
             return response()->json($respuesta, 201);
@@ -93,6 +147,26 @@ class SolicitudesController extends Controller
             $solicitudes->Solicitud = $request->get("Solicitud");
             $solicitudes->Categoria = "Solicitud/Otro";
             $solicitudes->user_id = $usuario->id;
+
+            $userEmail = User::where('rol_id', 1)->get();
+            //dd($userEmail);
+            foreach ($userEmail as $um) {
+                $contacto = new SolicitudMail([$solicitudes->Categoria, $solicitudes->Solicitud, $usuario->name]);
+                Mail::to($um->email)->send($contacto);
+            };
+
+            //envio de correo
+            $contacto = new SolicitudMail([$solicitudes->Categoria,  $solicitudes->Solicitud, $usuario->name]);
+            //dd($contacto);
+
+            $correo = [
+                //$usuario->email,
+                "agenciapumaweb@gmail.com"
+            ];
+            //dd($correo);
+            Mail::to($correo)->send($contacto);
+            //fin de envio de correo
+
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;
@@ -102,7 +176,8 @@ class SolicitudesController extends Controller
 
             $respuesta =  [
                 "La solicitud ha sido creada y enviada con exito!" => $solicitudes,
-                "Usuario afiliado a la solicitud" => $Solicitante
+                "Usuario afiliado a la solicitud" => $Solicitante,
+                "Mensaje enviado con exito al correo"
             ];
 
             return response()->json($respuesta, 201);
@@ -156,7 +231,7 @@ class SolicitudesController extends Controller
         $solicitudes->save();
 
         /*
-            Otra logica posible: 
+            Otra logica posible:
             MyModel::where('confirmed', '=', 0)->update(['confirmed' => 1])
         */
 
@@ -203,7 +278,7 @@ class SolicitudesController extends Controller
             "Solicitudes del promotor" => $promotorSolicitud,
             "Usuarios afiliados" => $userPromotor
         ];
-        
+
         return response()->json($respuesta, 200);
     }
 

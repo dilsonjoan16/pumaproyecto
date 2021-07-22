@@ -12,6 +12,12 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //'/api/*'
+        '/api/*'
     ];
+
+    /*
+    DB_DATABASE=u302286552_pumaBD
+    DB_USERNAME=u302286552_UserPuma
+    DB_PASSWORD=V1ggcQv6nn+t
+    */
 }

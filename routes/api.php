@@ -61,7 +61,7 @@ Route::group([
 
 //RUTA PARA HABILITAR EL CORS
 Route::group(['middleware' => 'cors', 'prefix' => 'api'], function () { //RUTA PARA HABILITAR EL CORS EN EL SERVIDOR
-    
+
     //Ruta del JWT
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'authenticate']);
@@ -94,6 +94,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('solicitudesRechazadas', [SolicitudesController::class, 'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
+            Route::get('customizeGeneral', [CustomizeController::class, 'general']); //CONTIENE TODAS LAS GALERIAS SOLO MUESTRA
             Route::post('customizeUpdate/{id}', [CustomizeController::class,'update']); //MODIFICACION DEL CUSTOMIZE (GALERIAS)
             Route::get('UpdateEstado/{id}', [CustomizeController::class, 'UpdateEstado']); //UPDATE DE ESTADO 0 A 1 (INACTIVO -> ACTIVO)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS
@@ -109,7 +110,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             //Ruta para la creacion de Sorteos
             Route::get('mostrarSorteo', [SorteosController::class, 'index']); //MUESTRA TODO SOBRE SORTEOS
             Route::get('mostrarSorteo/{id}', [SorteosController::class, 'show']); //MUESTRA UN REGISTRO MEDIANTE ID SOBRE SORTEOS
-           // RUTA DEFECTUOSA // Route::post('crearSorteos', [SorteosController::class, 'store']); //CREA UN SORTEO 
+           // RUTA DEFECTUOSA // Route::post('crearSorteos', [SorteosController::class, 'store']); //CREA UN SORTEO
             Route::post('generarSorteo', [SorteosController::class, 'generar']);
             Route::put('modificarSorteo/{id}', [SorteosController::class, 'update']); //MODIFICA UN SORTEO MEDIANTE ID
             Route::delete('eliminarSorteo/{id}', [SorteosController::class, 'destroy']); //ELIMINA UN SORTEO MEDIANTE ID
@@ -141,11 +142,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('modificarvendedor/{id}', [ModuloVendedorController::class, 'update']); //MODIFICA UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::delete('eliminarvendedor/{id}', [ModuloVendedorController::class, 'destroy']); //ELIMINAR UN VENDEDOR MEDIANTE ID AFILIADO AL PROMOTOR
             Route::post('busquedavendedor', [ModuloVendedorController::class, 'busqueda']); //BARRA DE BUSQUEDA MEDIANTE EL NOMBRE
-            Route::get('mostrarsolicitud', [SolicitudesController::class, 'verSolicitudPromotor']); //MOSTRAR TODAS LAS SOLICITUDES 
+            Route::get('mostrarsolicitud', [SolicitudesController::class, 'verSolicitudPromotor']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::post('crearsolicitud', [SolicitudesController::class, 'store']); //CREAR SOlICITUDES
             Route::get('encontrarsolicitud/{id}', [SolicitudesController::class, 'show']); //ENCONTRAR SOLICITUD POR ID
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
-            Route::get('resumenDeVentas', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS 
+            Route::get('resumenDeVentas', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS
             Route::get('adicionalesVendedor', [VendedorController::class, 'adicionales']); //DATOS ADICIONALES QUE APARECEN EN REPORTE DE VENTAS -> PROMOTOR, ETC
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
         });

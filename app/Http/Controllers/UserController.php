@@ -292,7 +292,7 @@ class UserController extends Controller
     if($usuario->rol_id == 3){ //ROL VENDEDOR, NO PUEDE CREAR USUARIOS
         return response()->json("Por la naturaleza de su Rol no tiene autorizacion", 403);
     }
-
+    
 }
 
     public function emergencia(Request $request)

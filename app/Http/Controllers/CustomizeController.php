@@ -25,29 +25,33 @@ class CustomizeController extends Controller
      */
     public function index()
     {
-        //$customize = Customize::all();
-        if ($customize = Customize::where("estado", "=", 1)->get()) {
-            if ($customize = Customize::where("tipo", "=", 1)->get()) {
-                $tipo1 = $customize;
-            }
-            if ($customize2 = Customize::where("tipo", "=", 2)->get()) {
-                $tipo2 = $customize2;
-            }
-            if ($customize3 = Customize::where("tipo", "=", 3)->get()) {
-                $tipo3 = $customize3;
-            }
-            if ($customize4 = Customize::where("tipo", "=", 4)->get()) {
-                $tipo4 = $customize4;
-            }
-        }
-    
+        $customize = Customize::where('tipo', 1)->where('estado', 1)->get();
+        $customize2 = Customize::where('tipo', 2)->where('estado', 1)->get();
+        $customize3 = Customize::where('tipo', 3)->where('estado', 1)->get();
+        $customize4 = Customize::where('tipo', 4)->where('estado', 1)->get();
         $prueba = [
-            "Datos tipo 1: Resultados" => $tipo1,
-            "Datos tipo 2: Sorteos" => $tipo2,
-            "Datos tipo 3: Ubicanos" => $tipo3,
-            "Datos tipo 4: Testimonios" => $tipo4
+            "Datos tipo 1: Resultados" => $customize,
+            "Datos tipo 2: Sorteos" => $customize2,
+            "Datos tipo 3: Ubicanos" => $customize3,
+            "Datos tipo 4: Testimonios" => $customize4
         ];
-        
+
+        return response()->json($prueba, 200);
+    }
+
+    public function general()
+    {
+        $customize = Customize::where('tipo', 1)->get();
+        $customize2 = Customize::where('tipo', 2)->get();
+        $customize3 = Customize::where('tipo', 3)->get();
+        $customize4 = Customize::where('tipo', 4)->get();
+        $prueba = [
+            "Datos tipo 1: Resultados" => $customize,
+            "Datos tipo 2: Sorteos" => $customize2,
+            "Datos tipo 3: Ubicanos" => $customize3,
+            "Datos tipo 4: Testimonios" => $customize4
+        ];
+
         return response()->json($prueba, 200);
     }
 
@@ -60,7 +64,7 @@ class CustomizeController extends Controller
     public function store(Request $request, Customize $customize)
     {
 
-        
+
         $validator = Validator::make($request->all(), [
             'rutaImagen' => 'required|image|max:2048',
             'titulo' => 'required|string',
@@ -93,7 +97,7 @@ class CustomizeController extends Controller
             $imagenes->move('images', $file);
             $customize['rutaImagen'] = $file;
         }
-        
+
         if ($videos = $request->file('rutaVideo')) {
             $file2 = $videos->getClientOriginalName();
             $videos->move('videos', $file2);
@@ -101,14 +105,14 @@ class CustomizeController extends Controller
         }
 
         Customize::create($customize);
-        
+
         $id = Customize::latest('id')->first();
 
         return response()->json([$customize, $id], 201);
         //////////////////////FIN DE PLANTEAMIENTO SECUNDARIO//////////////
 
         /////////////////////PLANTEAMIENTO ORIGINAL///////////////////////
-        /*$imagen = $request->get('rutaImagen'); 
+        /*$imagen = $request->get('rutaImagen');
         $imagen->move('images', $imagen);
         $video = $request->get('rutaVdeo');
         $video->move('videos', $video);
@@ -129,7 +133,7 @@ class CustomizeController extends Controller
             'nombre_contacto' => $request->get('nombre_contacto'),
             'correo_contacto' => $request->get('correo_contacto'),
             'mensaje_contacto' => $request->get('mensaje_contacto'),
-        ]);   
+        ]);
         //$contacto = Contacto::where('id')->last();
         $contacto = Contacto::find(\DB::table('contacto')->max('id'));
         Mail::to($contacto['correo_contacto'])->send(new TestMail($contacto));
@@ -238,7 +242,7 @@ class CustomizeController extends Controller
             return response()->json($respuesta, 200);
         }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
         /////////    BLOQUE DE CODIGO QUE CAMBIA EL ESTADO DE 0 A 1  /////////
         ////////    DESBLOQUEA UN ELEMENTO BLOQUEADO Y LO MODIFICA  /////////
 
@@ -287,7 +291,7 @@ class CustomizeController extends Controller
         ////////  DESBLOQUEA UN ELEMENTO BLOQUEADO Y LO MODIFICA    ///////
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         //////// BLOQUE DE CODIGO QUE PERMITE A TRAVES DE UN SWICH REALIZAR LA FUNCIONALIDAD DE LOS CONDICIONALES /////////
 
         /*switch ($variable) {
@@ -350,7 +354,7 @@ class CustomizeController extends Controller
                 return response()->json($respuesta, 205);
                 break;
         }*/
-        
+
         /////// FIN DEL BLOQUE DE CODIGO CON LOS SWITCH ////////
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,7 +362,7 @@ class CustomizeController extends Controller
         $vendedor->promotor = $nuevoId;
         $vendedor->update($request->all());*/
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
     }
 
     /**
