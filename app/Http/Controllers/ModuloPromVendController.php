@@ -19,9 +19,15 @@ class ModuloPromVendController extends Controller
         $administradores = User::where('rol_id','=',1)->get();
         $promotores = User::where('rol_id','=',2)->get();
         $vendedores = User::where('rol_id','=',3)->get();
-        
+
 
         return response()->json([$vendedores, $promotores, $administradores], 200);
+    }
+
+    public function condensacion()
+    {
+        $usuarios = User::where('rol_id', '>', 1)->where('tipo', 1)->get();
+        return response()->json($usuarios, 200);
     }
 
     /**
@@ -43,15 +49,15 @@ class ModuloPromVendController extends Controller
      */
     public function show($id)
     {
-        
+
         $user = User::find($id);
         $user->with('tieneUsuarios')->where('user_id', $user->id)->with('perteneceUsuarios')->where('id', $user->user_id)->get();
-        
+
         $nuevoId = User::where('rol_id', '=', 2)->get();
         $respuesta = [
             "Objeto encontrado con exito!" => $user,
             "Promotores disponibles" => $nuevoId,
-            
+
         ];
         return response()->json($respuesta, 200);
     }
@@ -69,7 +75,7 @@ class ModuloPromVendController extends Controller
         $usuario = auth()->user();
         $usuario->rol_id;
         $rolSelector = $request->get('rol');
-        //dd($rolSelector); 
+        //dd($rolSelector);
         //dd($usuario->rol_id);
         if($usuario->rol_id == 1)
         {
@@ -124,7 +130,7 @@ class ModuloPromVendController extends Controller
 
                     return response()->json($respuesta, 200);
                 }
-                
+
             }
 //////////////////////////////////////////////////////////////////////////////////////////////
             if($rolSelector == 2)
@@ -358,7 +364,7 @@ class ModuloPromVendController extends Controller
         $vendedor->promotor = $nuevoId;
         $vendedor->update($request->all());
 
-        //dd($vendedor); 
+        //dd($vendedor);
 
     }
 

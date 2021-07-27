@@ -13,6 +13,7 @@ class Sorteos extends Model
         "Fecha",
         "Loteria",
         "Codigo",
+        "Max",
         "Estado", //ACTIVO 1 INACTIVO 0
         "user_id"
     ];

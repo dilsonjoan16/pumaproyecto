@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\VentaMaxMail;
 use App\Models\Promotor;
 use App\Models\Vendedor;
 use App\Models\User;
 use App\Models\Ventas;
+use App\Models\Sorteos;
 use App\Models\Solicitudes;
 use Illuminate\Http\Request;
+use Mail;
 
 class VendedorController extends Controller
 {
@@ -18,8 +21,8 @@ class VendedorController extends Controller
      */
     public function index()
     {
-    
-        $ventas2 = Ventas::with('user')->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
+
+        $ventas2 = Ventas::with('user')->where('Estado',1)->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
         //dd($ventas2);
 
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
@@ -30,7 +33,7 @@ class VendedorController extends Controller
             "Data completa del Modelo" => $ventas2
         ];
         return response()->json($respuesta);
-    
+
     }
 
     public function estadoDeCuenta()
@@ -94,10 +97,10 @@ class VendedorController extends Controller
             ];
         }
         //dd($ventas);
-        
-        
 
-        
+
+
+
 
         return response()->json($respuesta, 200);
     }
@@ -124,14 +127,15 @@ class VendedorController extends Controller
     {
         $usuario = auth()->user();
         $usuario->id;
+        /*$loteria = $request->get('id_loteria');*/
         //dd($usuario->rol_id);
         //dd($usuario->id);
-        
+
         $request->validate([
             "Fecha" => "required|date",
             "Numero" => "required|integer",
             "Valorapuesta" => "required|integer",
-            "Loteria" => "required|string",
+            "Loteria" => "required|integer",
             "Tipo" => "required|string",
             //AGREGADO DE REFERENCIA -> DESCRIPCION
             "Referencia" => "required|string",
@@ -146,7 +150,8 @@ class VendedorController extends Controller
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),
             "Valorapuesta" => $request->get("Valorapuesta"),
-            "Loteria" => $request->get("Loteria"),
+            "Loteria" => $request->get('Loteria'),
+            //"Loteria" => $loteria,
             "Tipo" => $request->get("Tipo"),
             //AGREGADO DE REFERENCIA
             "Referencia" => $request->get("Referencia"),
@@ -158,18 +163,48 @@ class VendedorController extends Controller
             //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
         ]);
 
-
         $ventas->user_id = $usuario->id;
         $ventas->save();
         $usuario->venta_id = $ventas->id;
         $usuario->save();
+
+        /*$consulta2 = Sorteos::where('id', $ventas->Loteria)->get();
+        foreach ($consulta2 as $c2)
+        {}
+        //dd($c2->Max);
+        //dd($ventas->Numero);
+        $consulta1 = Ventas::where('Numero', $ventas->Numero)->where('Loteria', $loteria)->sum('Valorapuesta');
+        //dd($consulta1);
+        $consulta3 = Sorteos::where('id',$ventas->Loteria)->get();
+        foreach($consulta3 as $c3)
+        {}
+        //dd($c3->Loteria);
+        if($consulta1 >= $c2->Max)
+        {
+
+            $ventas->Estado = "0";
+            $ventas->save();
+
+            $userEmail = User::where('rol_id', '>', 1)->get();
+            //dd($userEmail);
+            foreach ($userEmail as $um) {
+                $contacto = new VentaMaxMail([$ventas->Numero, $c3->Loteria, $um->name]);
+                Mail::to($um->email)->send($contacto);
+            };
+        }
+        //dd($ventas->Estado);*/
+
         $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
-        $sumatotalventa2 = Ventas::sum('Valorapuesta'); //Suma de valor de venta realizada
+        $sumatotalventa2 = Ventas::where('user_id', $usuario->id)->sum('Valorapuesta'); //Suma de valor de venta realizada
+        $usuario->ganancia = $sumatotalventa2;
+        $usuario->balance = ($usuario->ganancia * $usuario->porcentaje)/100;
+        $usuario->update();
         $respuesta =  [
             "Suma de todas las ventas que se realizaron" => $sumatotalventa,
             "Suma total del valor de todas las ventas" => $sumatotalventa2,
             "Vendedor/Promotor afiliado a la venta" => $Vendedor,
+
         ];
         return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor'), 201);
     }
@@ -185,7 +220,7 @@ class VendedorController extends Controller
         /*$respuesta =  [
             "Numero de ventas" => $ventatotal,
             "Suma del valor de las ventas" => $sumatotal,
-             
+
         ];*/
 
         return response()->json(compact('ventatotal','sumatotal','promotor'), 200);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Acumulado;
 use App\Models\Premios;
 use App\Models\Promotor;
+use App\Models\Sorteos;
 use App\Models\User;
 use App\Models\Vendedor;
 use App\Models\Ventas;
@@ -175,13 +176,75 @@ class ModuloVendedorController extends Controller
        ->where('endate', '>', $today->format('Y-m-d'))
        //or where ('weekday') = $weekday?
        ->get();
-        
-        
+
+
          */
         //$fechaActual = $fechaActual->format('Y-m-d');
 
         $ventas = User::with('Ventas')->find($usuario->id); //VENTAS DEL PROMOTOR
-        $ventasVendedor = User::with('tieneUsuarios')->where('user_id', '=', $usuario->id)->with('Ventas')->get();
+        $ventas3 = Ventas::select('Loteria')->where('user_id', $usuario->id)->get();
+        
+        $ventas2 = Ventas::where('user_id', $usuario->id)->get();
+        
+        foreach ($ventas3 as $v3) {
+        }
+        //dd($v3->Loteria);
+        $loterias = Sorteos::where('id', $v3->Loteria)->get(); //LOTERIAS AFILIADAS
+        foreach ($loterias as $lt) {
+        }
+        //dd($lt->Loteria);
+        
+        foreach($ventas2 as $v) //ESTO SE REAIZA PARA PODER COLOCARLE EL NOMBRE A LA LOTERIA EN LUGAR DEL ID SIN MODIFICAR LA BD SOLO EL OBJETO
+        {
+            $v->Fecha = $v->Fecha;
+            $v->Numero = $v->Numero;
+            $v->Valorapuesta =  $v->Valorapuesta;
+            $v->Loteria = $lt->Loteria;
+            $v->Tipo = $v->Tipo;
+            $v->Estado = $v->Estado;
+            $v->Referencia = $v->Referencia;
+            $v->Sumatotalventas = $v->Sumatotalventas;
+            $v->Puntoventas = $v->Puntoventas;
+            $v->Puntoentregaventas = $v->Puntoentregaventas;
+            //dd($ventas2);
+        }
+        $ventasVendedor = User::with('tieneUsuarios')->where('user_id', $usuario->id)->with('Ventas')->get();
+        //dd($ventasVendedor);
+        /*foreach($ventasVendedor as $vv){
+            foreach($vv->Ventas as $v2){
+            }
+        }
+        //dd($v2->Loteria);
+        $loterias2 = Sorteos::where('id', $v2->Loteria)->get(); //LOTERIAS AFILIADAS
+        foreach($loterias2 as $lt2){}
+        //dd($lt2->Loteria);
+        $array = [];
+        /*
+        $venta = User::with('tieneUsuarios')->get();
+        return $venta;*/
+        /*foreach ($ventasVendedor as $vvv) {
+            if($vvv->tieneUsuarios) {
+                dd($vvv->tieneUsuarios);
+            }else {
+                dd($vvv);
+            }
+            foreach ($vvv->Ventas as $v22) {
+                $array[] = [
+                "Fecha" => $v22->Fecha,
+                "Numero" => $v22->Numero,
+                "Valoapuesta" =>  $v22->Valorapuesta,
+                "Loteria" => $lt2->Loteria,
+                "Tipo" => $v22->Tipo,
+                "Estado" => $v22->Estado,
+                "Referencia" => $v22->Referencia,
+                "Sumatotalventas" => $v22->Sumatotalventas,
+                "Puntoventas" => $v22->Puntoventas,
+                "Puntoentregaventas" => $v22->Puntoentregaventas,
+            ];
+                //dd($vvv->Ventas);
+            }
+        }*/
+        //dd($array);
         //RESUMEN DE VENTAS DEL PROMOTOR
         $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
         $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('created_at', $day)->count();
@@ -202,6 +265,8 @@ class ModuloVendedorController extends Controller
             // "Acumulado de apuestas" => $acumulado,
             //"Acumulados" => $acumulados,
             //"Premios" => $premios,
+            "VENTAS PRUEBA" => $ventas2,
+            //"VENTAS PRUEBA2" => $array,
             "Datos y ventas del promotor" => $ventas,
             "Datos de los vendedores" => $ventasVendedor
         ];
@@ -224,7 +289,7 @@ class ModuloVendedorController extends Controller
         $lastWeek = Carbon::now()->subWeek();
         $afterWeek = Carbon::now()->addWeek();
         //dd($day);
-        //EJEMPLO BASE -> $actualweek = Ventas::where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count("Numero"); 
+        //EJEMPLO BASE -> $actualweek = Ventas::where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count("Numero");
 
         /*
         $today = Carbon::now();
@@ -234,8 +299,8 @@ class ModuloVendedorController extends Controller
        ->where('endate', '>', $today->format('Y-m-d'))
        //or where ('weekday') = $weekday?
        ->get();
-        
-        
+
+
          */
 
 

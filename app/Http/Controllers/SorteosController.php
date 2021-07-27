@@ -20,8 +20,14 @@ class SorteosController extends Controller
         $sorteos = Sorteos::where("Estado", '=', 1)->with('user')->get();
         $respuesta =  [
             "Sorteos Activos" => $sorteos
-        ]; 
+        ];
         return response()->json($respuesta, 200);
+    }
+
+    public function sorteoGeneral()
+    {
+        $sorteos = Sorteos::all();
+        return response()->json($sorteos, 200);
     }
 
     /**
@@ -88,13 +94,15 @@ class SorteosController extends Controller
         $request->validate([
             "Fecha" => "required|date",
             "Loteria" => "required|string",
-            "Codigo" => "required|string|unique:sorteos,Codigo"
+            "Codigo" => "required|string|unique:sorteos,Codigo",
+            "Max" => "integer"
         ]);
 
         $sorteos = new Sorteos;
         $sorteos->Fecha = $request->get('Fecha');
         $sorteos->Loteria = $request->get('Loteria');
         $sorteos->Codigo = $request->get('Codigo');
+        $sorteos->Max = $request->get('Max');
         $sorteos->user_id = $usuario->id;
         $sorteos->save();
         $usuario->sorteo_id = $sorteos->id;
@@ -116,5 +124,11 @@ class SorteosController extends Controller
         ];
 
         return response()->json($respuesta, 200);
+    }
+
+    public function sorteoAll()
+    {
+        $sorteo = Sorteos::where('Estado', 1)->get();
+        return response()->json($sorteo, 200);
     }
 }

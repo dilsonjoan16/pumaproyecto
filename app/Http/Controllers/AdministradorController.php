@@ -20,7 +20,7 @@ class AdministradorController extends Controller
 
         $resumenventasProm = User::with('Ventas')->where('rol_id', '=', 2)->get();
         $resumenventasVend = User::with('Ventas')->where('rol_id', '=', 3)->get();
-        
+
         return response()->json(compact('resumenventasProm','resumenventasVend'), 200);
 
     }
@@ -44,14 +44,14 @@ class AdministradorController extends Controller
             //"Tipo" => "required", //Esto es Gasto, Pago, Premio
             "Descripcion" => "string|max:255",
             "Salida" => "required", // Esto es Acumulado o Caja
-            
-            
+
+
             //"Referencia" => "required|string|max:255",
             //"Transaccion" => "require|string|max:255"
-            
+
         ]);
 
-        
+
 
         if($tipo == 1)
         {
@@ -82,10 +82,28 @@ class AdministradorController extends Controller
             $usuario->reporte_id = $reporte->id;
             $usuario->save();
 
+            $pagado = User::select('id')->where('id', $reporte->user_pago)->first();
             $creador = User::with('reportes')->where('reporte_id', $reporte->id)->get();
-            $pagado = User::where('id',$reporte->user_pago)->get();
-            
-            return response()->json(compact('reporte','creador','pagado'), 201);
+
+            $userpago = User::find($pagado);
+            //dd($userpago);
+            foreach($userpago as $p){}
+
+            if($reporte->Monto > $p->balance)
+            {
+                return response()->json("No puedes cancelar mas de la cuenta", 400);
+            }
+            else
+            {
+                if($reporte->Monto <= $p->balance)
+                {
+                    $p->balance = $p->balance - $reporte->Monto;
+                    $p->update();
+                }
+            }
+
+            //dd($userpago);
+            return response()->json(compact('reporte','creador','userpago'), 201);
 
         }
         if($tipo == 3)

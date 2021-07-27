@@ -13,12 +13,13 @@ class CreateSorteosTable extends Migration
      */
     public function up()
     {
-        
+
         Schema::create('sorteos', function (Blueprint $table) {
             $table->id();
             $table->date("Fecha");
             $table->string("Loteria");
             $table->string("Codigo");
+            $table->integer("Max");
             $table->integer("Estado")->default(1); //1 ACTIVO 0 INACTIVO
             $table->timestamps();
         });

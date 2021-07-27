@@ -50,7 +50,7 @@ class UserController extends Controller
         return response()->json(compact('user'));
     }
 
-    public function register(Request $request) 
+    public function register(Request $request)
     {
 
         $usuario = auth()->user();
@@ -58,7 +58,7 @@ class UserController extends Controller
         //dd($usuario->rol_id);
         //$usuario->roles; //ESTO ME TRAE EL USUARIO LOGUEADO CON TODA SU INFORMACION PERSONAL Y DEL ROL
         $rolSelector = $request->get('rol');
-    if($usuario->rol_id == 1){            
+    if($usuario->rol_id == 1){
         if($rolSelector == 1) {//REGISTRO DE ADMINISTRADOR
                 $validator = Validator::make($request->all(), [
                     'name' => 'required|string',
@@ -85,7 +85,7 @@ class UserController extends Controller
                     $userFoto['foto'] = $file;
                 }
                 //dd($userFoto);
-                //php artisan db:seed --class=BookSeeder CODIGO PARA CORRER UN SEEDER INDIVIDUAL        
+                //php artisan db:seed --class=BookSeeder CODIGO PARA CORRER UN SEEDER INDIVIDUAL
 
                 $user = User::create([
                         'name' => $request->get('name'),
@@ -139,7 +139,7 @@ class UserController extends Controller
                     $userFoto['foto'] = $file;
                 }
 
-                //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
+                //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL
 
                 $user = User::create([
                     'name' => $request->get('name'),
@@ -198,7 +198,7 @@ class UserController extends Controller
                 }
 
                 //$rol = RolesUser::select('id')->where('nombre','=','Administrador')->get();
-                //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
+                //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL
                 //dd($rol);
 
                 $user = User::create([
@@ -259,7 +259,7 @@ class UserController extends Controller
             }
 
             //$rol = RolesUser::select('id')->where('nombre','=','Administrador')->get();
-            //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
+            //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL
             //dd($rol);
 
             $user = User::create([
@@ -292,7 +292,7 @@ class UserController extends Controller
     if($usuario->rol_id == 3){ //ROL VENDEDOR, NO PUEDE CREAR USUARIOS
         return response()->json("Por la naturaleza de su Rol no tiene autorizacion", 403);
     }
-    
+
 }
 
     public function emergencia(Request $request)
@@ -323,7 +323,7 @@ class UserController extends Controller
         }
         //dd($userFoto);
 
-        //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL        
+        //php artisan db:seed --class=BookSeeder CORRER UN SEEDER INDIVIDUAL
 
         $user = User::create([
                     'name' => $request->get('name'),

@@ -85,6 +85,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
             Route::apiResource('modulopromotorvendedor', ModuloPromVendController::class); //Read-Delete DE PROMOTORES Y VENDEDORES
+            Route::get('vendedores/general', [ModuloPromVendController::class, 'condensacion']); //VER TODOS LOS USUARIOS CON ROL MAYOR A 1
             Route::post('moduloPromotorVendedorUpdate/{id}', [ModuloPromVendController::class, 'update']);//UPDATE DE ADMINISTRADORES-PROMOTORES-VENDEDORES
             Route::get('SolicitudesAdministrador', [SolicitudesController::class, 'SolicitudesAdministrador']); //MOSTRAR TODAS LAS SOLICITUDES
             Route::delete('eliminarsolicitud/{id}', [SolicitudesController::class, 'destroy']); //ELIMINAR UNA SOLICITUD MEDIANTE ID
@@ -149,6 +150,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('resumenDeVentas', [ModuloVendedorController::class, 'analisisPromotor']); //VENTAS TOTALES DEL DIA,MES, PREMIOS, ACUMUALDOS
             Route::get('adicionalesVendedor', [VendedorController::class, 'adicionales']); //DATOS ADICIONALES QUE APARECEN EN REPORTE DE VENTAS -> PROMOTOR, ETC
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
+            Route::get('sorteoGeneral', [SorteosController::class, 'sorteoGeneral']); //CONTIENE LOS DATOS COMPLETOS DEL MODELO SORTEOS
+            Route::get('sorteos/general', [SorteosController::class, 'sorteoAll']); //TIENE TODOS LOS SORTEOS PARA EL MODULO DE VENTAS (VENTAS MAX Y SE BLOQUEA EL NUMERO)
         });
     });
 
@@ -169,6 +172,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('solicitudesPropias', [SolicitudesController::class, 'index']); //TODOS LOS DATOS AFILIADOS AL USUARIO
             Route::get('adicionalesVendedor', [VendedorController::class,'adicionales']); //DATOS ADICIONALES QUE APARECEN EN REPORTE DE VENTAS -> PROMOTOR, ETC
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
+            Route::get('sorteoGeneral', [SorteosController::class, 'sorteoGeneral']);
+            Route::get('sorteos/general', [SorteosController::class, 'sorteoAll']);
             //Route::put('modificarsolicitud/{id}', [SolicitudesController::class,'update']); EN CASO DE NECESITARSE RUTA PARA MODIFICAR
 
         });

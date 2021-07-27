@@ -18,7 +18,7 @@ class CreateVentasTable extends Migration
             $table->date("Fecha");
             $table->integer("Numero");
             $table->integer("Valorapuesta");
-            $table->string("Loteria");
+            $table->integer("Loteria");
             $table->string("Tipo");
             $table->string("Estado")->default(1);
 
@@ -31,11 +31,13 @@ class CreateVentasTable extends Migration
             $table->string("Puntoentregaventas");
             $table->timestamps();
         });
-        /*"Fecha",
+        /*
+        "Fecha",
         "Numero",
         "Valorapuesta",
         "Loteria",
-        "Tipo" //Directo o Combinado */
+        "Tipo" //Directo o Combinado
+        */
     }
 
     /**
