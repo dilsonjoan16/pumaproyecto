@@ -103,6 +103,7 @@ class SorteosController extends Controller
         $sorteos->Loteria = $request->get('Loteria');
         $sorteos->Codigo = $request->get('Codigo');
         //$sorteos->Max = $request->get('Max');
+        $sorteos->Estado = 1;
         $sorteos->user_id = $usuario->id;
         $sorteos->save();
         $usuario->sorteo_id = $sorteos->id;
