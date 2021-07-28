@@ -24,16 +24,41 @@ class VendedorController extends Controller
 
         $ventas2 = Ventas::with('user')->where('Estado',1)->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
         //dd($ventas2);
+        ///////////////
 
+        $ventas3 = Ventas::select('Loteria')->get();
+
+        foreach ($ventas3 as $v3) {
+        }
+        //dd($v3->Loteria);
+        $loterias = Sorteos::where('id', $v3->Loteria)->get(); //LOTERIAS AFILIADAS
+        foreach ($loterias as $lt) {
+        }
+        //dd($lt->Loteria);
+
+        foreach ($ventas2 as $v) //ESTO SE REAIZA PARA PODER COLOCARLE EL NOMBRE A LA LOTERIA EN LUGAR DEL ID SIN MODIFICAR LA BD SOLO EL OBJETO
+        {
+            $v->Fecha = $v->Fecha;
+            $v->Numero = $v->Numero;
+            $v->Valorapuesta =  $v->Valorapuesta;
+            $v->Loteria = $lt->Loteria;
+            $v->Tipo = $v->Tipo;
+            $v->Estado = $v->Estado;
+            $v->Referencia = $v->Referencia;
+            $v->Sumatotalventas = $v->Sumatotalventas;
+            $v->Puntoventas = $v->Puntoventas;
+            $v->Puntoentregaventas = $v->Puntoentregaventas;
+        ///////////////
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
-        $ventas3 = Ventas::Where('Estado', '=', 0)->get();
+        $ventas4 = Ventas::Where('Estado', 0)->get();
         $respuesta =  [
             "Numeros de loteria mas repetidos" => $ventas,
-            "Numeros de loteria bloqueados" => $ventas3,
+            "Numeros de loteria bloqueados" => $ventas4,
             "Data completa del Modelo" => $ventas2
         ];
         return response()->json($respuesta);
 
+        }
     }
 
     public function estadoDeCuenta()
@@ -145,7 +170,12 @@ class VendedorController extends Controller
             //"Nombrepromotor" => "required|string",
             "Puntoentregaventas" => "required|string"
         ]);
-
+        $verdadero = Ventas::where('Estado', 0)->get();
+        foreach($verdadero as $v){
+            if($v->Numero == $request->get("Numero")){
+                return response()->json("Numero bloqueado", 400);
+            }
+        }
         $ventas = Ventas::create([
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),

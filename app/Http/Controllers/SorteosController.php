@@ -95,14 +95,14 @@ class SorteosController extends Controller
             "Fecha" => "required|date",
             "Loteria" => "required|string",
             "Codigo" => "required|string|unique:sorteos,Codigo",
-            "Max" => "integer"
+            //"Max" => "integer"
         ]);
 
         $sorteos = new Sorteos;
         $sorteos->Fecha = $request->get('Fecha');
         $sorteos->Loteria = $request->get('Loteria');
         $sorteos->Codigo = $request->get('Codigo');
-        $sorteos->Max = $request->get('Max');
+        //$sorteos->Max = $request->get('Max');
         $sorteos->user_id = $usuario->id;
         $sorteos->save();
         $usuario->sorteo_id = $sorteos->id;
