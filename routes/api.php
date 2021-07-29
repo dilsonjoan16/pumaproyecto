@@ -152,6 +152,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('perfil', [VendedorController::class, 'perfil']); //PERFIL DEL USUARIO
             Route::get('sorteoGeneral', [SorteosController::class, 'sorteoGeneral']); //CONTIENE LOS DATOS COMPLETOS DEL MODELO SORTEOS
             Route::get('sorteos/general', [SorteosController::class, 'sorteoAll']); //TIENE TODOS LOS SORTEOS PARA EL MODULO DE VENTAS (VENTAS MAX Y SE BLOQUEA EL NUMERO)
+            Route::post('reportes', [AdministradorController::class, 'store']); //GENERACION DE REPORTES
+            Route::get('vendedores/promotor', [ModuloPromVendController::class, 'sublimacion']); //VER TODOS LOS USUARIOS CON ROL MAYOR A 1
+
+
         });
     });
 

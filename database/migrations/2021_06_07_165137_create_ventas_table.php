@@ -18,7 +18,7 @@ class CreateVentasTable extends Migration
             $table->date("Fecha");
             $table->integer("Numero");
             $table->integer("Valorapuesta");
-            $table->integer("Loteria");
+            $table->string("Loteria")->nullable();
             $table->string("Tipo");
             $table->string("Estado")->default(1);
 

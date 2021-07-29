@@ -29,6 +29,7 @@ class PruebasSeeder extends Seeder
         RolesUser::create(['nombre' => 'Administrador']);
         RolesUser::create(['nombre' => 'Promotor']);
         RolesUser::create(['nombre' => 'Vendedor']);
+        RolesUser::create(['nombre' => 'PromotorAlfa']);
         //Seeder de Role
         $this->call(RoleSeeder::class);
     }

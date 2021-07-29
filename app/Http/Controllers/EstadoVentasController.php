@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Premios;
 use App\Models\Acumulado;
 use App\Models\Reporte;
+use App\Models\User;
 
 class EstadoVentasController extends Controller
 {
@@ -15,7 +16,7 @@ class EstadoVentasController extends Controller
     {
         $ventas = Ventas::all();
         $estadodecuenta = Reporte::all();
-        
+
         $respuesta =  [
             //"Modelo Ventas" => $ventas,
             "Modelo Reporte" => $estadodecuenta,
@@ -37,22 +38,24 @@ class EstadoVentasController extends Controller
         $cuentaVentaDiaria = Ventas::whereDay('created_at', $day)->count('Numero'); //CONTEO DE VENTAS DIARIO
         $ventaMensual = Ventas::whereMonth('created_at', $month)->sum('Valorapuesta'); //SUMA DEL ACUMULADO DE VENTAS MENSUALES
         $cuentaVentaMensual = Ventas::whereMonth('created_at', $month)->count('Numero'); //CONTEO DE VENTAS EN EL MES
-        $montoPremio = Premios::where('Estado', '=', 1)->sum('MontoReferencia');
-        $montoAcumulado = Acumulado::where('Estado', '=', 1)->sum('MontoReferencia');
+        //$montoPremio = Premios::where('Estado', '=', 1)->sum('MontoReferencia');
+        //$montoAcumulado = Acumulado::where('Estado', '=', 1)->sum('MontoReferencia');
         $gastos = Reporte::where('Tipo', 'Gasto')->sum('Monto');
+        $acumulado = User::where('tipo', 1)->sum('balance');
+        $premios = Reporte::where('Tipo','Premio')->sum('Monto');
         //FIN DE CONSULTAS
         $State =  [
             "AcumuladoDeVentasDelDia" => $ventaDiaria,
             "ConteoDeVentasDelDia" => $cuentaVentaDiaria,
             "AcumuladoDeVentasDelMes" => $ventaMensual,
             "ConteoDeVentasDelMes" => $cuentaVentaMensual,
-            "AcumuladoDelMontoDePremios" => $montoPremio,
-            "AcumuladoDelMontoDeAcumulado" => $montoAcumulado,
+            "AcumuladoDelMontoDePremios" => $premios,
+            "AcumuladoDelMontoDeAcumulado" => $acumulado,
             "AcumuladoDelMontoDeGastos" => $gastos,
             "fecha Actual" =>$fechaActual,
         ];
 
         return response()->json($State, 200);
     }
-    
+
 }

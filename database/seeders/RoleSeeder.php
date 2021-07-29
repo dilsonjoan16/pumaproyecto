@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-//importamos la clase de Role 
+//importamos la clase de Role
 use Spatie\Permission\Models\Role;
 //importamos la clase de los permisos
 use Spatie\Permission\Models\Permission;
@@ -24,9 +24,9 @@ class RoleSeeder extends Seeder
         $role1 = Role::create(['name' => 'Administrador']);
         $role2 = Role::create(['name' => 'Promotor']);
         $role3 = Role::create(['name' => 'Vendedor']);
-
+        $role4 = Role::create(['name' => 'PromotorAlfa']);
         //Permisos del sistema
-        Permission::create(['name' => 'login'])->syncRoles([$role1,$role2,$role3]);
+        Permission::create(['name' => 'login'])->syncRoles([$role1,$role2,$role3,$role4]);
 
         //Permisos del Rol vendedor
         Permission::create(['name' => 'perfil.vendedor.index'])->assignRole($role3);
@@ -46,7 +46,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'solicitudes.promotor'])->assignRole($role2);
         //Este permiso verifica el estado de cuenta de vendedores
         Permission::create(['name' => 'verificar.estado.cuenta.promotor'])->assignRole($role2);
-                
+
         //Permisos del Rol Administrador
         Permission::create(['name' => 'perfil.administrador.index'])->assignRole($role1);
         //CRUD para galerias
@@ -76,6 +76,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'aceptar.solicitudes.administrador'])->assignRole($role1);
         Permission::create(['name' => 'eliminar.solicitudes.administrador'])->assignRole($role1);
 
-        
+
     }
 }

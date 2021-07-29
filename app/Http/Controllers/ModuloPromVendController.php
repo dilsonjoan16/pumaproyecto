@@ -30,6 +30,13 @@ class ModuloPromVendController extends Controller
         return response()->json($usuarios, 200);
     }
 
+    public function sublimacion()
+    {
+        $usuario = auth()->user();
+        $usuarios = User::with('tieneUsuarios')->where('user_id', $usuario->id)->get();
+        return response()->json($usuarios);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -381,7 +388,7 @@ class ModuloPromVendController extends Controller
 
         $user = User::find($id);
         $user->tipo = "0";
-        $user->email = "";
+        $user->email = $user->email."/eliminado";
         $user->save();
 
         $respuesta = [

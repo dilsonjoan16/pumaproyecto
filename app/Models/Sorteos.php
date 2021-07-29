@@ -15,7 +15,8 @@ class Sorteos extends Model
         "Codigo",
         "Max",
         "Estado", //ACTIVO 1 INACTIVO 0
-        "user_id"
+        "user_id",
+        "venta_id"
     ];
 
     public function premios()
@@ -31,5 +32,10 @@ class Sorteos extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function ventas()
+    {
+        return $this->hasMany(Ventas::class);
     }
 }

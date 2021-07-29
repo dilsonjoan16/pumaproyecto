@@ -24,6 +24,31 @@ class VendedorController extends Controller
 
         $ventas2 = Ventas::with('user')->where('Estado',1)->get(); //OBTENGO VENTAS Y LOS USUARIOS ASIGNADOS A ESAS VENTAS
         //dd($ventas2);
+        ///////////////
+
+        $ventas3 = Ventas::select('Loteria')->get();
+
+        foreach ($ventas3 as $v3) {
+        }
+        //dd($v3->Loteria);
+        $loterias = Sorteos::where('id', $v3->Loteria)->get(); //LOTERIAS AFILIADAS
+        foreach ($loterias as $lt) {
+        }
+        //dd($lt->Loteria);
+
+        foreach ($ventas2 as $v) //ESTO SE REALIZA PARA PODER COLOCARLE EL NOMBRE A LA LOTERIA EN LUGAR DEL ID SIN MODIFICAR LA BD SOLO EL OBJETO
+        {
+            $v->Fecha = $v->Fecha;
+            $v->Numero = $v->Numero;
+            $v->Valorapuesta =  $v->Valorapuesta;
+            $v->Loteria = $lt->Loteria;
+            $v->Tipo = $v->Tipo;
+            $v->Estado = $v->Estado;
+            $v->Referencia = $v->Referencia;
+            $v->Sumatotalventas = $v->Sumatotalventas;
+            $v->Puntoventas = $v->Puntoventas;
+            $v->Puntoentregaventas = $v->Puntoentregaventas;
+        ///////////////
         $ventas = Ventas::groupBy('Numero')->select('Numero', Ventas::raw('count(*) as repeticion'))->orderBy('repeticion', 'DESC')->get();
         $ventas4 = Ventas::Where('Estado', 0)->get();
         $respuesta =  [
@@ -31,9 +56,9 @@ class VendedorController extends Controller
             "Numeros de loteria bloqueados" => $ventas4,
             "Data completa del Modelo" => $ventas2
         ];
-
-        
         return response()->json($respuesta);
+
+        }
     }
 
     public function estadoDeCuenta()
@@ -135,7 +160,7 @@ class VendedorController extends Controller
             "Fecha" => "required|date",
             "Numero" => "required|integer",
             "Valorapuesta" => "required|integer",
-            "Loteria" => "required",
+            "Loteria" => "required|integer",
             "Tipo" => "required|string",
             //AGREGADO DE REFERENCIA -> DESCRIPCION
             "Referencia" => "required|string",
@@ -155,7 +180,7 @@ class VendedorController extends Controller
             "Fecha" => $request->get("Fecha"),
             "Numero" => $request->get("Numero"),
             "Valorapuesta" => $request->get("Valorapuesta"),
-            //"Loteria" => $request->get('Loteria'),
+            "Loteria" => $request->get('Loteria'),
             //"Loteria" => $loteria,
             "Tipo" => $request->get("Tipo"),
             //AGREGADO DE REFERENCIA
@@ -169,19 +194,9 @@ class VendedorController extends Controller
         ]);
 
         $ventas->user_id = $usuario->id;
-        $ventas->sorteo_id = $request->get('Loteria');
         $ventas->save();
         $usuario->venta_id = $ventas->id;
         $usuario->save();
-        $busqueda = Sorteos::where('id', $ventas->sorteo_id)->get();
-        foreach($busqueda as $b){
-            $b->venta_id = $ventas->id;
-            $b->save();
-        }
-        //dd($b->Loteria);
-        $ventas->Loteria = $b->Loteria;
-        $ventas->update();
-        ///////////// LOGICA DEL ADICIONAL /////////////
 
         /*$consulta2 = Sorteos::where('id', $ventas->Loteria)->get();
         foreach ($consulta2 as $c2)
@@ -208,8 +223,6 @@ class VendedorController extends Controller
             };
         }
         //dd($ventas->Estado);*/
-
-        ///////////////// LOGICA DEL ADICIONAL ////////////////
 
         $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas

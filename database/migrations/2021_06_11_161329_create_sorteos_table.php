@@ -19,7 +19,7 @@ class CreateSorteosTable extends Migration
             $table->date("Fecha");
             $table->string("Loteria");
             $table->string("Codigo");
-            $table->integer("Max");
+            $table->integer("Max")->nullable();
             $table->integer("Estado")->default(1); //1 ACTIVO 0 INACTIVO
             $table->timestamps();
         });

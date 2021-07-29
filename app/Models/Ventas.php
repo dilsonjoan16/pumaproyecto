@@ -26,8 +26,9 @@ class Ventas extends Model
         "Puntoventas", //Punto de Ventas
         //"Nombrepromotor", //Nombre del Promotor -> AFILIADO ESTE CAMPO SE DEBE ELIMINAR
         "Puntoentregaventas", //Punto de entregas de las ventas
-        "user_id"
-        
+        "user_id",
+        "sorteo_id",
+
     ];
 
     public function user()
@@ -35,5 +36,9 @@ class Ventas extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function sorteo()
+    {
+        return $this->belongsTo(Sorteos::class);
+    }
 
 }

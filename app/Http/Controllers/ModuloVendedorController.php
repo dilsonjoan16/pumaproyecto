@@ -8,6 +8,7 @@ use App\Models\Promotor;
 use App\Models\Sorteos;
 use App\Models\User;
 use App\Models\Vendedor;
+use App\Models\Reporte;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -182,82 +183,22 @@ class ModuloVendedorController extends Controller
         //$fechaActual = $fechaActual->format('Y-m-d');
 
         $ventas = User::with('Ventas')->find($usuario->id); //VENTAS DEL PROMOTOR
-        $ventas3 = Ventas::select('Loteria')->where('user_id', $usuario->id)->get();
-        
-        $ventas2 = Ventas::where('user_id', $usuario->id)->get();
-        
-        foreach ($ventas3 as $v3) {
-        }
-        //dd($v3->Loteria);
-        $loterias = Sorteos::where('id', $v3->Loteria)->get(); //LOTERIAS AFILIADAS
-        foreach ($loterias as $lt) {
-        }
-        //dd($lt->Loteria);
-        
-        foreach($ventas2 as $v) //ESTO SE REAIZA PARA PODER COLOCARLE EL NOMBRE A LA LOTERIA EN LUGAR DEL ID SIN MODIFICAR LA BD SOLO EL OBJETO
-        {
-            $v->Fecha = $v->Fecha;
-            $v->Numero = $v->Numero;
-            $v->Valorapuesta =  $v->Valorapuesta;
-            $v->Loteria = $lt->Loteria;
-            $v->Tipo = $v->Tipo;
-            $v->Estado = $v->Estado;
-            $v->Referencia = $v->Referencia;
-            $v->Sumatotalventas = $v->Sumatotalventas;
-            $v->Puntoventas = $v->Puntoventas;
-            $v->Puntoentregaventas = $v->Puntoentregaventas;
-            //dd($ventas2);
-        }
         $ventasVendedor = User::with('tieneUsuarios')->where('user_id', $usuario->id)->with('Ventas')->get();
-        //dd($ventasVendedor);
-        /*foreach($ventasVendedor as $vv){
-            foreach($vv->Ventas as $v2){
-            }
-        }
-        //dd($v2->Loteria);
-        $loterias2 = Sorteos::where('id', $v2->Loteria)->get(); //LOTERIAS AFILIADAS
-        foreach($loterias2 as $lt2){}
-        //dd($lt2->Loteria);
-        $array = [];
-        /*
-        $venta = User::with('tieneUsuarios')->get();
-        return $venta;*/
-        /*foreach ($ventasVendedor as $vvv) {
-            if($vvv->tieneUsuarios) {
-                dd($vvv->tieneUsuarios);
-            }else {
-                dd($vvv);
-            }
-            foreach ($vvv->Ventas as $v22) {
-                $array[] = [
-                "Fecha" => $v22->Fecha,
-                "Numero" => $v22->Numero,
-                "Valoapuesta" =>  $v22->Valorapuesta,
-                "Loteria" => $lt2->Loteria,
-                "Tipo" => $v22->Tipo,
-                "Estado" => $v22->Estado,
-                "Referencia" => $v22->Referencia,
-                "Sumatotalventas" => $v22->Sumatotalventas,
-                "Puntoventas" => $v22->Puntoventas,
-                "Puntoentregaventas" => $v22->Puntoentregaventas,
-            ];
-                //dd($vvv->Ventas);
-            }
-        }*/
-        //dd($array);
         //RESUMEN DE VENTAS DEL PROMOTOR
         $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
-        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('created_at', $day)->count();
-        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->count();
-        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('created_at', $month)->count();
-        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('created_at', $year)->count();
+        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('created_at', $day)->sum('Valorapuesta');
+        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("created_at", "<", $afterWeek)->where("created_at", ">", $lastWeek)->sum('Valorapuesta');
+        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('created_at', $month)->sum('Valorapuesta');
+        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('created_at', $year)->sum('Valorapuesta');
         $acumulados = Acumulado::where('Estado', '=', 1)->get();
         $premios = Premios::where('Estado', '=', 1)->get();
-        //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
+        $acumulado = $usuario->balance;
+        $gastos = Reporte::where('Tipo', 'Gasto')->sum('Monto');
+        $premios = Reporte::where('Tipo', 'Premio')->sum('Monto');
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [
 
-            "Ventas totales" => $ventatotal,
+            "Ventas totales" => $acumulado,
             "Ventas del dia" => $ventadiaria,
             "Ventas de la semana" => $ventasemanal,
             "Ventas del mes" => $ventamensual,
@@ -265,10 +206,12 @@ class ModuloVendedorController extends Controller
             // "Acumulado de apuestas" => $acumulado,
             //"Acumulados" => $acumulados,
             //"Premios" => $premios,
-            "VENTAS PRUEBA" => $ventas2,
             //"VENTAS PRUEBA2" => $array,
             "Datos y ventas del promotor" => $ventas,
-            "Datos de los vendedores" => $ventasVendedor
+            "Datos de los vendedores" => $ventasVendedor,
+            //"acumulado" => $acumulado,
+            "gastos" => $gastos,
+            "premios" => $premios
         ];
         return response()->json($respuesta, 200);
     }
@@ -310,10 +253,11 @@ class ModuloVendedorController extends Controller
         //$ventas = Ventas::with('user')->where('user_id', '=', $usuario->id)->get();
         //SOLICITUDES APARTE
         $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
-        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('Fecha', $day)->count('id');
-        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("Fecha", "<", $afterWeek)->where("Fecha", ">", $lastWeek)->count();
-        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('Fecha', $month)->count();
-        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('Fecha', $year)->count();
+        $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('Fecha', $day)->sum('Valorapuesta');
+        $ventasemanal = Ventas::with('user')->where('user_id', '=', $usuario->id)->where("Fecha", "<", $afterWeek)->where("Fecha", ">", $lastWeek)->sum('Valorapuesta');
+        $ventamensual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereMonth('Fecha', $month)->sum('Valorapuesta');
+        $ventaanual = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereYear('Fecha', $year)->sum('Valorapuesta');
+        $acumulado = $usuario->balance;
         //$acumulado = Ventas::sum('Valorapuesta'); ACUMULADO SON PREMIOS CHICOS
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [
@@ -324,7 +268,8 @@ class ModuloVendedorController extends Controller
             "Ventas del mes del usuario" => $ventamensual,
             "Ventas del año del usuario" => $ventaanual,
             // "Acumulado de apuestas" => $acumulado,
-            "Datos del modelo asociado al vendedor" => $ventas
+            "Datos del modelo asociado al vendedor" => $ventas,
+            "acumulado" => $acumulado
 
         ];
         return response()->json($respuesta, 200);

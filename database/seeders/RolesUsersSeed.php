@@ -18,5 +18,6 @@ class RolesUsersSeed extends Seeder
         RolesUser::create(['nombre' => 'Administrador']);
         RolesUser::create(['nombre' => 'Promotor']);
         RolesUser::create(['nombre' => 'Vendedor']);
+        RolesUser::create(['nombre' => 'PromotorAlfa']);
     }
 }

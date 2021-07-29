@@ -26,7 +26,7 @@ class VentasFactory extends Factory
             "Fecha" => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             "Numero" => $this->faker->randomDigit,
             "Valorapuesta" => $this->faker->numberBetween($min = 20, $max = 10000),
-            "Loteria" => $this->faker->randomElement($array = array('100', '200', '300', '400', '500')),
+            "Loteria" => $this->faker->randomElement($array = array('Loteria 01', 'Loteria 02', 'Loteria 03', 'Loteria 04', 'Loteria 05')),
             "Tipo" => $this->faker->randomElement($array = array('Directo', 'Combinado')), //Directo o Combinado
             //AGREGADO REFERENCIA->DESCRIPCION
             "Referencia" => $this->faker->randomElement($array = array('Apuesta Alta','Apuesta Baja','Parley','Rifa','Sorteo')),
