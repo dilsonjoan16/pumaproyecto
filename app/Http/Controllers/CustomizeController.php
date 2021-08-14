@@ -29,11 +29,15 @@ class CustomizeController extends Controller
         $customize2 = Customize::where('tipo', 2)->where('estado', 1)->get();
         $customize3 = Customize::where('tipo', 3)->where('estado', 1)->get();
         $customize4 = Customize::where('tipo', 4)->where('estado', 1)->get();
+        $customize5 = Customize::where('tipo', 5)->where('estado', 1)->get();
+        $customize6 = Customize::where('tipo', 6)->where('estado', 1)->get();
         $prueba = [
             "Datos tipo 1: Resultados" => $customize,
             "Datos tipo 2: Sorteos" => $customize2,
             "Datos tipo 3: Ubicanos" => $customize3,
-            "Datos tipo 4: Testimonios" => $customize4
+            "Datos tipo 4: Testimonios" => $customize4,
+            "Datos tipo 5: Slider" => $customize5,
+            "Datos tipo 6: Video" => $customize6
         ];
 
         return response()->json($prueba, 200);
@@ -45,11 +49,15 @@ class CustomizeController extends Controller
         $customize2 = Customize::where('tipo', 2)->get();
         $customize3 = Customize::where('tipo', 3)->get();
         $customize4 = Customize::where('tipo', 4)->get();
+        $customize5 = Customize::where('tipo', 5)->get();
+        $customize6 = Customize::where('tipo', 6)->get();
         $prueba = [
             "Datos tipo 1: Resultados" => $customize,
             "Datos tipo 2: Sorteos" => $customize2,
             "Datos tipo 3: Ubicanos" => $customize3,
-            "Datos tipo 4: Testimonios" => $customize4
+            "Datos tipo 4: Testimonios" => $customize4,
+            "Datos tipo 5: Slider" => $customize5,
+            "Datos tipo 6: Video" => $customize6
         ];
 
         return response()->json($prueba, 200);

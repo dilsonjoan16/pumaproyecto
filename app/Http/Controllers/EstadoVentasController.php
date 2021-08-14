@@ -20,8 +20,8 @@ class EstadoVentasController extends Controller
         $respuesta =  [
             //"Modelo Ventas" => $ventas,
             "Modelo Reporte" => $estadodecuenta,
-            "Ventas de promotores" =>$ventas->promotor()->where('Estado','=', 1)->get(),
-            "Ventas de vendedores" => $ventas->vendedores()->where('Estado','=',1)->get()
+            /*"Ventas de promotores" => ->where('Estado','=', 1)->get(),
+            "Ventas de vendedores" => $ventas->vendedores()->where('Estado','=',1)->get()*/
         ];
         return response()->json($respuesta, 200);
     }

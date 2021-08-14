@@ -16,7 +16,12 @@ class Sorteos extends Model
         "Max",
         "Estado", //ACTIVO 1 INACTIVO 0
         "user_id",
-        "venta_id"
+        "venta_id",
+        "porc_4cifras", // % de 4 cifras
+        "porc_triple",  // % de triple
+        "porc_combn3",  // % de combinado de 3
+        "porc_combn4",  // % de combinado de 4
+        "porc_terminal", //% de terminal
     ];
 
     public function premios()

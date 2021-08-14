@@ -84,4 +84,42 @@ class ListagaleriasController extends Controller
 
         return response()->json($respuesta, 200);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    //FUNCION PARA ASIGNAR A QUE MENU SE MOSTRARA TIPO 1->RESULTADOS 2->SORTEOS 3->TESTIMONIOS 4->UBICANOS
+    public function updateSlider($id)
+    {
+        $customize = Customize::find($id);
+        $customize->tipo = 5;
+        $customize->save();
+        $respuesta =  [
+            "El objeto fue cambiado de categoria con exito!" => $customize
+        ];
+
+        return response()->json($respuesta, 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    //FUNCION PARA ASIGNAR A QUE MENU SE MOSTRARA TIPO 1->RESULTADOS 2->SORTEOS 3->TESTIMONIOS 4->UBICANOS
+    public function updateVideo($id)
+    {
+        $customize = Customize::find($id);
+        $customize->tipo = 6;
+        $customize->save();
+        $respuesta =  [
+            "El objeto fue cambiado de categoria con exito!" => $customize
+        ];
+
+        return response()->json($respuesta, 200);
+    }
 }

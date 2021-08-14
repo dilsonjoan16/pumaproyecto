@@ -119,7 +119,7 @@ class UserController extends Controller
                     'email' => ['required', 'email', 'max:255', 'unique:users,email'],
                     'password' => 'required|string|min:6|max:12',
                     'dni' => 'required|integer',
-                    'ganancia' => 'required|integer',
+                    'ganancia' => 'integer',
                     'porcentaje' => 'required|integer|max:50',
                     'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                     'direccion' => 'required|string|max:255',
@@ -177,7 +177,7 @@ class UserController extends Controller
                     'email' => ['required', 'email', 'max:255', 'unique:users,email'],
                     'password' => 'required|string|min:6|max:12',
                     'dni' => 'required|integer',
-                    'ganancia' => 'required|integer',
+                    'ganancia' => 'integer',
                     'porcentaje' => 'required|integer|max:50',
                     'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                     'direccion' => 'required|string|max:255',
@@ -238,7 +238,7 @@ class UserController extends Controller
                 'email' => ['required', 'email', 'max:255', 'unique:users,email'],
                 'password' => 'required|string|min:6|max:12',
                 'dni' => 'required|integer',
-                'ganancia' => 'required|integer',
+                'ganancia' => 'integer',
                 'porcentaje' => 'required|integer|max:50',
                 'foto' => 'required|image|max:2048', //la validacion siempre debe ir acompañada por "|image" para poder validar existencia de imagen
                 'direccion' => 'required|string|max:255',

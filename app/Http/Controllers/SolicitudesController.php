@@ -83,7 +83,7 @@ class SolicitudesController extends Controller
             //dd($correo);
             Mail::to($correo)->send($contacto);
             //fin de envio de correo
-
+            $solicitudes->Tipo = 1;
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;
@@ -125,7 +125,7 @@ class SolicitudesController extends Controller
             //dd($correo);
             Mail::to($correo)->send($contacto);
             //fin de envio de correo
-
+            $solicitudes->Tipo = 1;
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;
@@ -166,7 +166,7 @@ class SolicitudesController extends Controller
             //dd($correo);
             Mail::to($correo)->send($contacto);
             //fin de envio de correo
-
+            $solicitudes->Tipo = 1;
             $solicitudes->save();
 
             $usuario->solicitud_id = $solicitudes->id;

@@ -103,6 +103,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::put('galeriasSorteos/{id}', [ListagaleriasController::class, 'updateSorteos']); //CAMBIA EL TIPO PARA MOSTRAR EN SORTEOS
             Route::put('galeriasUbicanos/{id}', [ListagaleriasController::class, 'updateUbicanos']); //CAMBIA EL TIPO PARA MOSTRAR EN UBICANOS
             Route::put('galeriasTestimonios/{id}', [ListagaleriasController::class, 'updateTestimonios']); //CAMBIA EL TIPO PARA MOSTRAR EN TESTIMONIOS
+            Route::put('galeriasSlider/{id}', [ListagaleriasController::class, 'updateSlider']);
+            Route::put('galeriasVideo/{id}', [ListagaleriasController::class, 'updateVideo']);
             Route::get('estadoDeCuenta', [EstadoVentasController::class, 'index']); //ESTADO DE CUENTA
             Route::get('finanzas', [EstadoVentasController::class, 'finanzas']); //TABLA LATERAL DONDE SE ENCUENTRAN LOS ACUMUALDOS DEL DIA, MES, GASTOS, PREMIOS, ACUMULADOS
             Route::get('metricas', [VendedorController::class, 'index']); //VER METRICAS

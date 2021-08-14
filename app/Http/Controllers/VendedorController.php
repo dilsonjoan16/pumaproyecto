@@ -32,7 +32,7 @@ class VendedorController extends Controller
             "Data completa del Modelo" => $ventas2
         ];
 
-        
+
         return response()->json($respuesta);
     }
 
@@ -85,7 +85,17 @@ class VendedorController extends Controller
      */
     public function destroy($id)
     {
+
+        //EIMINADO ESPECIFICO//
         $ventas = Ventas::find($id);
+        $ventas->Estado = 0;
+        $ventas->update();
+
+        $respuesta = [
+            "El objeto fue eliminado con exito!" => $ventas
+        ];
+
+       /* $ventas = Ventas::find($id);              /////ELIMINADO GENERAL//////
         $ventas->Numero;
         if ($ventas = Ventas::select('*')->where('Numero', '=', $ventas->Numero)->get()) {
             foreach ($ventas as $venta) {
@@ -95,12 +105,8 @@ class VendedorController extends Controller
             $respuesta =  [
                 "El objeto fue eliminado con exito!" => $ventas
             ];
-        }
+        }*/
         //dd($ventas);
-
-
-
-
 
         return response()->json($respuesta, 200);
     }
@@ -127,7 +133,7 @@ class VendedorController extends Controller
     {
         $usuario = auth()->user();
         $usuario->id;
-        /*$loteria = $request->get('id_loteria');*/
+        /*$ventas->Loteria = $request->get('id_loteria');*/
         //dd($usuario->rol_id);
         //dd($usuario->id);
 
@@ -135,7 +141,7 @@ class VendedorController extends Controller
             "Fecha" => "required|date",
             "Numero" => "required|integer",
             "Valorapuesta" => "required|integer",
-            "Loteria" => "required",
+            "Loteria" => "required|integer", //id de la loteria
             "Tipo" => "required|string",
             //AGREGADO DE REFERENCIA -> DESCRIPCION
             "Referencia" => "required|string",
@@ -145,9 +151,12 @@ class VendedorController extends Controller
             //"Nombrepromotor" => "required|string",
             "Puntoentregaventas" => "required|string"
         ]);
+
+        //validacion si esta bloqueado 1 numero en 1 loteria
+
         $verdadero = Ventas::where('Estado', 0)->get();
         foreach($verdadero as $v){
-            if($v->Numero == $request->get("Numero")){
+            if($v->Numero == $request->get("Numero") && $v->sorteo_id == $request->get("Loteria")){
                 return response()->json("Numero bloqueado", 400);
             }
         }
@@ -181,16 +190,18 @@ class VendedorController extends Controller
         //dd($b->Loteria);
         $ventas->Loteria = $b->Loteria;
         $ventas->update();
+        //dd($ventas->Loteria);
+
         ///////////// LOGICA DEL ADICIONAL /////////////
 
-        /*$consulta2 = Sorteos::where('id', $ventas->Loteria)->get();
+        $consulta2 = Sorteos::where('id', $ventas->sorteo_id)->get();
         foreach ($consulta2 as $c2)
         {}
         //dd($c2->Max);
         //dd($ventas->Numero);
-        $consulta1 = Ventas::where('Numero', $ventas->Numero)->where('Loteria', $loteria)->sum('Valorapuesta');
+        $consulta1 = Ventas::where('Numero', $ventas->Numero)->where('Loteria', $ventas->Loteria)->sum('Valorapuesta');
         //dd($consulta1);
-        $consulta3 = Sorteos::where('id',$ventas->Loteria)->get();
+        $consulta3 = Sorteos::where('id',$ventas->sorteo_id)->get();
         foreach($consulta3 as $c3)
         {}
         //dd($c3->Loteria);
@@ -207,7 +218,7 @@ class VendedorController extends Controller
                 Mail::to($um->email)->send($contacto);
             };
         }
-        //dd($ventas->Estado);*/
+        //dd($ventas->Estado);
 
         ///////////////// LOGICA DEL ADICIONAL ////////////////
 
@@ -217,6 +228,7 @@ class VendedorController extends Controller
         $usuario->ganancia = $sumatotalventa2;
         $usuario->balance = ($usuario->ganancia * $usuario->porcentaje)/100;
         $usuario->update();
+        //dd($usuario->balance);
         $respuesta =  [
             "Suma de todas las ventas que se realizaron" => $sumatotalventa,
             "Suma total del valor de todas las ventas" => $sumatotalventa2,

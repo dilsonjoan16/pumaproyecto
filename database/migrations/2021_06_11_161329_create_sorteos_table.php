@@ -21,6 +21,11 @@ class CreateSorteosTable extends Migration
             $table->string("Codigo");
             $table->integer("Max")->nullable();
             $table->integer("Estado")->default(1); //1 ACTIVO 0 INACTIVO
+            $table->integer("porc_4cifras")->nullable();
+            $table->integer("porc_triple")->nullable();
+            $table->integer("porc_combn3")->nullable();
+            $table->integer("porc_combn4")->nullable();
+            $table->integer("porc_terminal")->nullable();
             $table->timestamps();
         });
     }

@@ -16,9 +16,9 @@ class ModuloPromVendController extends Controller
      */
     public function index()
     {
-        $administradores = User::where('rol_id','=',1)->get();
-        $promotores = User::where('rol_id','=',2)->get();
-        $vendedores = User::where('rol_id','=',3)->get();
+        $administradores = User::where('rol_id','=',1)->where('tipo', 1)->get();
+        $promotores = User::where('rol_id','=',2)->where('tipo', 1)->get();
+        $vendedores = User::where('rol_id','=',3)->where('tipo', 1)->get();
 
 
         return response()->json([$vendedores, $promotores, $administradores], 200);
@@ -388,8 +388,9 @@ class ModuloPromVendController extends Controller
 
         $user = User::find($id);
         $user->tipo = "0";
-        $user->email = $user->email."/eliminado";
+        $user->email = "Eliminado/".$user->email;
         $user->save();
+
 
         $respuesta = [
             "El objeto fue eliminado con exito" => $user

@@ -26,7 +26,7 @@ class ModuloVendedorController extends Controller
         $usuario->id;
 
         //VENDEDORES AFILIADOS AL PROMOTOR
-        $vendedores = User::with('tieneUsuarios')->find($usuario->id);
+        $vendedores = User::with('tieneUsuarios')->where('tipo', 1)->find($usuario->id);
 
         return response()->json($vendedores, 200);
     }
@@ -130,6 +130,7 @@ class ModuloVendedorController extends Controller
     {
         $vendedor = User::find($id);
         $vendedor->tipo = 0;
+        $vendedor->email = "Eliminado/".$vendedor->email;
         $vendedor->save();
 
         $respuesta =  [
