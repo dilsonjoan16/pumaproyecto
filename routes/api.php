@@ -95,7 +95,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('solicitudesRechazadas', [SolicitudesController::class, 'SolicitudesRechazadas']); //MOSTRAR SOLICITUDES RECHAZADAS
             //  Ruta de customize (Api home, Crear galerias, Modificar galerias, Eliminar galerias)
             Route::apiResource('customize', CustomizeController::class); //CONTIENE TODO DEL HOME (GALERIAS,TITULOS,DESCRIPCIONES,ETC)
-            Route::get('customizeGeneral', [CustomizeController::class, 'general']); //CONTIENE TODAS LAS GALERIAS SOLO MUESTRA
+            Route::get('customizeGeneral', [CustomizeController::class, 'index']); //CONTIENE TODAS LAS GALERIAS SOLO MUESTRA
             Route::post('customizeUpdate/{id}', [CustomizeController::class,'update']); //MODIFICACION DEL CUSTOMIZE (GALERIAS)
             Route::get('UpdateEstado/{id}', [CustomizeController::class, 'UpdateEstado']); //UPDATE DE ESTADO 0 A 1 (INACTIVO -> ACTIVO)
             // RUTA PARA CAMBIAR EL TIPO DE MUESTRA DE LAS GALERIAS

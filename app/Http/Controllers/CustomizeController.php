@@ -190,7 +190,7 @@ class CustomizeController extends Controller
             //$customize->rutaVideo = $file2;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
         if ($imagenes === null) {
             $customize->update($request->all());
             $respuesta =  [
@@ -248,6 +248,13 @@ class CustomizeController extends Controller
             ];
 
             return response()->json($respuesta, 200);
+        }
+        
+        if(isset($videos)){
+            $customize->update([
+                'rutaVideo' => $file2
+            ]);
+            return response()->json($customize, 200);
         }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

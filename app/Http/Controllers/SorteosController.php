@@ -79,6 +79,7 @@ class SorteosController extends Controller
     {
         $sorteos = Sorteos::find($id);
         $sorteos->Estado = 0;
+        $sorteos->Codigo = "Eliminado/$id/".$sorteos->Codigo;
         $sorteos->save();
 
         $respuesta =  [
@@ -95,7 +96,7 @@ class SorteosController extends Controller
         $request->validate([
             "Fecha" => "required|date",
             "Loteria" => "required|string",
-            "Codigo" => "required|string|unique:sorteos,Codigo",
+            "Codigo" => "required|string", //fragmento eliminado |unique:sorteos,Codigo
             "Max" => "integer",
             "porc_4cifras" => "integer",
             "porc_triple" => "integer",
@@ -103,7 +104,7 @@ class SorteosController extends Controller
             "porc_combn4" => "integer",
             "porc_terminal" => "integer",
         ]);
-
+       
         $sorteos = new Sorteos;
         $sorteos->Fecha = $request->get('Fecha'); //YY-MM-DD HH:MM:SS
         $sorteos->Loteria = $request->get('Loteria');
@@ -123,6 +124,7 @@ class SorteosController extends Controller
         $creador = User::where('id', $sorteos->user_id)->first();
 
         return response()->json(compact('sorteos','creador'), 201);
+        
     }
 
     public function habilitar($id)

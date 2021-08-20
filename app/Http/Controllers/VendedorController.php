@@ -152,7 +152,7 @@ class VendedorController extends Controller
             "Puntoentregaventas" => "required|string"
         ]);
 
-        //validacion si esta bloqueado 1 numero en 1 loteria
+        //validacion si esta bloqueado un(1) numero en una(1) loteria
 
         $verdadero = Ventas::where('Estado', 0)->get();
         foreach($verdadero as $v){
@@ -160,54 +160,63 @@ class VendedorController extends Controller
                 return response()->json("Numero bloqueado", 400);
             }
         }
-        $ventas = Ventas::create([
-            "Fecha" => $request->get("Fecha"),
-            "Numero" => $request->get("Numero"),
-            "Valorapuesta" => $request->get("Valorapuesta"),
-            //"Loteria" => $request->get('Loteria'),
-            //"Loteria" => $loteria,
-            "Tipo" => $request->get("Tipo"),
-            //AGREGADO DE REFERENCIA
-            "Referencia" => $request->get("Referencia"),
-            //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
-            //"Sumatotalventas" => $request->get("Sumatotalventas"),
-            "Puntoventas" => $request->get("Puntoventas"),
-            //"Nombrepromotor" => $request->get("Nombrepromotor"),
-            "Puntoentregaventas" => $request->get("Puntoentregaventas"),
-            //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
-        ]);
 
-        $ventas->user_id = $usuario->id;
-        $ventas->sorteo_id = $request->get('Loteria');
-        $ventas->save();
-        $usuario->venta_id = $ventas->id;
-        $usuario->save();
-        $busqueda = Sorteos::where('id', $ventas->sorteo_id)->get();
-        foreach($busqueda as $b){
-            $b->venta_id = $ventas->id;
-            $b->save();
-        }
-        //dd($b->Loteria);
-        $ventas->Loteria = $b->Loteria;
-        $ventas->update();
-        //dd($ventas->Loteria);
+        //validacion si el monto enviado es menor o igual al restante del monto maximo permitido
 
-        ///////////// LOGICA DEL ADICIONAL /////////////
-
-        $consulta2 = Sorteos::where('id', $ventas->sorteo_id)->get();
-        foreach ($consulta2 as $c2)
+        $consulta2 = Sorteos::where('id', $request->get('Loteria'))->get();
+        foreach ($consulta2 as $c2) //Consulta para obtener el Tope Max
         {}
         //dd($c2->Max);
-        //dd($ventas->Numero);
-        $consulta1 = Ventas::where('Numero', $ventas->Numero)->where('Loteria', $ventas->Loteria)->sum('Valorapuesta');
-        //dd($consulta1);
-        $consulta3 = Sorteos::where('id',$ventas->sorteo_id)->get();
-        foreach($consulta3 as $c3)
-        {}
-        //dd($c3->Loteria);
-        if($consulta1 >= $c2->Max)
-        {
 
+        $consulta1 = Ventas::where('Numero', $request->get('Numero'))->where('sorteo_id', $request->get('Loteria'))->sum('Valorapuesta'); //Sumatoria de ese numero y esa loteria
+        //dd($consulta1);
+
+        if($request->get('Valorapuesta') <= ($c2->Max - $consulta1) )
+        {
+            $ventas = Ventas::create([
+                "Fecha" => $request->get("Fecha"),
+                "Numero" => $request->get("Numero"),
+                "Valorapuesta" => $request->get("Valorapuesta"),
+                //"Loteria" => $request->get('Loteria'),
+                //"Loteria" => $loteria,
+                "Tipo" => $request->get("Tipo"),
+                //AGREGADO DE REFERENCIA
+                "Referencia" => $request->get("Referencia"),
+                //REVISAR APARTADO DE SUMATOTALVENTAS! HACER UN ACUMULADOR DESDE LA BASE DE DATOS -> ORDERBY U SUM POSIBLEMENTE
+                //"Sumatotalventas" => $request->get("Sumatotalventas"),
+                "Puntoventas" => $request->get("Puntoventas"),
+                //"Nombrepromotor" => $request->get("Nombrepromotor"),
+                "Puntoentregaventas" => $request->get("Puntoentregaventas"),
+                //"Sumatoria Final" => $request->get("Sumatotalventas")+$ventas->Sumatotalventas
+            ]);
+    
+            $ventas->user_id = $usuario->id;
+            $ventas->sorteo_id = $request->get('Loteria');
+            $ventas->save();
+            $usuario->venta_id = $ventas->id;
+            $usuario->save();
+            $busqueda = Sorteos::where('id', $ventas->sorteo_id)->get();
+            foreach($busqueda as $b){
+                $b->venta_id = $ventas->id;
+                $b->save();
+            }
+            //dd($b->Loteria);
+            $ventas->Loteria = $b->Loteria;
+            $ventas->update();
+            //dd($ventas->Loteria);
+        }
+        else 
+        {
+            $restante = $c2->Max - $consulta1;
+            $razon = "El monto apostado es mayor que el limite restante";
+            return response()->json(["razon" => $razon, "restante" => $restante], 400);
+        }
+
+        $consulta3 = Sorteos::where('id',$ventas->sorteo_id)->get();
+        foreach($consulta3 as $c3) //Consulta para obtener la Loteria
+
+        if($request->get('Valorapuesta') == ($c2->Max - $consulta1) )
+        {
             $ventas->Estado = "0";
             $ventas->save();
 
@@ -218,9 +227,6 @@ class VendedorController extends Controller
                 Mail::to($um->email)->send($contacto);
             };
         }
-        //dd($ventas->Estado);
-
-        ///////////////// LOGICA DEL ADICIONAL ////////////////
 
         $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
@@ -236,6 +242,41 @@ class VendedorController extends Controller
 
         ];
         return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor'), 201);
+        
+        ///////////// LOGICA DEL ADICIONAL /////////////
+
+        /*$consulta2 = Sorteos::where('id', $ventas->sorteo_id)->get();
+        foreach ($consulta2 as $c2)
+        {}
+        //dd($c2->Max);
+        //dd($ventas->Numero);
+        
+        $consulta3 = Sorteos::where('id',$ventas->sorteo_id)->get();
+        foreach($consulta3 as $c3)
+        {}
+        //dd($c3->Loteria);
+
+        $consulta1 = Ventas::where('Numero', $ventas->Numero)->where('Loteria', $ventas->Loteria)->sum('Valorapuesta');
+        //dd($consulta1);
+        if($consulta1 == $c2->Max || $consulta1 > $c2->Max)
+        {
+            
+            $ventas->Estado = "0";
+            $ventas->save();
+
+            $userEmail = User::where('rol_id', '>', 1)->get();
+            //dd($userEmail);
+            foreach ($userEmail as $um) {
+                $contacto = new VentaMaxMail([$ventas->Numero, $c3->Loteria, $um->name]);
+                Mail::to($um->email)->send($contacto);
+            };
+        }
+        //dd($consulta1);
+        //dd($ventas->Estado);*/
+
+        ///////////////// LOGICA DEL ADICIONAL ////////////////
+
+
     }
 
     public function adicionales()
