@@ -74,13 +74,13 @@ class CustomizeController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'rutaImagen' => 'required|image|max:2048',
+            'rutaImagen' => 'image|max:2048',
             'titulo' => 'required|string',
-            'contenido' => 'required|string',
-            'rutaVideo' => 'required|video',
-            'orden' => 'required|integer',
-            'tipo' => 'required|integer|max:4',
-            'link' => 'required|string'
+            'contenido' => 'string',
+            'rutaVideo' => 'video',
+            'orden' => 'integer',
+            'tipo' => 'required|integer|max:6',
+            'link' => 'string'
         ]);
 
         //if ($validator->fails()) {

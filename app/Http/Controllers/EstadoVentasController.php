@@ -15,7 +15,7 @@ class EstadoVentasController extends Controller
     public function index()
     {
         $ventas = Ventas::all();
-        $estadodecuenta = Reporte::all();
+        $estadodecuenta = Reporte::with('user')->get();
 
         $respuesta =  [
             //"Modelo Ventas" => $ventas,
