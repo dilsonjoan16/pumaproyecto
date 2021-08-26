@@ -15,9 +15,9 @@ class CreateAcumuladosTable extends Migration
     {
         Schema::create('acumulados', function (Blueprint $table) {
             $table->id();
-            $table->string("Nombre");
+            $table->string("Nombre")->nullable();
             $table->integer("Estado")->default(1);
-            $table->integer("MontoReferencia");
+            $table->integer("Monto")->nullable();
             $table->timestamps();
         });
     }

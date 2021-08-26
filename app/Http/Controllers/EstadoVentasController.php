@@ -41,7 +41,10 @@ class EstadoVentasController extends Controller
         //$montoPremio = Premios::where('Estado', '=', 1)->sum('MontoReferencia');
         //$montoAcumulado = Acumulado::where('Estado', '=', 1)->sum('MontoReferencia');
         $gastos = Reporte::where('Tipo', 'Gasto')->sum('Monto');
-        $acumulado = User::where('tipo', 1)->sum('balance');
+        //$acumulado = User::where('tipo', 1)->sum('balance');
+        $acumulado3 = Acumulado::sum('Monto');
+        $acumulado2 = Reporte::where('Tipo', 'Gasto')->sum('Monto');
+        $acumulado = $acumulado3 - $acumulado2;
         $premios = Reporte::where('Tipo','Premio')->sum('Monto');
         //FIN DE CONSULTAS
         $State =  [

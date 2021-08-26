@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\VentaMaxMail;
+use App\Models\Acumulado;
 use App\Models\Promotor;
 use App\Models\Vendedor;
 use App\Models\User;
@@ -231,6 +232,14 @@ class VendedorController extends Controller
         $Vendedor = User::where('id', '=', $ventas->user_id)->first();
         $sumatotalventa = Ventas::count("Numero"); //Suma de las ventas realizadas
         $sumatotalventa2 = Ventas::where('user_id', $usuario->id)->sum('Valorapuesta'); //Suma de valor de venta realizada
+        
+        $acumulatore = 100 - $usuario->porcentaje;
+        $valoracumulatore = ($request->get('Valorapuesta') * $acumulatore)/100;
+
+        $acumulacion = new Acumulado;
+        $acumulacion->Monto = $valoracumulatore;
+        $acumulacion->save();
+
         $usuario->ganancia = $sumatotalventa2;
         $usuario->balance = ($usuario->ganancia * $usuario->porcentaje)/100;
         $usuario->update();
@@ -241,7 +250,7 @@ class VendedorController extends Controller
             "Vendedor/Promotor afiliado a la venta" => $Vendedor,
 
         ];
-        return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor'), 201);
+        return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor','acumulacion'), 201);
         
         ///////////// LOGICA DEL ADICIONAL /////////////
 

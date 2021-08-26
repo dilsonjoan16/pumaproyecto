@@ -13,7 +13,7 @@ class AcumuladoController extends Controller
      */
     public function index()
     {
-        $acumulado = Acumuado::where('Estado', '=', 1)->get();
+        $acumulado = Acumulado::where('Estado', '=', 1)->get();
 
         return response()->json($acumulado, 200);
     }

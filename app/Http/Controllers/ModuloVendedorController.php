@@ -183,8 +183,9 @@ class ModuloVendedorController extends Controller
          */
         //$fechaActual = $fechaActual->format('Y-m-d');
 
-        $ventas = User::with('Ventas')->find($usuario->id); //VENTAS DEL PROMOTOR
+        $ventas = User::with('Ventas')->with('reportes')->find($usuario->id); //VENTAS DEL PROMOTOR
         $ventasVendedor = User::with('tieneUsuarios')->where('user_id', $usuario->id)->with('Ventas')->get();
+        //$reportesVendedor = User::with('tieneUsuarios')->where('user_id', $usuario->id)->with('reportes')->get();
         //RESUMEN DE VENTAS DEL PROMOTOR
         $ventatotal = Ventas::with('user')->where('user_id', '=', $usuario->id)->count();
         $ventadiaria = Ventas::with('user')->where('user_id', '=', $usuario->id)->whereDay('created_at', $day)->sum('Valorapuesta');
@@ -196,6 +197,7 @@ class ModuloVendedorController extends Controller
         $acumulado = $usuario->balance;
         $gastos = Reporte::where('Tipo', 'Gasto')->sum('Monto');
         $premios = Reporte::where('Tipo', 'Premio')->sum('Monto');
+        $acumulado = Reporte::where('Salida', 'Acumulado')->sum('Monto');
         //FALTA "PREMIOS" SON PREMIOS GRANDES O FINALES DE LA RIFA
         $respuesta =  [
 
@@ -212,7 +214,8 @@ class ModuloVendedorController extends Controller
             "Datos de los vendedores" => $ventasVendedor,
             //"acumulado" => $acumulado,
             "gastos" => $gastos,
-            "premios" => $premios
+            "premios" => $premios,
+            "acumulado" => $acumulado
         ];
         return response()->json($respuesta, 200);
     }

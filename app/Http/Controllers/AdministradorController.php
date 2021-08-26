@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acumulado;
 use App\Models\Administrador;
 use App\Models\Reporte;
 use App\Models\Ventas;
@@ -62,6 +63,17 @@ class AdministradorController extends Controller
             $reporte->Salida = $request->get("Salida");
             $reporte->user_id = $usuario->id;
             $reporte->save();
+
+            //$acumulado2 = Acumulado::sum('Monto');
+            //dd($acumulado2);
+            //$acumulacion = ($acumulado2 - $reporte->Monto);
+            //dd($acumulacion);
+            //dd($reporte->Monto);
+            //$acumulado = new Acumulado();
+            //$acumulado->Monto = $acumulacion;
+            //$acumulado->save();
+            
+
             $usuario->reporte_id = $reporte->id;
             $usuario->save();
 
