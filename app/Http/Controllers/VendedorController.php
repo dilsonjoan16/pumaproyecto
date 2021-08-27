@@ -252,7 +252,7 @@ class VendedorController extends Controller
         ];
         return response()->json(compact('ventas','sumatotalventa','sumatotalventa2','Vendedor','acumulacion'), 201);
         
-        ///////////// LOGICA DEL ADICIONAL /////////////
+        ///////////// LOGICA DEL ADICIONAL ///////////// POSEE ERRORES NO SE USO
 
         /*$consulta2 = Sorteos::where('id', $ventas->sorteo_id)->get();
         foreach ($consulta2 as $c2)
@@ -283,7 +283,7 @@ class VendedorController extends Controller
         //dd($consulta1);
         //dd($ventas->Estado);*/
 
-        ///////////////// LOGICA DEL ADICIONAL ////////////////
+        ///////////////// LOGICA DEL ADICIONAL //////////////// POSEE ERRORES NO SE USO
 
 
     }
