@@ -156,8 +156,15 @@ class SorteosController extends Controller
             $s->update();         //Una hora antes del juego el sorteo pasa a estado 0 y no se muestra para reportes
         }
         //dd($s);
+        
 
-        $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $now)->get();
+        $nowDayAfter = Carbon::now();
+        $nowDayBefore = Carbon::now();
+        $DayAfter = $nowDayAfter->addHour(2);
+        $DayBefore = $nowDayBefore->subHour(12);
+        dd($DayAfter);
+        $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $DayBefore )->where('Fecha', '<', $DayAfter)->get();
+        // $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $DayBefore)->where('Fecha', '<', $DayAfter)->get();
         //dd($sorteo2);         //Sorteos validos para jugar, respetando la logica de las fechas
 
         return response()->json($sorteo2, 200);

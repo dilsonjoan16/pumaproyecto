@@ -14,12 +14,17 @@ class EstadoVentasController extends Controller
 {
     public function index()
     {
-        $ventas = Ventas::all();
+
         $estadodecuenta = Reporte::with('user')->get();
 
+        $ventas = Ventas::selectRaw('sum(Valorapuesta) as venta, user_id, Fecha')->groupBy('user_id', 'Fecha')->with('user', function($q){
+            $q->select('name', 'id')->get();
+        })->get();
+        
         $respuesta =  [
             //"Modelo Ventas" => $ventas,
             "Modelo Reporte" => $estadodecuenta,
+            "ventaDiaria" => $ventas
             /*"Ventas de promotores" => ->where('Estado','=', 1)->get(),
             "Ventas de vendedores" => $ventas->vendedores()->where('Estado','=',1)->get()*/
         ];
@@ -43,7 +48,7 @@ class EstadoVentasController extends Controller
         $gastos = Reporte::where('Tipo', 'Gasto')->sum('Monto');
         //$acumulado = User::where('tipo', 1)->sum('balance');
         $acumulado3 = Acumulado::sum('Monto');
-        $acumulado2 = Reporte::where('Tipo', 'Gasto')->sum('Monto');
+        $acumulado2 = Reporte::where('Salida', 'Acumulado')->sum('Monto');
         $acumulado = $acumulado3 - $acumulado2;
         $premios = Reporte::where('Tipo','Premio')->sum('Monto');
         //FIN DE CONSULTAS
