@@ -142,19 +142,30 @@ class SorteosController extends Controller
 
     public function sorteoAll()
     {
-        $now = Carbon::now();
-        $nowAfter = Carbon::now(); //Tiempo Actual del sistema
-        $after = $nowAfter->addHour();
-        $nowBefore = Carbon::now();
+        $now = Carbon::now('America/Bogota');
+        $nowAfter = Carbon::now('America/Bogota'); //Tiempo Actual del sistema
+        $after = $nowAfter->addDay()->format('Y-m-d');
+        $nowBefore = Carbon::now('America/Bogota');
         $before = $nowBefore->subHour(); //-1 Hora del tiempo actual del sistema
         //echo $before;
         //echo $after;
-
-        $sorteo = Sorteos::where('Estado', 1)->where('Fecha', '>', $before )->where('Fecha', '<', $after)->get();
+        // dd($before);
+        // $sorteo = Sorteos::where('Estado', 1)->where('Fecha', '>', $before )->where('Fecha', '<', $after)->get();
+        // ->where('Fecha', '<', $before)
+        // ->where('Fecha', '>', $now )
+        // dd($after);
+        // $sorteo = Sorteos::where('Estado', 1)->where('Fecha', '>', $now)->where('Fecha', '<', $after)->get();
+        // select *, DATE_SUB(Fecha, INTERVAL 1 HOUR) from `sorteos` where `Estado` = 1 and `Fecha` > '2021-08-27 10:59:59' and DATE_SUB(Fecha, INTERVAL 1 HOUR) > '2021-08-27 10:59:59' and `Fecha` < '2021-08-28'
+        
+        // select *, DATE_SUB(Fecha, INTERVAL 1 HOUR) from `sorteos` where `Estado` = ? and `Fecha` > ? and DATE_SUB(Fecha, INTERVAL 1 HOUR) > '2021-08-27 08:50:56' and `Fecha` < ?
+        $sorteo = Sorteos::selectRaw('*, DATE_SUB(Fecha, INTERVAL 1 HOUR)')->whereRaw('Estado = 1')->whereRaw("Fecha > '$now'")->whereRaw("DATE_SUB(Fecha, INTERVAL 1 HOUR) > '$now'")->whereRaw("Fecha < '$after'")->get();
+        // dd($sorteo);
+        return response()->json($sorteo, 200);
         foreach($sorteo as $s){
             $s->Estado = 0;       //Se hace una busqueda de los sorteos que estan a punto de jugar
             $s->update();         //Una hora antes del juego el sorteo pasa a estado 0 y no se muestra para reportes
         }
+        
         //dd($s);
         
 
@@ -162,11 +173,11 @@ class SorteosController extends Controller
         $nowDayBefore = Carbon::now();
         $DayAfter = $nowDayAfter->addHour(2);
         $DayBefore = $nowDayBefore->subHour(12);
-        dd($DayAfter);
+        // dd($DayAfter);
         $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $DayBefore )->where('Fecha', '<', $DayAfter)->get();
-        // $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $DayBefore)->where('Fecha', '<', $DayAfter)->get();
+        $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '>', $DayBefore)->where('Fecha', '<', $DayAfter)->get();
         //dd($sorteo2);         //Sorteos validos para jugar, respetando la logica de las fechas
-
+        // $sorteo2 = Sorteos::where('Estado', 1)->where('Fecha', '=', $now )->where('Fecha', '<', $after)->get();
         return response()->json($sorteo2, 200);
     }
 }
