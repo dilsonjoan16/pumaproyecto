@@ -150,7 +150,7 @@ return [
     'required_claims' => [
         'iss',
         'iat',
-        //'exp',
+        //'exp', Para que no tenga vencimiento debe ser eliminado (aca es comentado por fines practicos)
         'nbf',
         'sub',
         'jti',
