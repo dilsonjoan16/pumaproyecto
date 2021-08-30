@@ -17,7 +17,8 @@ class Reporte extends Model
         'Referencia',
         'Transaccion',
         'user_id',
-        'user_pago'
+        'user_pago',
+        'MontoCredito',
     ];
 
     public function user()

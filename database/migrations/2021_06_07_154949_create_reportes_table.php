@@ -16,6 +16,7 @@ class CreateReportesTable extends Migration
         Schema::create('reportes', function (Blueprint $table) {
             $table->id();
             $table->integer("Monto");
+            $table->integer("MontoCredito")->nullable();
             $table->string("Salida");
             $table->string("Tipo");
             $table->string("Descripcion")->nullable();

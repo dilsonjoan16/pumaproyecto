@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Acumulado;
 use App\Models\Administrador;
 use App\Models\Reporte;
+use App\Models\Solicitudes;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -42,6 +43,7 @@ class AdministradorController extends Controller
         $request->validate([
             "Monto" => "required|integer",
             "user_pago" => "integer",
+            "MontoCredito" => "integer",
             //"Tipo" => "required", //Esto es Gasto, Pago, Premio
             "Descripcion" => "string|max:255",
             "Salida" => "required", // Esto es Acumulado o Caja
@@ -88,6 +90,7 @@ class AdministradorController extends Controller
             $reporte->Tipo = "Pago";
             $reporte->user_pago = $request->get("user_pago");
             $reporte->Monto = $request->get("Monto");
+            $reporte->MontoCredito = $request->get("MontoCredito");
             $reporte->Salida = $request->get("Salida");
             $reporte->user_id = $usuario->id;
             $reporte->save();
@@ -99,6 +102,7 @@ class AdministradorController extends Controller
 
             $userpago = User::find($pagado);
             //dd($userpago);
+           
             foreach($userpago as $p){}
 
             if($reporte->Monto > $p->balance)
@@ -114,8 +118,20 @@ class AdministradorController extends Controller
                 }
             }
 
+            $user = User::find($reporte->user_pago);
+            
+            if ($reporte->MontoCredito > $user->user_credito) {
+                return response()->json("No puedes cancelar mas de la cuenta del credito", 400);
+            } else {
+                if ($reporte->MontoCredito <= $user->user_credito) {
+                    $user->user_credito = $user->user_credito - $reporte->MontoCredito;
+                    $user->update();
+                }
+            }
+
+            //dd($reporte->user_credito);
             //dd($userpago);
-            return response()->json(compact('reporte','creador','userpago'), 201);
+            return response()->json(compact('reporte','creador','userpago', 'user'), 201);
 
         }
         if($tipo == 3)

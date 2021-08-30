@@ -315,7 +315,8 @@ class VendedorController extends Controller
         $pertenece = User::where('id', '=', $usuario->user_id)->get();
         $tiene = User::where('user_id', '=', $usuario->id)->get();
         $sorteos = User::with('sorteos')->where('sorteo_id', '=', $usuario->sorteo_id)->get();
-        $credito = Solicitudes::where('Categoria', 'Prestamo/Credito')->where('user_id', '=', $usuario->id)->where('Tipo', '=', 2)->sum('CantidadSolicitada');
+        //$credito = Solicitudes::where('Categoria', 'Prestamo/Credito')->where('user_id', '=', $usuario->id)->where('Tipo', '=', 2)->sum('CantidadSolicitada');
+        $credito = $usuario->user_credito;
 
         $respuesta =  [
             "Datos del usuario" => $usuario,

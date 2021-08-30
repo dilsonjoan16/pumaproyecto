@@ -212,8 +212,18 @@ class SolicitudesController extends Controller
         $solicitudes = Solicitudes::find($id);
         $solicitudes->Tipo = "2";
         $solicitudes->save();
+        
+        if ($solicitudes->Categoria == "Prestamo/Credito") {
+
+            $usuario = User::find($solicitudes->user_id);
+            $usuario->user_credito = ($usuario->user_credito + $solicitudes->CantidadSolicitada);
+            $usuario->update();
+
+        }
+       
         $respuesta =  [
-            "El objeto fue validado con exito!" => $solicitudes
+            "El objeto fue validado con exito!" => $solicitudes,
+            "prueba" => $usuario
         ];
         return response()->json($respuesta, 200);
     }
