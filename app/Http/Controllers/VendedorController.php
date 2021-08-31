@@ -139,11 +139,11 @@ class VendedorController extends Controller
         //dd($usuario->id);
 
         $request->validate([
-            "Fecha" => "required|date",
+            "Fecha" => "required|date", // YY-MM-DD (Formato->2010-10-10) 
             "Numero" => "required|integer",
             "Valorapuesta" => "required|integer",
             "Loteria" => "required|integer", //id de la loteria
-            "Tipo" => "required|string",
+            "Tipo" => "required|string", //Directo, Combinado, Terminal, etc
             //AGREGADO DE REFERENCIA -> DESCRIPCION
             "Referencia" => "required|string",
             //Menu lateral en las vistas
@@ -216,7 +216,7 @@ class VendedorController extends Controller
         $consulta3 = Sorteos::where('id',$ventas->sorteo_id)->get();
         foreach($consulta3 as $c3) //Consulta para obtener la Loteria
 
-        if($request->get('Valorapuesta') == ($c2->Max - $consulta1) )
+        if($request->get('Valorapuesta') > 1 + ($c2->Max - $consulta1) )
         {
             $ventas->Estado = "0";
             $ventas->save();
